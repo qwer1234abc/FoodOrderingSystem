@@ -223,7 +223,8 @@ void Customer::displayCustomerMenu() {
 	cout << "1. Browse food selections" << endl;
 	cout << "2. Create a new order" << endl;
 	cout << "3. Cancel an order" << endl;
-	cout << "4. Log out" << endl;
+	cout << "4. Redeem loyalty points" << endl;
+	cout << "5. Log out" << endl;
 	cout << "=====================================" << endl;
 	cout << "Enter your choice: ";
 }
