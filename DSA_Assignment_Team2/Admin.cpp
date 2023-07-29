@@ -55,8 +55,8 @@ void Admin::adminLogin(const string& filename) {
 		getline(file, header);
 
 		string line;
-		while (getline(file, line)) {
-			istringstream iss(line);
+		while (getline(file, line)) { // read each line from the file
+			istringstream iss(line); // extract comma-separated values from each line
 			string adminIDFromFile, nameFromFile, loginIDFromFile, passwordFromFile, restaurantIDFromFile;
 
 			// Read each field from the CSV line, separated by commas
@@ -66,19 +66,19 @@ void Admin::adminLogin(const string& filename) {
 			getline(iss, passwordFromFile, ',');
 			getline(iss, restaurantIDFromFile, ',');
 
-			string lowercaseLoginID = loginID;
-			string lowercaseLoginIDFromFile = loginIDFromFile;
+			string lowercaseLoginID = loginID; // login id from input
+			string lowercaseLoginIDFromFile = loginIDFromFile; // login id from file
 
-			for (char& c : lowercaseLoginID) {
+			for (char& c : lowercaseLoginID) { // convert all the characters in the input to lowercase
 				c = tolower(c);
 			}
-			for (char& c : lowercaseLoginIDFromFile) {
+			for (char& c : lowercaseLoginIDFromFile) { // convert all the characters in the file to lowercase
 				c = tolower(c);
 			}
 			if (lowercaseLoginID == lowercaseLoginIDFromFile && password == passwordFromFile) {
-				adminID = stoi(adminIDFromFile);
-				name = nameFromFile;
-				restaurantID = stoi(restaurantIDFromFile);
+				adminID = stoi(adminIDFromFile); // convert adminID to from string to integer
+				name = nameFromFile; 
+				restaurantID = stoi(restaurantIDFromFile); // convert restaurantID to from string to integer
 				file.close();
 				cout << "Login successful!\n";
 				return;

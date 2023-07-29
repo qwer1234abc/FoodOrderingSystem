@@ -60,15 +60,15 @@ void Customer::registerCustomer(const string& filename) {
 	int customerID = 0; // Default ID if no accounts are present
 
 	// Get the last customer ID from the file
-	ifstream file(filename);
+	ifstream file(filename); // create input file stream object named file and opens the file
 	if (file.is_open()) {
 		string line;
-		while (getline(file, line)) {
-			istringstream iss(line);
+		while (getline(file, line)) { // reads the file and getline reads each line into "line" variable
+			istringstream iss(line); // extract comma-separated values from each line
 			string customerIDFromFile;
-			if (getline(iss, customerIDFromFile, ',')) {
+			if (getline(iss, customerIDFromFile, ',')) { // read first value up to ',' and store in "customerIDFromFile" variable
 				try {
-					int tempID = stoi(customerIDFromFile);
+					int tempID = stoi(customerIDFromFile); // convert extracted value from string to int
 					if (tempID > customerID) {
 						customerID = tempID; // Update customerID with the last ID
 					}
@@ -90,7 +90,7 @@ void Customer::registerCustomer(const string& filename) {
 	Customer newCustomer(customerID, name, loginID, password, loyaltyPoints);
 
 	// Save the customer details to the CSV file
-	ofstream fileToWrite(filename, ios::app);
+	ofstream fileToWrite(filename, ios::app); // creates output file stream object and opens file in APPEND mode
 	if (fileToWrite.is_open()) {
 		fileToWrite << newCustomer.getCustomerID() << "," << newCustomer.getName() << ","
 			<< newCustomer.getLoginID() << "," << newCustomer.getPassword() << ","
@@ -105,15 +105,15 @@ void Customer::registerCustomer(const string& filename) {
 
 // Function to check if the customer with the given email and password exists
 bool Customer::customerExists(const string& filename, const string& loginID, const string& password) {
-	ifstream file(filename);
+	ifstream file(filename); // create  input file stream object called "file" and opens the file
 	if (file.is_open()) {
 		// Skip the header line
 		string header;
 		getline(file, header);
 
 		string line;
-		while (getline(file, line)) {
-			istringstream iss(line);
+		while (getline(file, line)) { // read each line from the file
+			istringstream iss(line); // extract comma-separated values from each line
 			string customerIDFromFile, nameFromFile, loginIDFromFile, passwordFromFile, loyaltyPointsFromFile;
 
 			// Read each field from the CSV line, separated by commas
@@ -126,18 +126,18 @@ bool Customer::customerExists(const string& filename, const string& loginID, con
 			string lowercaseLoginID = loginID;
 			string lowercaseLoginIDFromFile = loginIDFromFile;
 
-			for (char& c : lowercaseLoginID) {
+			for (char& c : lowercaseLoginID) { // convert all the characters in the input to lowercase
 				c = tolower(c);
 			}
-			for (char& c : lowercaseLoginIDFromFile) {
+			for (char& c : lowercaseLoginIDFromFile) { // convert all the characters in the file to lowercase
 				c = tolower(c);
 			}
 			if (lowercaseLoginID == lowercaseLoginIDFromFile && password == passwordFromFile) {
-				customerID = stoi(customerIDFromFile);
+				customerID = stoi(customerIDFromFile); // convert customerID to from string to integer
 				name = nameFromFile;
-				loyaltyPoints = stoi(loyaltyPointsFromFile);
-				file.close();
-				return true;
+				loyaltyPoints = stoi(loyaltyPointsFromFile); // convert loyalty points to integer
+				file.close(); 
+				return true; // return true if customer exists
 			}
 		}
 		file.close();
@@ -150,15 +150,15 @@ bool Customer::customerExists(const string& filename, const string& loginID, con
 
 bool Customer::uniqueLoginID(const string& filename, const string& loginID)
 {
-	ifstream file(filename);
+	ifstream file(filename); // create  input file stream object called "file" and opens the file
 	if (file.is_open()) {
 		// Skip the header line
 		string header;
 		getline(file, header);
 
 		string line;
-		while (getline(file, line)) {
-			istringstream iss(line);
+		while (getline(file, line)) { // read each line from the file
+			istringstream iss(line); // extract comma-separated values from each line
 			string customerIDFromFile, nameFromFile, loginIDFromFile, passwordFromFile, loyaltyPointsFromFile;
 
 			// Read each field from the CSV line, separated by commas
@@ -168,17 +168,17 @@ bool Customer::uniqueLoginID(const string& filename, const string& loginID)
 			getline(iss, passwordFromFile, ','); // Read the password from the fourth column
 			getline(iss, loyaltyPointsFromFile, ',');
 
-			string lowercaseLoginID = loginID;
-			string lowercaseLoginIDFromFile = loginIDFromFile;
+			string lowercaseLoginID = loginID; // login id from input
+			string lowercaseLoginIDFromFile = loginIDFromFile; // login id from file
 
-			for (char& c : lowercaseLoginID) {
+			for (char& c : lowercaseLoginID) { // convert all the characters in the input to lowercase
 				c = tolower(c);
 			}
-			for (char& c : lowercaseLoginIDFromFile) {
+			for (char& c : lowercaseLoginIDFromFile) { // convert all the characters in the file to lowercase
 				c = tolower(c);
 			}
 
-			if (lowercaseLoginID == lowercaseLoginIDFromFile) {
+			if (lowercaseLoginID == lowercaseLoginIDFromFile) { // if id already exists
 				file.close();
 				return false;
 			}
