@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -130,10 +130,16 @@
     <ClCompile Include="Admin.cpp" />
     <ClCompile Include="Customer.cpp" />
     <ClCompile Include="DSA_Assignment_Team2.cpp" />
+    <ClCompile Include="FoodItem.cpp" />
+    <ClCompile Include="Order.cpp" />
+    <ClCompile Include="Restaurant.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Admin.h" />
     <ClInclude Include="Customer.h" />
+    <ClInclude Include="FoodItem.h" />
+    <ClInclude Include="Order.h" />
+    <ClInclude Include="Restaurant.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

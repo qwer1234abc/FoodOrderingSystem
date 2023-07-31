@@ -37,6 +37,7 @@ int main()
 				do
 				{
 					customer.displayCustomerMenu();
+					cin >> customerOptionStr;
 
 					if (customerOptionStr == "1")
 					{
