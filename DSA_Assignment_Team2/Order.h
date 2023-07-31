@@ -1,6 +1,8 @@
 #pragma once
 #include <iostream>
 #include <string>
+#include "OrderItem.h"
+#include "LinkedList.h"
 
 using namespace std;
 
@@ -9,19 +11,19 @@ class Order
 private:
 	int orderID;
 	int customerID;
-	int foodItemID;
-	int quantity;
+	LinkedList orderItemList;
+	int restaurantID;
 	double totalPrice;
 	string status;
 
 public:
 	Order();
-	Order(int id, int c, int f, int q, double p, const string& s);
+	Order(int id, int c, int f, int r, double p, const string& s);
 
 	int getOrderID() const;
 	int getCustomerID() const;
 	int getFoodItemID() const;
-	int getQuantity() const;
+	int getRestaurantID() const;
 	double getTotalPrice() const;
 	string getStatus() const;
 };

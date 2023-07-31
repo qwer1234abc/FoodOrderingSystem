@@ -1,6 +1,4 @@
 #include "Customer.h"
-#include "FoodItem.h"
-#include "HashTable.h"
 #include <iostream>
 #include <fstream>
 #include <iomanip>
@@ -231,23 +229,23 @@ void Customer::displayCustomerMenu() {
 	cout << "Enter your choice: ";
 }
 
-void Customer::browseFoodItems(const string& foodItemsFile)
+HashTable Customer::browseFoodItems(const string& foodItemsFile)
 {
 	// Step 1: Read food items from the CSV file and store them in the hashtable
 	HashTable foodItemsTable;
-	ifstream file(foodItemsFile);
-	if (!file.is_open())
+	ifstream foodOptionsfile(foodItemsFile);
+	if (!foodOptionsfile.is_open())
 	{
 		cout << "Error: Unable to open the file " << foodItemsFile << endl;
-		return;
+		return foodItemsTable; // Return 0 as there are no food items read
 	}
 
 	// Skip the header line
 	string header;
-	getline(file, header);
+	getline(foodOptionsfile, header);
 
 	string line;
-	while (getline(file, line))
+	while (getline(foodOptionsfile, line))
 	{
 		istringstream iss(line);
 		string foodItemIDStr, name, category, restaurantIDStr, priceStr;
@@ -270,10 +268,18 @@ void Customer::browseFoodItems(const string& foodItemsFile)
 		foodItemsTable.add(foodItem.getFoodItemID(), foodItem);
 	}
 
-	file.close();
+	foodOptionsfile.close();
 
-	// Step 2: Display the food items to the customer
 	foodItemsTable.print();
+
+	return foodItemsTable; // Return the total number of food items read
+}
+
+LinkedList Customer::addOrderItem(FoodItem fooditem, int quantity) {
+	OrderItem order(fooditem, quantity);
+	LinkedList orderItemsList;
+	orderItemsList.insert(order); // Insert the OrderItem into the LinkedList
+	return orderItemsList;        // Return the modified LinkedList
 }
 
 void Customer::createOrder(const string& foodItemsFile, const string& ordersFile) {

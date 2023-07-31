@@ -1,5 +1,5 @@
 #include "HashTable.h"
-
+#include <iostream>
 #include <iomanip>
 
 HashTable::HashTable()
@@ -159,4 +159,5 @@ void HashTable::print()
 	}
 
 	cout << setfill('=') << setw(totalWidth) << "=" << setfill(' ') << endl;
+	cout << "Enter your food item number: ";
 }

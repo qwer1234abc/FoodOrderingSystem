@@ -128,19 +128,25 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Admin.cpp" />
+    <ClCompile Include="Array.cpp" />
     <ClCompile Include="Customer.cpp" />
     <ClCompile Include="DSA_Assignment_Team2.cpp" />
     <ClCompile Include="FoodItem.cpp" />
     <ClCompile Include="HashTable.cpp" />
+    <ClCompile Include="LinkedList.cpp" />
     <ClCompile Include="Order.cpp" />
+    <ClCompile Include="OrderItem.cpp" />
     <ClCompile Include="Restaurant.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Admin.h" />
+    <ClInclude Include="Array.h" />
     <ClInclude Include="Customer.h" />
     <ClInclude Include="FoodItem.h" />
     <ClInclude Include="HashTable.h" />
+    <ClInclude Include="LinkedList.h" />
     <ClInclude Include="Order.h" />
+    <ClInclude Include="OrderItem.h" />
     <ClInclude Include="Restaurant.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

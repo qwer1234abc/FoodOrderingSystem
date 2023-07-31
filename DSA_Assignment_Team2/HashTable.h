@@ -1,4 +1,4 @@
-#include "FoodItem.h" // Assuming the FoodItem class is defined in FoodItem.h
+#include "FoodItem.h"
 #include <iostream>
 
 const int MAX_SIZE = 101;

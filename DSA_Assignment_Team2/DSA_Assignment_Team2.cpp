@@ -1,6 +1,7 @@
 #include <iostream>
 #include "Customer.h"
 #include "Admin.h"
+
 using namespace std;
 
 
@@ -41,9 +42,50 @@ int main()
 
 					if (customerOptionStr == "1")
 					{
-						clearScreen();
-						customer.browseFoodItems("FoodItems.csv");
+						HashTable foodItemsHashTable = customer.browseFoodItems("FoodItems.csv");
+						int foodItemLength = foodItemsHashTable.getLength();
+						int foodItemChoice;
+
+						do
+						{
+							cin >> foodItemChoice;
+
+							if (foodItemChoice >= 1 && foodItemChoice <= foodItemLength)
+							{
+								int quantity;
+								FoodItem foodItem = foodItemsHashTable.get(foodItemChoice);
+								do {
+									cout << "Enter quantity for " << foodItem.getName() << ": ";
+									cin >> quantity;
+
+									if (quantity >= 1 && quantity <= 99)
+									{
+										// Add the selected food item to the customer's order
+										customer.addOrderItem(foodItem, quantity);
+										cout << quantity << " " << foodItem.getName() << " added to your order successfully." << endl;
+										break;
+									}
+									else
+									{
+										cout << "Invalid quantity. Please try again." << endl;
+										quantity = -1;
+										cin.clear();
+										cin.ignore(numeric_limits<streamsize>::max(), '\n');
+									}
+								} while (true);
+
+								break;
+							}
+							else
+							{
+								cout << "Invalid option. Please try again: ";
+								foodItemChoice = -1;
+								cin.clear();
+								cin.ignore(numeric_limits<streamsize>::max(), '\n');
+							}
+						} while (true);
 					}
+
 					else if (customerOptionStr == "2")
 					{
 
@@ -88,8 +130,6 @@ int main()
 		waitForEnterKey();
 
 	} while (selectedOptionStr != "4");
-
-	return 0;
 }
 
 void displayMainMenu() {
