@@ -1,25 +1,21 @@
 foodItemID,fooditemName,fooditemCategory,restaurantID,price
-1,Hainanese Chicken Rice,Rice Dishes,1,5.50
-2,Chilli Crab,Seafood Dishes,2,25.00
-3,Satay,Appetizers,3,10.00
-4,Laksa,Noodle Dishes,1,8.90
-5,Hokkien Mee,Noodle Dishes,4,12.50
-6,Char Kway Teow,Noodle Dishes,5,9.00
-7,Chicken Satay,Appetizers,2,12.00
-8,Beef Rendang,Beef Dishes,3,15.00
-9,Nasi Lemak,Rice Dishes,5,6.80
-10,Mee Goreng,Noodle Dishes,1,7.50
-11,Chicken Rice,Rice Dishes,6,5.00
-12,Oyster Omelette,Seafood Dishes,3,9.50
-13,Chicken Curry,Rice Dishes,4,11.00
-14,Fried Carrot Cake,Appetizers,2,6.50
-15,Fried Hokkien Mee,Noodle Dishes,5,10.50
-16,Dim Sum,Appetizers,1,4.80
-17,Fish Head Curry,Seafood Dishes,6,18.00
-18,Claypot Rice,Rice Dishes,4,8.00
-19,Rojak,Appetizers,3,7.00
-20,Chicken Noodles,Noodle Dishes,2,6.80
-
-
-
-
+1,Hainanese Chicken Rice,Rice Dishes,1,5.5
+2,Chilli Crab,Seafood Dishes,2,25
+3,Satay,Appetizers,3,10
+4,Laksa,Noodle Dishes,1,8.9
+5,Hokkien Mee,Noodle Dishes,4,12.5
+6,Char Kway Teow,Noodle Dishes,5,9
+7,Chicken Satay,Appetizers,2,12
+8,Beef Rendang,Beef Dishes,3,15
+9,Nasi Lemak,Rice Dishes,5,6.8
+10,Mee Goreng,Noodle Dishes,1,7.5
+11,Chicken Rice,Rice Dishes,6,5
+12,Oyster Omelette,Seafood Dishes,3,9.5
+13,Chicken Curry,Rice Dishes,4,11
+14,Fried Carrot Cake,Appetizers,2,6.5
+15,Fried Hokkien Mee,Noodle Dishes,5,10.5
+16,Dim Sum,Appetizers,1,4.8
+17,Fish Head Curry,Seafood Dishes,6,18
+18,Claypot Rice,Rice Dishes,4,8
+19,Rojak,Appetizers,3,7
+20,Chicken Noodles,Noodle Dishes,2,6.8

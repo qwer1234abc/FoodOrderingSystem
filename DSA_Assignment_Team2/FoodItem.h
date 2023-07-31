@@ -9,7 +9,7 @@ class FoodItem
 private:
 	int foodItemID;
 	string name;
-	string description;
+	string category;
 	double price;
 	int restaurantID;
 
@@ -19,7 +19,7 @@ public:
 
 	int getFoodItemID() const;
 	string getName() const;
-	string getDescription() const;
+	string getCategory() const;
 	double getPrice() const;
 	int getRestaurantID() const;
 

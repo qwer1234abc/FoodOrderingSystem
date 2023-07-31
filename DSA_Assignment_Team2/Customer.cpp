@@ -1,4 +1,6 @@
 #include "Customer.h"
+#include "FoodItem.h"
+#include "HashTable.h"
 #include <iostream>
 #include <fstream>
 #include <iomanip>
@@ -136,7 +138,7 @@ bool Customer::customerExists(const string& filename, const string& loginID, con
 				customerID = stoi(customerIDFromFile); // convert customerID to from string to integer
 				name = nameFromFile;
 				loyaltyPoints = stoi(loyaltyPointsFromFile); // convert loyalty points to integer
-				file.close(); 
+				file.close();
 				return true; // return true if customer exists
 			}
 		}
@@ -220,37 +222,58 @@ void Customer::displayCustomerMenu() {
 	cout << "=====================================" << endl;
 	cout << "           Customer Menu            " << endl;
 	cout << "=====================================" << endl;
-	cout << "1. Browse food selections" << endl;
-	cout << "2. Create a new order" << endl;
-	cout << "3. Cancel an order" << endl;
-	cout << "4. Log out" << endl;
+	cout << "1. Create a new order" << endl;
+	cout << "2. View order cart" << endl;
+	cout << "3. Checkout order" << endl;
+	cout << "4. Cancel an order" << endl;
+	cout << "5. Log out" << endl;
 	cout << "=====================================" << endl;
 	cout << "Enter your choice: ";
 }
 
-void Customer::handleCustomerChoice(int choice, const string& filename) {
-	switch (choice) {
-	case 1:
-		browseFoodItems(filename);
-		break;
-	case 2:
-		break;
-	case 3:
-		break;
-	case 4:
-		redeemPoints();
-		break;
-	case 5:
-		cout << "Logging out..." << endl;
-		break;
-	default:
-		cout << "Invalid choice!" << endl;
-		break;
+void Customer::browseFoodItems(const string& foodItemsFile)
+{
+	// Step 1: Read food items from the CSV file and store them in the hashtable
+	HashTable foodItemsTable;
+	ifstream file(foodItemsFile);
+	if (!file.is_open())
+	{
+		cout << "Error: Unable to open the file " << foodItemsFile << endl;
+		return;
 	}
-}
 
-void Customer::browseFoodItems(const string& filename) {
-	// TODO: Implement this. Read the food items file and display the items.
+	// Skip the header line
+	string header;
+	getline(file, header);
+
+	string line;
+	while (getline(file, line))
+	{
+		istringstream iss(line);
+		string foodItemIDStr, name, category, restaurantIDStr, priceStr;
+
+		// Read each field from the CSV line, separated by commas
+		getline(iss, foodItemIDStr, ',');
+		getline(iss, name, ',');
+		getline(iss, category, ',');
+		getline(iss, restaurantIDStr, ',');
+		getline(iss, priceStr, ',');
+
+		// Convert the read data to appropriate data types
+		int foodItemID = stoi(foodItemIDStr);
+		double price = stod(priceStr);
+		int restaurantID = stoi(restaurantIDStr);
+		// Create a FoodItem object
+		FoodItem foodItem(foodItemID, name, category, price, restaurantID);
+
+		// Add the FoodItem object to the hashtable
+		foodItemsTable.add(foodItem.getFoodItemID(), foodItem);
+	}
+
+	file.close();
+
+	// Step 2: Display the food items to the customer
+	foodItemsTable.print();
 }
 
 void Customer::createOrder(const string& foodItemsFile, const string& ordersFile) {

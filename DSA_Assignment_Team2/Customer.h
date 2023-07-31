@@ -30,9 +30,7 @@ public:
     bool customerLogin(const string& filename);
 
 
-    void displayCustomerDetails() const;  // To display customer details
     void displayCustomerMenu();  // To show the customer menu after logging in
-    void handleCustomerChoice(int choice, const string& filename);
     void browseFoodItems(const string& filename);  // To browse all food items
     void createOrder(const string& foodItemsFile, const string& ordersFile);  // To create a new order
     void cancelOrder(const string& ordersFile);  // To cancel an existing order

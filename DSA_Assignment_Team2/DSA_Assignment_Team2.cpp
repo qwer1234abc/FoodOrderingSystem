@@ -41,7 +41,8 @@ int main()
 
 					if (customerOptionStr == "1")
 					{
-
+						clearScreen();
+						customer.browseFoodItems("FoodItems.csv");
 					}
 					else if (customerOptionStr == "2")
 					{
@@ -50,6 +51,14 @@ int main()
 					else if (customerOptionStr == "3")
 					{
 
+					}
+					else if (customerOptionStr == "4")
+					{
+						cout << "\nWe are logging you out now. Thank you!" << endl;
+					}
+					else
+					{
+						cout << "\nInvalid option. Please try again." << endl;
 					}
 				} while (customerOptionStr != "4");
 			}
