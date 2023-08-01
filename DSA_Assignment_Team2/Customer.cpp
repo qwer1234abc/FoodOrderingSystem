@@ -36,6 +36,10 @@ int Customer::getLoyaltyPoints() const {
 	return loyaltyPoints;
 }
 
+LinkedList<OrderItem> Customer::getOrderItemsList() const {
+	return orderItemsList;
+}
+
 // Function to register a new customer
 void Customer::registerCustomer(const string& filename) {
 	string name, loginID, password;
@@ -290,11 +294,9 @@ HashTable<int, FoodItem> Customer::browseFoodItems(const string& foodItemsFile, 
 	return foodItemsTable; // Return the total number of food items read
 }
 
-LinkedList<OrderItem> Customer::addOrderItem(FoodItem fooditem, int quantity) {
+void Customer::addOrderItem(FoodItem fooditem, int quantity) {
 	OrderItem order(fooditem, quantity);
-	LinkedList<OrderItem> orderItemsList;
-	orderItemsList.insert(order); // Insert the OrderItem into the LinkedList
-	return orderItemsList;        // Return the modified LinkedList
+	orderItemsList.insert(order);
 }
 
 int Customer::orderItemsMenu(const LinkedList<OrderItem>& orderItemsList, const LinkedList<Restaurant>& restaurants)
@@ -335,6 +337,119 @@ int Customer::orderItemsMenu(const LinkedList<OrderItem>& orderItemsList, const 
 	cout << "Enter your choice: ";
 
 	return firstOrderItem.getFoodItem().getRestaurantID();
+}
+
+void Customer::customerLoginMenu(Customer& customer) {
+	cout << "\n-------------------------" << endl;
+	cout << "      Customer Login      " << endl;
+	cout << "-------------------------" << endl;
+	if (customer.customerLogin("Customers.csv")) {
+		waitForEnterKey();
+		clearScreen();
+		string customerOptionStr;
+		do {
+			customer.displayCustomerMenu();
+			cin >> customerOptionStr;
+
+			if (customerOptionStr == "1") {
+				Restaurant restaurant;
+				browseFoodItemsMenu(customer, restaurant);
+			}
+			else if (customerOptionStr == "2") {
+				// Implement other options as needed
+			}
+			else if (customerOptionStr == "3") {
+				// Implement other options as needed
+			}
+			else if (customerOptionStr == "4") {
+				cout << "\nWe are logging you out now. Thank you!" << endl;
+			}
+			else {
+				cout << "\nInvalid option. Please try again." << endl;
+			}
+		} while (customerOptionStr != "4");
+	}
+}
+
+void Customer::customerRegisterMenu(Customer& customer)
+{
+	cout << "\n-------------------------" << endl;
+	cout << "    Customer Register     " << endl;
+	cout << "-------------------------" << endl;
+	customer.registerCustomer("Customers.csv");
+}
+
+void Customer::browseFoodItemsMenu(Customer& customer, Restaurant& restaurant) {
+	HashTable<int, FoodItem> foodItemsHashTable = customer.browseFoodItems("FoodItems.csv", restaurant.getAllRestaurants("Restaurants.csv"), restaurant.getRestaurantID());
+	int foodItemLength = foodItemsHashTable.getLength();
+	int foodItemChoice;
+
+	do {
+		cin >> foodItemChoice;
+
+		// Change this part ***
+		if (foodItemChoice >= 1 && foodItemChoice <= foodItemLength) {
+			orderFoodItems(customer, restaurant, foodItemChoice, foodItemsHashTable);
+			break;
+		}
+		else {
+			cout << "Invalid option. Please try again: ";
+			foodItemChoice = -1;
+			cin.clear();
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		}
+	} while (true);
+}
+
+void Customer::orderFoodItems(Customer& customer, Restaurant& restaurant, int foodItemChoice, HashTable<int, FoodItem>& foodItemsTable) {
+	int quantity;
+	FoodItem foodItem = foodItemsTable.get(foodItemChoice);
+
+	do {
+		cout << "Enter quantity for " << foodItem.getName() << ": ";
+		cin >> quantity;
+
+		if (quantity >= 1 && quantity <= 99) {
+			// Use the existing orderItemsList from the member variable
+			customer.addOrderItem(foodItem, quantity);
+			cout << quantity << " " << foodItem.getName() << " added to your order successfully." << endl;
+			waitForEnterKey();
+			clearScreen();
+
+			// Ask the customer if they want to add more food items to their order
+			string addMoreFoodItemsStr;
+			do {
+				int restaurantID = customer.orderItemsMenu(customer.getOrderItemsList(), restaurant.getAllRestaurants("Restaurants.csv"));
+				restaurant.setRestaurantID(restaurantID);
+				cin >> addMoreFoodItemsStr;
+
+				if (addMoreFoodItemsStr == "1") {
+					browseFoodItemsMenu(customer, restaurant);
+				}
+				else if (addMoreFoodItemsStr == "2") {
+					// Implement other options as needed
+				}
+				else if (addMoreFoodItemsStr == "3") {
+					// Implement other options as needed
+				}
+				else if (addMoreFoodItemsStr == "4") {
+					cout << "Ordered items cancelled." << endl;
+					waitForEnterKey();
+					clearScreen();
+				}
+				else {
+					cout << "\nInvalid option. Please try again." << endl;
+				}
+			} while (addMoreFoodItemsStr != "4");
+			break;
+		}
+		else {
+			cout << "Invalid quantity. Please try again." << endl;
+			quantity = -1;
+			cin.clear();
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		}
+	} while (true);
 }
 
 void Customer::createOrder(const string& foodItemsFile, const string& ordersFile) {

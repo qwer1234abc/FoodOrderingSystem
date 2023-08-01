@@ -17,6 +17,8 @@ public:
 
 	int getRestaurantID() const;
 	string getName() const;
+	void setRestaurantID(int id);
+	void setName(const string& n);
 	LinkedList<Restaurant> getAllRestaurants(const string& filename);
 };
 

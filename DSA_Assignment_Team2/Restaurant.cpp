@@ -29,6 +29,16 @@ string Restaurant::getName() const
 	return name;
 }
 
+void Restaurant::setRestaurantID(int id)
+{
+	restaurantID = id;
+}
+
+void Restaurant::setName(const string& n)
+{
+	name = n;
+}
+
 LinkedList<Restaurant> Restaurant::getAllRestaurants(const string& filename)
 {
 	LinkedList<Restaurant> restaurantList;
