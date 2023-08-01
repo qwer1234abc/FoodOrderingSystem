@@ -221,15 +221,14 @@ void Customer::displayCustomerMenu() {
 	cout << "           Customer Menu            " << endl;
 	cout << "=====================================" << endl;
 	cout << "1. Create a new order" << endl;
-	cout << "2. View order cart" << endl;
-	cout << "3. Checkout order" << endl;
-	cout << "4. Cancel an order" << endl;
-	cout << "5. Log out" << endl;
+	cout << "2. View order history" << endl;
+	cout << "3. Cancel an order" << endl;
+	cout << "4. Log out" << endl;
 	cout << "=====================================" << endl;
 	cout << "Enter your choice: ";
 }
 
-HashTable<int, FoodItem> Customer::browseFoodItems(const string& foodItemsFile, const LinkedList<Restaurant>& restaurants)
+HashTable<int, FoodItem> Customer::browseFoodItems(const string& foodItemsFile, const LinkedList<Restaurant>& restaurants, int restaurantID = -1)
 {
 	// Step 1: Read food items from the CSV file and store them in the hashtable
 	HashTable<int, FoodItem> foodItemsTable;
@@ -237,7 +236,7 @@ HashTable<int, FoodItem> Customer::browseFoodItems(const string& foodItemsFile, 
 	if (!foodOptionsfile.is_open())
 	{
 		cout << "Error: Unable to open the file " << foodItemsFile << endl;
-		return foodItemsTable; // Return 0 as there are no food items read
+		return foodItemsTable; // Return an empty table as there are no food items read
 	}
 
 	// Skip the header line
@@ -260,9 +259,16 @@ HashTable<int, FoodItem> Customer::browseFoodItems(const string& foodItemsFile, 
 		// Convert the read data to appropriate data types
 		int foodItemID = stoi(foodItemIDStr);
 		double price = stod(priceStr);
-		int restaurantID = stoi(restaurantIDStr);
+		int restaurantIDFromFile = stoi(restaurantIDStr);
+
+		// Check if the restaurant ID is provided and skip items from other restaurants
+		if (restaurantID != -1 && restaurantID != restaurantIDFromFile)
+		{
+			continue;
+		}
+
 		// Create a FoodItem object
-		FoodItem foodItem(foodItemID, name, category, price, restaurantID);
+		FoodItem foodItem(foodItemID, name, category, price, restaurantIDFromFile);
 
 		// Add the FoodItem object to the hashtable
 		foodItemsTable.add(foodItem.getFoodItemID(), foodItem);
@@ -270,7 +276,16 @@ HashTable<int, FoodItem> Customer::browseFoodItems(const string& foodItemsFile, 
 
 	foodOptionsfile.close();
 
-	foodItemsTable.print(restaurants);
+	if (restaurantID == -1)
+	{
+		// If the restaurant ID is not provided, print all food items
+		foodItemsTable.print(restaurants);
+	}
+	else
+	{
+		// If the restaurant ID is provided, print only the food items from that restaurant
+		foodItemsTable.print(restaurants, restaurantID);
+	}
 
 	return foodItemsTable; // Return the total number of food items read
 }
@@ -280,6 +295,46 @@ LinkedList<OrderItem> Customer::addOrderItem(FoodItem fooditem, int quantity) {
 	LinkedList<OrderItem> orderItemsList;
 	orderItemsList.insert(order); // Insert the OrderItem into the LinkedList
 	return orderItemsList;        // Return the modified LinkedList
+}
+
+int Customer::orderItemsMenu(const LinkedList<OrderItem>& orderItemsList, const LinkedList<Restaurant>& restaurants)
+{
+	// Calculate the padding to center the header
+	int totalWidth = 45;
+	string header = "Here are your ordered items:";
+	int padding = (totalWidth - header.length()) / 2;
+
+	// Print header
+	cout << setw(padding + header.length()) << header << endl;
+
+	cout << setw(10) << left << "Quantity" << setw(25) << left << "Food Item" << setw(15) << left << "Price" << endl;
+	cout << setfill('=') << setw(totalWidth) << "=" << setfill(' ') << endl;
+
+	for (int i = 0; i < orderItemsList.getLength(); i++)
+	{
+		OrderItem orderItem = orderItemsList.retrieve(i);
+		FoodItem foodItem = orderItem.getFoodItem();
+		double totalPrice = foodItem.getPrice() * orderItem.getQuantity();
+
+		cout << setw(10) << left << orderItem.getQuantity()
+			<< setw(25) << left << foodItem.getName()
+			<< "$" << fixed << setprecision(2) << totalPrice << endl;
+	}
+
+	cout << setfill('=') << setw(totalWidth) << "=" << setfill(' ') << endl;
+
+	// Get the restaurant name for the first order item
+	OrderItem firstOrderItem = orderItemsList.retrieve(0);
+	string restaurantName = firstOrderItem.getFoodItem().getRestaurantNameByID(firstOrderItem.getFoodItem().getRestaurantID(), restaurants);
+	cout << "1. Add more items from " << restaurantName << endl;
+
+	cout << "2. Remove an item" << endl;
+	cout << "3. Confirm order" << endl;
+	cout << "4. Cancel Order (Exit)" << endl;
+	cout << setfill('=') << setw(totalWidth) << "=" << setfill(' ') << endl;
+	cout << "Enter your choice: ";
+
+	return firstOrderItem.getFoodItem().getRestaurantID();
 }
 
 void Customer::createOrder(const string& foodItemsFile, const string& ordersFile) {

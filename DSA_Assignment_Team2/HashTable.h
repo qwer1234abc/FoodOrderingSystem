@@ -45,5 +45,6 @@ public:
 
     // display the items in the HashTable
     void print(const LinkedList<Restaurant>& restaurants);
+    void print(const LinkedList<Restaurant>& restaurants, int restaurantID);
 };
 

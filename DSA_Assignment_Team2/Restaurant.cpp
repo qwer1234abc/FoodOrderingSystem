@@ -7,7 +7,11 @@
 
 using namespace std;
 
-Restaurant::Restaurant() {}
+Restaurant::Restaurant()
+{
+	restaurantID = -1;
+	name = "";
+}
 
 Restaurant::Restaurant(int id, const string& n)
 {

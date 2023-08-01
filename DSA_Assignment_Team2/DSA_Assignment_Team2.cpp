@@ -1,6 +1,7 @@
 #include <iostream>
 #include "Customer.h"
 #include "Admin.h"
+#include "LinkedList.h"
 
 using namespace std;
 
@@ -43,7 +44,7 @@ int main()
 					if (customerOptionStr == "1")
 					{
 						Restaurant restaurant;
-						HashTable<int, FoodItem> foodItemsHashTable = customer.browseFoodItems("FoodItems.csv", restaurant.getAllRestaurants("Restaurants.csv"));
+						HashTable<int, FoodItem> foodItemsHashTable = customer.browseFoodItems("FoodItems.csv", restaurant.getAllRestaurants("Restaurants.csv"), restaurant.getRestaurantID());
 						int foodItemLength = foodItemsHashTable.getLength();
 						int foodItemChoice;
 
@@ -55,6 +56,7 @@ int main()
 							{
 								int quantity;
 								FoodItem foodItem = foodItemsHashTable.get(foodItemChoice);
+
 								do {
 									cout << "Enter quantity for " << foodItem.getName() << ": ";
 									cin >> quantity;
@@ -62,8 +64,41 @@ int main()
 									if (quantity >= 1 && quantity <= 99)
 									{
 										// Add the selected food item to the customer's order
-										customer.addOrderItem(foodItem, quantity);
+										LinkedList<OrderItem> orderItemsList = customer.addOrderItem(foodItem, quantity);
 										cout << quantity << " " << foodItem.getName() << " added to your order successfully." << endl;
+										waitForEnterKey();
+										clearScreen();
+										// Ask the customer if they want to add more food items to their order
+										string addMoreFoodItemsStr;
+										do {
+											
+											int restaurantID = customer.orderItemsMenu(orderItemsList, restaurant.getAllRestaurants("Restaurants.csv"));
+											cin >> addMoreFoodItemsStr;
+
+											if (addMoreFoodItemsStr == "1")
+											{
+												foodItemsHashTable = customer.browseFoodItems("FoodItems.csv", restaurant.getAllRestaurants("Restaurants.csv"), restaurantID);
+											}
+											else if (addMoreFoodItemsStr == "2")
+											{
+
+											}
+											else if (addMoreFoodItemsStr == "3")
+											{
+
+											}
+											else if (addMoreFoodItemsStr == "4")
+											{
+												cout << "Ordered items cancelled." << endl;
+												waitForEnterKey();
+												clearScreen();
+											}
+											else
+											{
+												cout << "\nInvalid option. Please try again." << endl;
+											}
+
+										} while (addMoreFoodItemsStr != "4");
 										break;
 									}
 									else

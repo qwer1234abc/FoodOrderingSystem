@@ -24,6 +24,7 @@ public:
 	bool isEmpty() const;
 	int getLength() const;
 	bool retrieve(int index, T& item) const;
+	T retrieve(int index) const;
 	bool insert(T item);
 	bool remove(int index);
 };

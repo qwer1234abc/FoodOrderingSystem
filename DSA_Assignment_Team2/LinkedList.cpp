@@ -2,7 +2,7 @@
 #include <iostream>
 #include <string>
 #include "Restaurant.h"
-#include "Order.h"
+#include "OrderItem.h"
 
 using namespace std;
 
@@ -45,6 +45,20 @@ bool LinkedList<T>::retrieve(int index, T& item) const {
 
 	item = current->item;
 	return true;
+}
+
+template <class T>
+T LinkedList<T>::retrieve(int index) const {
+	if (index < 0 || index >= size) {
+		throw out_of_range("Index out of range");
+	}
+
+	Node* current = head;
+	for (int i = 0; i < index; i++) {
+		current = current->next;
+	}
+
+	return current->item;
 }
 
 template <class T>
