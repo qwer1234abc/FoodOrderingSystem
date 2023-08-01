@@ -136,7 +136,6 @@
     <ClCompile Include="LinkedList.cpp" />
     <ClCompile Include="Order.cpp" />
     <ClCompile Include="OrderItem.cpp" />
-    <ClCompile Include="Queue.cpp" />
     <ClCompile Include="Restaurant.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -148,7 +147,6 @@
     <ClInclude Include="LinkedList.h" />
     <ClInclude Include="Order.h" />
     <ClInclude Include="OrderItem.h" />
-    <ClInclude Include="Queue.h" />
     <ClInclude Include="Restaurant.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

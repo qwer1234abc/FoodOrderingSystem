@@ -45,9 +45,6 @@
     <ClCompile Include="LinkedList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Queue.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Admin.h">
@@ -76,12 +73,6 @@
     </ClInclude>
     <ClInclude Include="Restaurant.h">
       <Filter>Header Files</Filter>
-<<<<<<< HEAD
-=======
-    </ClInclude>
-    <ClInclude Include="Queue.h">
-      <Filter>Header Files</Filter>
->>>>>>> 0882c03aa081db288c311ed83b54a7a1a1b7dba8
     </ClInclude>
   </ItemGroup>
 </Project>

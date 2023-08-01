@@ -41,7 +41,7 @@ void Restaurant::setName(const string& n)
 
 LinkedList<Restaurant> Restaurant::getAllRestaurants(const string& filename)
 {
-	LinkedList<Restaurant> restaurantList; // create a list of restaurant type
+	LinkedList<Restaurant> restaurantList;
 	ifstream file(filename); // create  input file stream object called "file" and opens the file
 	if (!file.is_open())
 	{
@@ -53,16 +53,15 @@ LinkedList<Restaurant> Restaurant::getAllRestaurants(const string& filename)
 	getline(file, header); // read the first line of the file and store it in the variable "header"
 
 	string line;
-	while (getline(file, line)) // read each ine in the file
+	while (getline(file, line))
 	{
 		istringstream iss(line); // extract comma-separated values from each line
-		string restaurantIDFromFile, nameFromFile; 
+		string restaurantIDFromFile, nameFromFile;
 		getline(iss, restaurantIDFromFile, ',');
 		getline(iss, nameFromFile, ',');
 
-		// create a new restaurant object
 		Restaurant restaurant(stoi(restaurantIDFromFile), nameFromFile);
-		restaurantList.insert(restaurant); // add restaurant to restaurant list
+		restaurantList.insert(restaurant);
 	}
 
 	file.close();
