@@ -72,12 +72,12 @@ int main()
 										string addMoreFoodItemsStr;
 										do {
 											
-											int restaurantID = customer.orderItemsMenu(orderItemsList, restaurant.getAllRestaurants("Restaurants.csv"));
+											int restaurantID = customer.orderItemsMenu(orderItemsList, restaurant.getAllRestaurants("Restaurants.csv")); // get the restaurant id user ordered food from
 											cin >> addMoreFoodItemsStr;
 
 											if (addMoreFoodItemsStr == "1")
 											{
-												foodItemsHashTable = customer.browseFoodItems("FoodItems.csv", restaurant.getAllRestaurants("Restaurants.csv"), restaurantID);
+												foodItemsHashTable = customer.browseFoodItems("FoodItems.csv", restaurant.getAllRestaurants("Restaurants.csv"), restaurantID); // only get the food items from the same restaurant
 											}
 											else if (addMoreFoodItemsStr == "2")
 											{
