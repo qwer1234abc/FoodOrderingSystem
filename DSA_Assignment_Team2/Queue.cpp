@@ -125,7 +125,7 @@ void Queue::displayItems()
 		while (current != nullptr)
 		{
 			// Print the item of each node in the queue
-			cout << current->item << " ";
+			cout <<" ";
 			current = current->next;  // Move to the next node
 		}
 

@@ -18,11 +18,11 @@ private:
 
 public:
 	Order();
-	Order(int id, int c, int f, int r, double p, const string& s);
+	Order(int id, int c, LinkedList<OrderItem>& o, int r, double p, const string& s);
 
 	int getOrderID() const;
 	int getCustomerID() const;
-	int getFoodItemID() const;
+	LinkedList<OrderItem> getOrderItemList() const;
 	int getRestaurantID() const;
 	double getTotalPrice() const;
 	string getStatus() const;
