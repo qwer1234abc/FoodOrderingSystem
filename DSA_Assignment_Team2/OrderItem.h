@@ -17,5 +17,6 @@ public:
 
 	FoodItem getFoodItem() const;
 	int getQuantity() const;
+	string getRestaurantNameByID(int id, const LinkedList<Restaurant>& restaurants);
 };
 

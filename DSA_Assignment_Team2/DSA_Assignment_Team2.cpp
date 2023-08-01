@@ -42,7 +42,8 @@ int main()
 
 					if (customerOptionStr == "1")
 					{
-						HashTable foodItemsHashTable = customer.browseFoodItems("FoodItems.csv");
+						Restaurant restaurant;
+						HashTable<int, FoodItem> foodItemsHashTable = customer.browseFoodItems("FoodItems.csv", restaurant.getAllRestaurants("Restaurants.csv"));
 						int foodItemLength = foodItemsHashTable.getLength();
 						int foodItemChoice;
 

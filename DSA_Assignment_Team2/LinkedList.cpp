@@ -1,15 +1,19 @@
 #include "LinkedList.h"
 #include <iostream>
 #include <string>
+#include "Restaurant.h"
+#include "Order.h"
 
 using namespace std;
 
-LinkedList::LinkedList() {
+template <class T>
+LinkedList<T>::LinkedList() {
 	head = nullptr;
 	size = 0;
 }
 
-LinkedList::~LinkedList() {
+template <class T>
+LinkedList<T>::~LinkedList() {
 	Node* temp = head;
 	while (head != nullptr) {
 		head = head->next;
@@ -18,15 +22,18 @@ LinkedList::~LinkedList() {
 	}
 }
 
-bool LinkedList::isEmpty() const {
+template <class T>
+bool LinkedList<T>::isEmpty() const {
 	return size == 0;
 }
 
-int LinkedList::getLength() const {
+template <class T>
+int LinkedList<T>::getLength() const {
 	return size;
 }
 
-bool LinkedList::retrieve(int index, OrderItem& orderItem) const {
+template <class T>
+bool LinkedList<T>::retrieve(int index, T& item) const {
 	if (index < 0 || index >= size) {
 		return false;
 	}
@@ -36,13 +43,14 @@ bool LinkedList::retrieve(int index, OrderItem& orderItem) const {
 		current = current->next;
 	}
 
-	orderItem = current->item;
+	item = current->item;
 	return true;
 }
 
-bool LinkedList::insert(OrderItem orderItem) {
+template <class T>
+bool LinkedList<T>::insert(T item) {
 	Node* newNode = new Node;
-	newNode->item = orderItem;
+	newNode->item = item;
 	newNode->next = nullptr;
 
 	if (head == nullptr) {
@@ -60,7 +68,8 @@ bool LinkedList::insert(OrderItem orderItem) {
 	return true;
 }
 
-bool LinkedList::remove(int index) {
+template <class T>
+bool LinkedList<T>::remove(int index) {
 	if (index < 0 || index >= size) {
 		return false;
 	}
@@ -83,3 +92,7 @@ bool LinkedList::remove(int index) {
 	size--;
 	return true;
 }
+
+// Explicit instantiation for supported types
+template class LinkedList<Restaurant>;
+template class LinkedList<OrderItem>;

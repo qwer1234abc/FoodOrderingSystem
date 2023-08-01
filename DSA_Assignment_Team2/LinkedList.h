@@ -1,16 +1,16 @@
 #pragma once
 #include <iostream>
 #include <string>
-#include "OrderItem.h"
 
 using namespace std;
 
+template <class T>
 class LinkedList
 {
 private:
 	struct Node
 	{
-		OrderItem item;
+		T item;
 		Node* next;
 	};
 
@@ -23,8 +23,7 @@ public:
 
 	bool isEmpty() const;
 	int getLength() const;
-	bool retrieve(int index, OrderItem& orderItem) const;
-	bool insert(OrderItem orderItem);
+	bool retrieve(int index, T& item) const;
+	bool insert(T item);
 	bool remove(int index);
 };
-

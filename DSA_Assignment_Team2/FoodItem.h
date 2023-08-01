@@ -1,6 +1,8 @@
 #pragma once
 #include <iostream>
 #include <string>
+#include "LinkedList.h"
+#include "Restaurant.h"
 
 using namespace std;
 
@@ -22,6 +24,6 @@ public:
 	string getCategory() const;
 	double getPrice() const;
 	int getRestaurantID() const;
-
+	string getRestaurantNameByID(int id, const LinkedList<Restaurant>& restaurants);
 };
 

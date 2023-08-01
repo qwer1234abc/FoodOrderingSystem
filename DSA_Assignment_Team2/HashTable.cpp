@@ -2,7 +2,8 @@
 #include <iostream>
 #include <iomanip>
 
-HashTable::HashTable()
+template<typename KeyType, typename ItemType>
+HashTable<KeyType, ItemType>::HashTable()
 {
 	size = 0;
 	for (int i = 0; i < MAX_SIZE; i++)
@@ -11,30 +12,33 @@ HashTable::HashTable()
 	}
 }
 
-HashTable::~HashTable()
+template<typename KeyType, typename ItemType>
+HashTable<KeyType, ItemType>::~HashTable()
 {
 	for (int i = 0; i < MAX_SIZE; i++)
 	{
-		Node* current = items[i];
+		Node<KeyType, ItemType>* current = items[i];
 		while (current != nullptr)
 		{
-			Node* temp = current;
+			Node<KeyType, ItemType>* temp = current;
 			current = current->next;
 			delete temp;
 		}
 	}
 }
 
-int HashTable::hash(KeyType key)
+template<typename KeyType, typename ItemType>
+int HashTable<KeyType, ItemType>::hash(KeyType key)
 {
 	return key % MAX_SIZE; // Simple hash function using the FoodItem's ID
 }
 
 // Other member function implementations remain the same, but now work with FoodItem objects
-bool HashTable::add(KeyType newKey, ItemType newItem)	
+template<typename KeyType, typename ItemType>
+bool HashTable<KeyType, ItemType>::add(KeyType newKey, ItemType newItem)
 {
 	int index = hash(newKey);
-	Node* newNode = new Node;
+	Node<KeyType, ItemType>* newNode = new Node<KeyType, ItemType>;
 	newNode->key = newKey;
 	newNode->item = newItem;
 	newNode->next = nullptr;
@@ -45,7 +49,7 @@ bool HashTable::add(KeyType newKey, ItemType newItem)
 	}
 	else
 	{
-		Node* current = items[index];
+		Node<KeyType, ItemType>* current = items[index];
 		while (current->next != nullptr)
 		{
 			if (current->key == newKey)
@@ -67,7 +71,8 @@ bool HashTable::add(KeyType newKey, ItemType newItem)
 	return true;
 }
 
-void HashTable::remove(KeyType key)
+template<typename KeyType, typename ItemType>
+void HashTable<KeyType, ItemType>::remove(KeyType key)
 {
 	int index = hash(key);
 
@@ -76,8 +81,8 @@ void HashTable::remove(KeyType key)
 		return;
 	}
 
-	Node* current = items[index];
-	Node* previous = nullptr;
+	Node<KeyType, ItemType>* current = items[index];
+	Node<KeyType, ItemType>* previous = nullptr;
 
 	while (current != nullptr)
 	{
@@ -100,7 +105,8 @@ void HashTable::remove(KeyType key)
 	}
 }
 
-ItemType HashTable::get(KeyType key)
+template<typename KeyType, typename ItemType>
+ItemType HashTable<KeyType, ItemType>::get(KeyType key)
 {
 	int index = hash(key);
 
@@ -109,7 +115,7 @@ ItemType HashTable::get(KeyType key)
 		return ItemType();
 	}
 
-	Node* current = items[index];
+	Node<KeyType, ItemType>* current = items[index];
 	while (current != nullptr)
 	{
 		if (current->key == key)
@@ -122,20 +128,23 @@ ItemType HashTable::get(KeyType key)
 	return ItemType();
 }
 
-bool HashTable::isEmpty()
+template<typename KeyType, typename ItemType>
+bool HashTable<KeyType, ItemType>::isEmpty()
 {
 	return size == 0;
 }
 
-int HashTable::getLength()
+template<typename KeyType, typename ItemType>
+int HashTable<KeyType, ItemType>::getLength()
 {
 	return size;
 }
 
-void HashTable::print()
+template<typename KeyType, typename ItemType>
+void HashTable<KeyType, ItemType>::print(const LinkedList<Restaurant>& restaurants)
 {
 	// Calculate the padding to center the header
-	int totalWidth = 60;
+	int totalWidth = 86; // Increased total width to accommodate the restaurant name
 	string header = "Food Items Menu";
 	int padding = (totalWidth - header.length()) / 2;
 
@@ -146,12 +155,16 @@ void HashTable::print()
 
 	for (int i = 0; i < MAX_SIZE; i++)
 	{
-		Node* current = items[i];
+		Node<KeyType, ItemType>* current = items[i];
 		while (current != nullptr)
 		{
-			// Printing the FoodItem details
+			// Get the restaurant name for the current food item
+			string restaurantName = current->item.getRestaurantNameByID(current->item.getRestaurantID(), restaurants);
+
+			// Print the FoodItem details along with the restaurant name
 			cout << setw(4) << left << current->key << " | "
 				<< setw(23) << left << current->item.getName() << " | "
+				<< setw(23) << left << restaurantName << " | " // Restaurant name
 				<< setw(18) << left << current->item.getCategory() << " | "
 				<< "$" << fixed << setprecision(2) << current->item.getPrice() << endl;
 			current = current->next;
@@ -161,3 +174,5 @@ void HashTable::print()
 	cout << setfill('=') << setw(totalWidth) << "=" << setfill(' ') << endl;
 	cout << "Enter your food item number: ";
 }
+
+template class HashTable<int, FoodItem>;

@@ -229,10 +229,10 @@ void Customer::displayCustomerMenu() {
 	cout << "Enter your choice: ";
 }
 
-HashTable Customer::browseFoodItems(const string& foodItemsFile)
+HashTable<int, FoodItem> Customer::browseFoodItems(const string& foodItemsFile, const LinkedList<Restaurant>& restaurants)
 {
 	// Step 1: Read food items from the CSV file and store them in the hashtable
-	HashTable foodItemsTable;
+	HashTable<int, FoodItem> foodItemsTable;
 	ifstream foodOptionsfile(foodItemsFile);
 	if (!foodOptionsfile.is_open())
 	{
@@ -270,14 +270,14 @@ HashTable Customer::browseFoodItems(const string& foodItemsFile)
 
 	foodOptionsfile.close();
 
-	foodItemsTable.print();
+	foodItemsTable.print(restaurants);
 
 	return foodItemsTable; // Return the total number of food items read
 }
 
-LinkedList Customer::addOrderItem(FoodItem fooditem, int quantity) {
+LinkedList<OrderItem> Customer::addOrderItem(FoodItem fooditem, int quantity) {
 	OrderItem order(fooditem, quantity);
-	LinkedList orderItemsList;
+	LinkedList<OrderItem> orderItemsList;
 	orderItemsList.insert(order); // Insert the OrderItem into the LinkedList
 	return orderItemsList;        // Return the modified LinkedList
 }

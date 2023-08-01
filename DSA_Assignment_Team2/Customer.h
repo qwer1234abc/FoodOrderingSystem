@@ -3,8 +3,8 @@
 #include <string>
 #include "HashTable.h"
 #include "FoodItem.h"
-#include "OrderItem.h"
 #include "LinkedList.h"
+#include "OrderItem.h"
 
 using namespace std;
 
@@ -34,9 +34,10 @@ public:
     bool customerLogin(const string& filename);
 
     void displayCustomerMenu();  // To show the customer menu after logging in
-    HashTable browseFoodItems(const string& foodItemsFile); // To browse all food items
-    LinkedList addOrderItem(FoodItem foodItem, int quantity);  // To add an item to the order
-    void createOrder(const string& foodItemsFile, const string& ordersFile);  // To create a new order
+    HashTable<int, FoodItem> browseFoodItems(const string& foodItemsFile, const LinkedList<Restaurant>& restaurants); // To browse all food items
+    LinkedList<OrderItem> addOrderItem(FoodItem foodItem, int quantity);  // To add an item to the order
+    void displayOrderItems(LinkedList<OrderItem> foodItemsList);
+;    void createOrder(const string& foodItemsFile, const string& ordersFile);  // To create a new order
     void cancelOrder(const string& ordersFile);  // To cancel an existing order
     void redeemPoints();
 };

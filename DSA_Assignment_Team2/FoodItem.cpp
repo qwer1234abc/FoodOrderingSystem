@@ -1,6 +1,8 @@
 #include "FoodItem.h"
 #include <iostream>
 #include <string>
+#include "Restaurant.h"
+#include "LinkedList.h"
 
 using namespace std;
 
@@ -40,3 +42,14 @@ int FoodItem::getRestaurantID() const
 	return restaurantID;	
 }
 
+string FoodItem::getRestaurantNameByID(int restaurantID, const LinkedList<Restaurant>& restaurants) {
+	Restaurant restaurant;
+	for (int i = 0; i < restaurants.getLength(); i++) {
+		if (restaurants.retrieve(i, restaurant)) {
+			if (restaurant.getRestaurantID() == restaurantID) {
+				return restaurant.getName();
+			}
+		}
+	}
+	return "N.A";
+}

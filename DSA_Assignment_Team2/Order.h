@@ -11,7 +11,7 @@ class Order
 private:
 	int orderID;
 	int customerID;
-	LinkedList orderItemList;
+	LinkedList<OrderItem> orderItemList;
 	int restaurantID;
 	double totalPrice;
 	string status;
