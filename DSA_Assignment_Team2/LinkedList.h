@@ -27,4 +27,5 @@ public:
 	T retrieve(int index) const;
 	bool insert(T item);
 	bool remove(int index);
+	void clear();
 };

@@ -107,6 +107,17 @@ bool LinkedList<T>::remove(int index) {
 	return true;
 }
 
+template <class T>
+void LinkedList<T>::clear() {
+	Node* temp = head;
+	while (head != nullptr) {
+		head = head->next;
+		delete temp;
+		temp = head;
+	}
+	size = 0;
+}
+
 // Explicit instantiation for supported types
 template class LinkedList<Restaurant>;
 template class LinkedList<OrderItem>;

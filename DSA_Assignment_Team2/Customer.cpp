@@ -40,6 +40,10 @@ LinkedList<OrderItem> Customer::getOrderItemsList() const {
 	return orderItemsList;
 }
 
+void Customer::setOrderItemsList(const LinkedList<OrderItem>& o) {
+	orderItemsList = o;
+}
+
 // Function to register a new customer
 void Customer::registerCustomer(const string& filename) {
 	string name, loginID, password;
@@ -248,6 +252,7 @@ HashTable<int, FoodItem> Customer::browseFoodItems(const string& foodItemsFile, 
 	getline(foodOptionsfile, header);
 
 	string line;
+	int key = 1;
 	while (getline(foodOptionsfile, line)) // read the lines in the file
 	{
 		istringstream iss(line); // extract comma-separated values from each line
@@ -275,7 +280,8 @@ HashTable<int, FoodItem> Customer::browseFoodItems(const string& foodItemsFile, 
 		FoodItem foodItem(foodItemID, name, category, price, restaurantIDFromFile);
 
 		// Add the FoodItem object to the hashtable, with the id as the key and the food item as the value
-		foodItemsTable.add(foodItem.getFoodItemID(), foodItem);
+		foodItemsTable.add(key, foodItem);
+		key++;
 	}
 
 	foodOptionsfile.close();
@@ -294,7 +300,7 @@ HashTable<int, FoodItem> Customer::browseFoodItems(const string& foodItemsFile, 
 	return foodItemsTable; // Return the total number of food items read
 }
 
-void Customer::addOrderItem(FoodItem fooditem, int quantity) {
+void Customer::addOrderItem(FoodItem& fooditem, int quantity) {
 	OrderItem order(fooditem, quantity);
 	orderItemsList.insert(order);
 }
@@ -308,21 +314,27 @@ int Customer::orderItemsMenu(const LinkedList<OrderItem>& orderItemsList, const 
 
 	// Print header
 	cout << setw(padding + header.length()) << header << endl;
-
-	cout << setw(10) << left << "Quantity" << setw(25) << left << "Food Item" << setw(15) << left << "Price" << endl;
 	cout << setfill('=') << setw(totalWidth) << "=" << setfill(' ') << endl;
+	cout << setw(10) << left << "Quantity" << setw(25) << left << "Food Item" << setw(15) << left << "Price" << endl;
+	cout << setfill('-') << setw(totalWidth) << "-" << setfill(' ') << endl;
+
+	long double totalPrice = 0.0; // Initialize the total price to zero
 
 	for (int i = 0; i < orderItemsList.getLength(); i++) // loop through all the items in the orderitemslist list
 	{
 		OrderItem orderItem = orderItemsList.retrieve(i);
 		FoodItem foodItem = orderItem.getFoodItem(); // retrieve the item
-		double totalPrice = foodItem.getPrice() * orderItem.getQuantity(); // calculate price with the price * quantity of the item
+		double itemPrice = foodItem.getPrice() * orderItem.getQuantity(); // calculate price with the price * quantity of the item
 
 		cout << setw(10) << left << orderItem.getQuantity()
 			<< setw(25) << left << foodItem.getName()
-			<< "$" << fixed << setprecision(2) << totalPrice << endl;
+			<< "$" << fixed << setprecision(2) << itemPrice << endl;
+
+		totalPrice += itemPrice; // Add the item's price to the total price
 	}
 
+	cout << setfill('-') << setw(totalWidth) << "-" << setfill(' ') << endl;
+	cout << "Total Price: $" << fixed << setprecision(2) << totalPrice << endl; // Print the total price
 	cout << setfill('=') << setw(totalWidth) << "=" << setfill(' ') << endl;
 
 	// Get the restaurant name for the first order item
@@ -335,6 +347,7 @@ int Customer::orderItemsMenu(const LinkedList<OrderItem>& orderItemsList, const 
 	cout << "4. Cancel Order (Exit)" << endl;
 	cout << setfill('=') << setw(totalWidth) << "=" << setfill(' ') << endl;
 	cout << "Enter your choice: ";
+
 
 	return firstOrderItem.getFoodItem().getRestaurantID(); // return restaurant id user entered food from
 }
@@ -383,11 +396,9 @@ void Customer::browseFoodItemsMenu(Customer& customer, Restaurant& restaurant) {
 	HashTable<int, FoodItem> foodItemsHashTable = customer.browseFoodItems("FoodItems.csv", restaurant.getAllRestaurants("Restaurants.csv"), restaurant.getRestaurantID());
 	int foodItemLength = foodItemsHashTable.getLength();
 	int foodItemChoice;
-
 	do {
 		cin >> foodItemChoice;
 
-		// Change this part ***
 		if (foodItemChoice >= 1 && foodItemChoice <= foodItemLength) {
 			orderFoodItems(customer, restaurant, foodItemChoice, foodItemsHashTable);
 			break;
@@ -419,7 +430,8 @@ void Customer::orderFoodItems(Customer& customer, Restaurant& restaurant, int fo
 			// Ask the customer if they want to add more food items to their order
 			string addMoreFoodItemsStr;
 			do {
-				int restaurantID = customer.orderItemsMenu(customer.getOrderItemsList(), restaurant.getAllRestaurants("Restaurants.csv"));
+				LinkedList<OrderItem> orderItemsListCopy = customer.getOrderItemsList();
+				int restaurantID = customer.orderItemsMenu(orderItemsListCopy, restaurant.getAllRestaurants("Restaurants.csv"));
 				restaurant.setRestaurantID(restaurantID);
 				cin >> addMoreFoodItemsStr;
 
@@ -433,6 +445,7 @@ void Customer::orderFoodItems(Customer& customer, Restaurant& restaurant, int fo
 					// Implement other options as needed
 				}
 				else if (addMoreFoodItemsStr == "4") {
+					orderItemsList.clear();
 					cout << "Ordered items cancelled." << endl;
 					waitForEnterKey();
 					clearScreen();

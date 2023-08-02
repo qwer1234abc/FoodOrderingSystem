@@ -54,6 +54,7 @@ bool HashTable<KeyType, ItemType>::add(KeyType newKey, ItemType newItem)
 		{
 			if (current->key == newKey)
 			{
+				current->item = newItem;
 				delete newNode;
 				return false;
 			}
@@ -61,6 +62,7 @@ bool HashTable<KeyType, ItemType>::add(KeyType newKey, ItemType newItem)
 		}
 		if (current->key == newKey)
 		{
+			current->item = newItem;
 			delete newNode;
 			return false;
 		}
