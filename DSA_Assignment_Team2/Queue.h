@@ -1,54 +1,47 @@
-// Queue.h - Specification of Queue ADT (Pointer-based)
 #pragma once
-#include<string>
-#include<iostream>
-#include "Order.h"
-using namespace std;
+#include <string>
+#include <iostream>
 
-typedef Order ItemType;
-
+template<typename ItemType>
 class Queue
 {
 private:
-	struct Node
-	{
-		ItemType item;	// item
-		Node* next;	// pointer pointing to next item
-	};
+    struct Node
+    {
+        ItemType item;    // item
+        Node* next;    // pointer pointing to next item
+    };
 
-	Node* frontNode;	// point to the first item
-	Node* backNode;	// point to the first item
-
+    Node* frontNode;    // point to the first item
+    Node* backNode;    // point to the first item
 
 public:
-	// constructor
-	Queue();
+    // constructor
+    Queue();
 
-	~Queue();
+    ~Queue();
 
-	// enqueue (add) item at the back of queue
-	bool enqueue(ItemType item);
+    // enqueue (add) item at the back of queue
+    bool enqueue(ItemType item);
 
-	// dequeue (remove) item from front of queue
-	bool dequeue();
+    // dequeue (remove) item from front of queue
+    bool dequeue();
 
-	// dequeue (remove) and retrieve item from front of queue
-	bool dequeue(ItemType& item);
+    // dequeue (remove) and retrieve item from front of queue
+    bool dequeue(ItemType& item);
 
-	// retrieve (get) item from front of queue
-	void getFront(ItemType& item);
+    // retrieve (get) item from front of queue
+    void getFront(ItemType& item);
 
-	// check if the queue is empty
-	bool isEmpty();
+    // check if the queue is empty
+    bool isEmpty();
 
-	// display items in queue from front to back
-	void displayItems();
+    // display items in queue from front to back
+    void displayItems();
 
-	//prints out the last element of the queue while leaving the queue unchanged
-	bool getLastElement(Queue& q, ItemType& item);
+    // prints out the last element of the queue while leaving the queue unchanged
+    bool getLastElement(Queue<ItemType>& q, ItemType& item);
 
-	//return number of elements in the queue
-	int getNoOfElements();
+    // return number of elements in the queue
+    int getNoOfElements();
 };
-
-

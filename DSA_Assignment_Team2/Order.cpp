@@ -3,7 +3,8 @@
 #include <string>
 #include <fstream>
 #include <iomanip>
-#include <sstream> 
+#include <sstream>
+#include "Queue.h"
 
 using namespace std;
 
@@ -49,6 +50,7 @@ string Order::getStatus() const
 	return status;
 }
 
+/*
 Queue Order::GetIncomingOrders(const string& orderFileName) {
 	Queue queue;
 
@@ -82,6 +84,7 @@ Queue Order::GetIncomingOrders(const string& orderFileName) {
 	}
 	return queue;
 }
+*/
 
 
 
