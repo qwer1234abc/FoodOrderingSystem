@@ -27,7 +27,7 @@ public:
 	int getRestaurantID() const;
 	double getTotalPrice() const;
 	string getStatus() const;
-	Queue GetIncomingOrders(const string& orderFileName) const;
+	Queue GetIncomingOrders(const string& orderFileName);
 	bool UpdateStatus(int orderID);
 };
 
