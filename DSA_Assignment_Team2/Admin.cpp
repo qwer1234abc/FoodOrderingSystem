@@ -37,7 +37,7 @@ int Admin::getRestaurantID() const {
 }
 
 // Function to login as an admin
-void Admin::adminLogin(const string& filename) {
+bool Admin::adminLogin(const string& filename) {
 	string loginID, password;
 	cout << "Enter your login credentials:\n";
 	cout << "Login ID: ";
@@ -77,21 +77,66 @@ void Admin::adminLogin(const string& filename) {
 			}
 			if (lowercaseLoginID == lowercaseLoginIDFromFile && password == passwordFromFile) {
 				adminID = stoi(adminIDFromFile); // convert adminID to from string to integer
-				name = nameFromFile; 
+				name = nameFromFile;
 				restaurantID = stoi(restaurantIDFromFile); // convert restaurantID to from string to integer
 				file.close();
 				cout << "Login successful!\n";
-				return;
+				return true;
 			}
 			else
 			{
 				cout << "Incorrect Login ID or password. Please try again.\n";
-
+				return false;
 			}
 		}
 		file.close();
 	}
 	else {
 		cout << "Error: Unable to open the file.\n";
+		return false;
 	}
 }
+
+void Admin::displayAdminMenu() {
+	cout << "Welcome " << name << ", " << "what do you want to do?";
+	cout << "1. View Incoming Orders" << endl;
+	cout << "2. Update Status of Orders" << endl;
+	cout << "3. View Customer Information" << endl;
+	cout << "4. Log out" << endl;
+	cout << "=====================================" << endl;
+	cout << "Enter your choice: ";
+}
+
+void Admin::AdminLoginMenu(Admin& admin) {
+	cout << "\n-------------------------" << endl;
+	cout << "       Admin Login      " << endl;
+	cout << "-------------------------" << endl;
+	if (admin.adminLogin("Admins.csv")) {
+		//waitForEnterKey();
+		//clearScreen();
+		string adminOptionStr;
+		do {
+			admin.displayAdminMenu();
+			cin >> adminOptionStr;
+
+			if (adminOptionStr == "1") {
+				Order order;
+				Queue queue = order.GetIncomingOrders("Orders.csv");
+				queue.displayItems();
+			}
+			else if (adminOptionStr == "2") {
+				// Implement other options as needed
+			}
+			else if (adminOptionStr == "3") {
+				// Implement other options as needed
+			}
+			else if (adminOptionStr == "4") {
+				cout << "\nWe are logging you out now. Thank you!" << endl;
+			}
+			else {
+				cout << "\nInvalid option. Please try again." << endl;
+			}
+		} while (adminOptionStr != "4");
+	}
+}
+

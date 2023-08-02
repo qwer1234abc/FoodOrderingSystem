@@ -1,6 +1,8 @@
 #pragma once
 #include <iostream>
 #include <string>
+#include "Order.h"
+#include "Queue.h"
 using namespace std;
 
 class Admin
@@ -21,6 +23,9 @@ public:
 	string getPassword() const;
 	int getRestaurantID() const;
 
-	void adminLogin(const string& filename);
+	bool adminLogin(const string& filename);
+	void displayAdminMenu();
+	void AdminLoginMenu(Admin& admin);
+
 };
 

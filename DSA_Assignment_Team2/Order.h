@@ -3,6 +3,7 @@
 #include <string>
 #include "OrderItem.h"
 #include "LinkedList.h"
+#include "Queue.h"
 
 using namespace std;
 
@@ -26,5 +27,7 @@ public:
 	int getRestaurantID() const;
 	double getTotalPrice() const;
 	string getStatus() const;
+	Queue GetIncomingOrders(const string& orderFileName) const;
+	bool UpdateStatus(int orderID);
 };
 

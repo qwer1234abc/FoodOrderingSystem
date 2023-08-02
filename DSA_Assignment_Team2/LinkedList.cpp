@@ -1,112 +1,92 @@
-#include "LinkedList.h"
+#include "Order.h"
 #include <iostream>
 #include <string>
-#include "Restaurant.h"
-#include "OrderItem.h"
+#include <fstream>
+#include <iomanip>
+#include <sstream> 
 
 using namespace std;
 
-template <class T>
-LinkedList<T>::LinkedList() {
-	head = nullptr;
-	size = 0;
+Order::Order() {}
+
+Order::Order(int id, int c, LinkedList<OrderItem>& o, int r, double p, const string& s)
+{
+	orderID = id;
+	customerID = c;
+	orderItemList = o;
+	restaurantID = r;
+	totalPrice = p;
+	status = s;
 }
 
-template <class T>
-LinkedList<T>::~LinkedList() {
-	Node* temp = head;
-	while (head != nullptr) {
-		head = head->next;
-		delete temp;
-		temp = head;
-	}
+int Order::getOrderID() const
+{
+	return orderID;
 }
 
-template <class T>
-bool LinkedList<T>::isEmpty() const {
-	return size == 0;
+int Order::getCustomerID() const
+{
+	return customerID;
 }
 
-template <class T>
-int LinkedList<T>::getLength() const {
-	return size;
+LinkedList<OrderItem> Order::getOrderItemList() const
+{
+	return orderItemList;
 }
 
-template <class T>
-bool LinkedList<T>::retrieve(int index, T& item) const {
-	if (index < 0 || index >= size) {
-		return false;
-	}
-
-	Node* current = head;
-	for (int i = 0; i < index; i++) {
-		current = current->next;
-	}
-
-	item = current->item;
-	return true;
+int Order::getRestaurantID() const
+{
+	return restaurantID;
 }
 
-template <class T>
-T LinkedList<T>::retrieve(int index) const {
-	if (index < 0 || index >= size) {
-		throw out_of_range("Index out of range");
-	}
-
-	Node* current = head;
-	for (int i = 0; i < index; i++) {
-		current = current->next;
-	}
-
-	return current->item;
+double Order::getTotalPrice() const
+{
+	return totalPrice;
 }
 
-template <class T>
-bool LinkedList<T>::insert(T item) {
-	Node* newNode = new Node;
-	newNode->item = item;
-	newNode->next = nullptr;
+string Order::getStatus() const
+{
+	return status;
+}
 
-	if (head == nullptr) {
-		head = newNode;
-	}
-	else {
-		Node* current = head;
-		while (current->next != nullptr) {
-			current = current->next;
+/* GOT ERROR AND NOT DONE YET
+Queue Order::GetIncomingOrders(const string& orderFileName) {
+	Queue queue;
+
+	ifstream file(orderFileName);
+	if (file.is_open()) {
+		string header;
+		getline(file, header);
+
+		string line;
+		while (getline(file, line)) {
+			istringstream iss(line);
+			string orderIDStr, customerIDStr, foodItemIDStr, restaurantIDStr, orderStatusStr, totalPriceStr;
+
+			getline(iss, orderIDStr, ',');
+			getline(iss, customerIDStr, ',');
+			getline(iss, foodItemIDStr, ',');
+			getline(iss, restaurantIDStr, ',');
+			getline(iss, orderStatusStr, ',');
+			getline(iss, totalPriceStr, ',');
+
+			if (orderStatusStr != "Prepared") {
+				orderID = stoi(orderIDStr);
+				customerID = stoi(customerIDStr);
+				// how to use the linkedlist?
+				restaurantID = stoi(restaurantIDStr);
+				status = orderStatusStr;
+				totalPrice = stod(totalPriceStr);
+			}
+
 		}
-		current->next = newNode;
 	}
-
-	size++;
-	return true;
+	return queue;
 }
+*/
 
-template <class T>
-bool LinkedList<T>::remove(int index) {
-	if (index < 0 || index >= size) {
-		return false;
-	}
 
-	Node* current = head;
-	Node* previous = nullptr;
-	for (int i = 0; i < index; i++) {
-		previous = current;
-		current = current->next;
-	}
 
-	if (previous == nullptr) {
-		head = current->next;
-	}
-	else {
-		previous->next = current->next;
-	}
 
-	delete current;
-	size--;
-	return true;
-}
 
-// Explicit instantiation for supported types
-template class LinkedList<Restaurant>;
-template class LinkedList<OrderItem>;
+
