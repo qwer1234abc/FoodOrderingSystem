@@ -1,10 +1,9 @@
 #pragma once
 #include <iostream>
 #include <string>
-#include "HashTable.h"
 #include "FoodItem.h"
-#include "LinkedList.h"
-#include "OrderItem.h"
+#include "Restaurant.h"
+#include "Order.h"
 
 using namespace std;
 
@@ -29,25 +28,20 @@ public:
 	int getLoyaltyPoints() const;
 	LinkedList<OrderItem> getOrderItemsList() const;
 
-	// Setters
-	void setOrderItemsList(const LinkedList<OrderItem>& orderItemsList);
-
 	// Member functions
-	void registerCustomer(const string& filename);
-	bool customerExists(const string& filename, const string& loginID, const string& password);
-	bool uniqueLoginID(const string& filename, const string& loginID);
-	bool customerLogin(const string& filename);
+	bool customerLogin(HashTable<string, Customer>& customersTable, const string& filename);
+	void registerCustomer(HashTable<string, Customer>& customersTable, const string& filename);
 
-
-	void customerLoginMenu(Customer& customer);
-	void customerRegisterMenu(Customer& customer);
+	HashTable<string, Customer> getAllCustomers(const string& filename);
 	void displayCustomerMenu();  // To show the customer menu after logging in
 	HashTable<int, FoodItem> browseFoodItems(const string& foodItemsFile, const LinkedList<Restaurant>& restaurants, int restaurantID); // To browse all food items
-	void browseFoodItemsMenu(Customer& customer, Restaurant& restaurant);
 	void addOrderItem(FoodItem& foodItem, int quantity);  // To add an item to the order
-	void orderFoodItems(Customer& customer, Restaurant& restaurant, int foodItemChoice, HashTable<int, FoodItem>& foodItemsTable);
 	int orderItemsMenu(const LinkedList<OrderItem>& orderItemsList, const LinkedList<Restaurant>& restaurants);
-	void createOrder(const string& foodItemsFile, const string& ordersFile);  // To create a new order
+	void customerLoginMenu(Customer& customer, HashTable<string, Customer>& customersTable);
+	void customerRegisterMenu(Customer& customer, HashTable<string, Customer>& customersTable);
+	void browseFoodItemsMenu(Customer& customer, Restaurant& restaurant);
+	bool orderFoodItems(Customer& customer, Restaurant& restaurant, int foodItemChoice, HashTable<int, FoodItem>& foodItemsTable);
+	void createOrder(const string& ordersFile);  // To create a new order
 	void cancelOrder(const string& ordersFile);  // To cancel an existing order
 	void redeemPoints();
 

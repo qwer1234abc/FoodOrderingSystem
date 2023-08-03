@@ -1,4 +1,4 @@
-#include "HashTable.h"
+#include "Customer.h"
 #include <iostream>
 #include <iomanip>
 
@@ -28,9 +28,41 @@ HashTable<KeyType, ItemType>::~HashTable()
 }
 
 template<typename KeyType, typename ItemType>
-int HashTable<KeyType, ItemType>::hash(KeyType key)
+int HashTable<KeyType, ItemType>::hash(int key)
 {
 	return key % MAX_SIZE; // Simple hash function using the FoodItem's ID
+}
+
+template<typename KeyType, typename ItemType>
+int HashTable<KeyType, ItemType>::hash(const string& key)
+{
+	// Implement a better hash function for alphanumeric keys
+	const int PRIME = 31; // A prime number to use in the hash calculation
+	long long int hashValue = 0;
+
+	for (size_t i = 0; i < key.length(); i++)
+	{
+		int charVal;
+		if (isalpha(key[i]))
+		{
+			charVal = (isupper(key[i])) ? (int)key[i] - (int)'A' + 10 : (int)key[i] - (int)'a' + 36;
+		}
+		else if (isdigit(key[i]))
+		{
+			charVal = (int)key[i] - (int)'0';
+		}
+		else
+		{
+			charVal = -1; // For other characters, you can adjust this to your preference.
+		}
+
+		if (charVal != -1)
+		{
+			hashValue = hashValue * PRIME + charVal;
+		}
+	}
+
+	return hashValue % MAX_SIZE;
 }
 
 // Other member function implementations remain the same, but now work with FoodItem objects
@@ -142,8 +174,7 @@ int HashTable<KeyType, ItemType>::getLength()
 	return size;
 }
 
-template<typename KeyType, typename ItemType>
-void HashTable<KeyType, ItemType>::print(const LinkedList<Restaurant>& restaurants)
+void HashTable<int, FoodItem>::print(const LinkedList<Restaurant>& restaurants)
 {
 	// Calculate the padding to center the header
 	int totalWidth = 86; // Increased total width to accommodate the restaurant name
@@ -157,7 +188,7 @@ void HashTable<KeyType, ItemType>::print(const LinkedList<Restaurant>& restauran
 
 	for (int i = 0; i < MAX_SIZE; i++)
 	{
-		Node<KeyType, ItemType>* current = items[i];
+		Node<int, FoodItem>* current = items[i];
 		while (current != nullptr)
 		{
 			// Get the restaurant name for the current food item
@@ -176,8 +207,7 @@ void HashTable<KeyType, ItemType>::print(const LinkedList<Restaurant>& restauran
 	cout << setfill('=') << setw(totalWidth) << "=" << setfill(' ') << endl;
 	cout << "Enter your food item number: ";
 }
-template <typename KeyType, typename ItemType>
-void HashTable<KeyType, ItemType>::print(const LinkedList<Restaurant>& restaurants, int restaurantID)
+void HashTable<int, FoodItem>::print(const LinkedList<Restaurant>& restaurants, int restaurantID)
 {
 	// Calculate the padding to center the header
 	int totalWidth = 86; // Increased total width to accommodate the restaurant name
@@ -203,7 +233,7 @@ void HashTable<KeyType, ItemType>::print(const LinkedList<Restaurant>& restauran
 
 	for (int i = 0; i < MAX_SIZE; i++)
 	{
-		Node<KeyType, ItemType>* current = items[i];
+		Node<int, FoodItem>* current = items[i];
 		while (current != nullptr)
 		{
 			// Print the FoodItem details if it belongs to the specified restaurant
@@ -222,3 +252,4 @@ void HashTable<KeyType, ItemType>::print(const LinkedList<Restaurant>& restauran
 	cout << "Enter your food item number: ";
 }
 template class HashTable<int, FoodItem>;
+template class HashTable<string, Customer>;

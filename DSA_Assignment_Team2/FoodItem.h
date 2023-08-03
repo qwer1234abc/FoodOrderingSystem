@@ -2,7 +2,7 @@
 #include <iostream>
 #include <string>
 #include "LinkedList.h"
-#include "Restaurant.h"
+#include "HashTable.h"
 
 using namespace std;
 
@@ -25,5 +25,6 @@ public:
 	double getPrice() const;
 	int getRestaurantID() const;
 	string getRestaurantNameByID(int id, const LinkedList<Restaurant>& restaurants);
+	HashTable<int, FoodItem> getAllFoodItems(const string& filename);
 };
 

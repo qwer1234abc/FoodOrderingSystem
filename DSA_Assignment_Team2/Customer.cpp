@@ -40,12 +40,47 @@ LinkedList<OrderItem> Customer::getOrderItemsList() const {
 	return orderItemsList;
 }
 
-void Customer::setOrderItemsList(const LinkedList<OrderItem>& o) {
-	orderItemsList = o;
+HashTable<string, Customer> Customer::getAllCustomers(const string& filename)
+{
+	HashTable <string, Customer> customersTable;
+	ifstream file(filename); // create input file stream object named file and opens the file
+
+	if (!file.is_open())
+	{
+		cout << "Error: Unable to open the file " << filename << endl;
+		return customersTable;
+	}
+
+	string header;
+	getline(file, header); // read the first line of the file and store it in the variable "header"
+
+	string line;
+	while (getline(file, line))
+	{
+		istringstream iss(line); // extract comma-separated values from each line
+		string customerIDFromFile, nameFromFile, loginIDFromFile, passwordFromFile, loyaltyPointsFromFile;
+		getline(iss, customerIDFromFile, ',');
+		getline(iss, nameFromFile, ',');
+		getline(iss, loginIDFromFile, ',');
+		getline(iss, passwordFromFile, ',');
+		getline(iss, loyaltyPointsFromFile, ',');
+
+		string lowercaseLoginIDFromFile = loginIDFromFile;
+
+		for (char& c : lowercaseLoginIDFromFile) { // convert all the characters in the file to lowercase
+			c = tolower(c);
+		}
+
+		Customer customer(stoi(customerIDFromFile), nameFromFile, lowercaseLoginIDFromFile, passwordFromFile, stoi(loyaltyPointsFromFile));
+		customersTable.add(lowercaseLoginIDFromFile, customer);
+	}
+
+	file.close();
+
+	return customersTable;
 }
 
-// Function to register a new customer
-void Customer::registerCustomer(const string& filename) {
+void Customer::registerCustomer(HashTable<string, Customer>& customersTable, const string& filename) {
 	string name, loginID, password;
 	int loyaltyPoints = 0;
 
@@ -60,7 +95,13 @@ void Customer::registerCustomer(const string& filename) {
 	cin >> ws;
 	getline(cin, password);
 
-	if (!uniqueLoginID(filename, loginID)) {
+	string lowercaseLoginID = loginID;
+
+	for (char& c : lowercaseLoginID) { // convert all the characters in the input to lowercase
+		c = tolower(c);
+	}
+
+	if (customersTable.get(lowercaseLoginID).getLoginID() != "") {
 		cout << "Error: Customer with this Login ID already exists.\n";
 		return;
 	}
@@ -95,7 +136,7 @@ void Customer::registerCustomer(const string& filename) {
 	customerID++;
 
 	// Create a new Customer object
-	Customer newCustomer(customerID, name, loginID, password, loyaltyPoints);
+	Customer newCustomer(customerID, name, lowercaseLoginID, password, loyaltyPoints);
 
 	// Save the customer details to the CSV file
 	ofstream fileToWrite(filename, ios::app); // creates output file stream object and opens file in APPEND mode
@@ -105,102 +146,14 @@ void Customer::registerCustomer(const string& filename) {
 			<< newCustomer.getLoyaltyPoints() << "\n";
 		fileToWrite.close();
 		cout << "Registration successful!\n";
+		customersTable.add(lowercaseLoginID, newCustomer);
 	}
 	else {
 		cout << "Error: Unable to open the file.\n";
 	}
 }
 
-// Function to check if the customer with the given email and password exists
-bool Customer::customerExists(const string& filename, const string& loginID, const string& password) {
-	ifstream file(filename); // create  input file stream object called "file" and opens the file
-	if (file.is_open()) {
-		// Skip the header line
-		string header;
-		getline(file, header);
-
-		string line;
-		while (getline(file, line)) { // read each line from the file
-			istringstream iss(line); // extract comma-separated values from each line
-			string customerIDFromFile, nameFromFile, loginIDFromFile, passwordFromFile, loyaltyPointsFromFile;
-
-			// Read each field from the CSV line, separated by commas
-			getline(iss, customerIDFromFile, ',');
-			getline(iss, nameFromFile, ',');
-			getline(iss, loginIDFromFile, ','); // Read the email from the third column
-			getline(iss, passwordFromFile, ','); // Read the password from the fourth column
-			getline(iss, loyaltyPointsFromFile, ',');
-
-			string lowercaseLoginID = loginID;
-			string lowercaseLoginIDFromFile = loginIDFromFile;
-
-			for (char& c : lowercaseLoginID) { // convert all the characters in the input to lowercase
-				c = tolower(c);
-			}
-			for (char& c : lowercaseLoginIDFromFile) { // convert all the characters in the file to lowercase
-				c = tolower(c);
-			}
-			if (lowercaseLoginID == lowercaseLoginIDFromFile && password == passwordFromFile) {
-				customerID = stoi(customerIDFromFile); // convert customerID to from string to integer
-				name = nameFromFile;
-				loyaltyPoints = stoi(loyaltyPointsFromFile); // convert loyalty points to integer
-				file.close();
-				return true; // return true if customer exists
-			}
-		}
-		file.close();
-	}
-	else {
-		cout << "Error: Unable to open the file.\n";
-	}
-	return false;
-}
-
-bool Customer::uniqueLoginID(const string& filename, const string& loginID)
-{
-	ifstream file(filename); // create  input file stream object called "file" and opens the file
-	if (file.is_open()) {
-		// Skip the header line
-		string header;
-		getline(file, header);
-
-		string line;
-		while (getline(file, line)) { // read each line from the file
-			istringstream iss(line); // extract comma-separated values from each line
-			string customerIDFromFile, nameFromFile, loginIDFromFile, passwordFromFile, loyaltyPointsFromFile;
-
-			// Read each field from the CSV line, separated by commas
-			getline(iss, customerIDFromFile, ',');
-			getline(iss, nameFromFile, ',');
-			getline(iss, loginIDFromFile, ','); // Read the email from the third column
-			getline(iss, passwordFromFile, ','); // Read the password from the fourth column
-			getline(iss, loyaltyPointsFromFile, ',');
-
-			string lowercaseLoginID = loginID; // login id from input
-			string lowercaseLoginIDFromFile = loginIDFromFile; // login id from file
-
-			for (char& c : lowercaseLoginID) { // convert all the characters in the input to lowercase
-				c = tolower(c);
-			}
-			for (char& c : lowercaseLoginIDFromFile) { // convert all the characters in the file to lowercase
-				c = tolower(c);
-			}
-
-			if (lowercaseLoginID == lowercaseLoginIDFromFile) { // if id already exists
-				file.close();
-				return false;
-			}
-		}
-		file.close();
-	}
-	else {
-		cout << "Error: Unable to open the file.\n";
-	}
-	return true;
-}
-
-// Function to perform customer login
-bool Customer::customerLogin(const string& filename) {
+bool Customer::customerLogin(HashTable<string, Customer>& customersTable, const string& filename) {
 	string loginID, password;
 	cout << "Enter your login credentials:\n";
 	cout << "Login ID: ";
@@ -210,14 +163,27 @@ bool Customer::customerLogin(const string& filename) {
 	cin >> ws;
 	getline(cin, password);
 
-	// Check if the customer exists with the given credentials
-	if (customerExists(filename, loginID, password)) {
+	string lowercaseLoginID = loginID;
+
+	for (char& c : lowercaseLoginID) { // convert all the characters in the input to lowercase
+		c = tolower(c);
+	}
+
+	Customer customer = customersTable.get(lowercaseLoginID);
+	if (customer.getCustomerID() != 0 && customer.getLoginID() == lowercaseLoginID && customer.getPassword() == password)
+	{
+		customerID = customer.getCustomerID(); // convert customerID to from string to integer
+		name = customer.getName();
+		loyaltyPoints = customer.getLoyaltyPoints(); // convert loyalty points to integer
 		cout << "Login successful!\n";
 		return true;
 	}
-	else {
+	else if (customer.getCustomerID() == 0) {
+		cout << "Customer with this Login ID does not exist. Please try again.\n";
+	}
+	else
+	{
 		cout << "Incorrect Login ID or password. Please try again.\n";
-		return false;
 	}
 	return false;
 }
@@ -352,11 +318,11 @@ int Customer::orderItemsMenu(const LinkedList<OrderItem>& orderItemsList, const 
 	return firstOrderItem.getFoodItem().getRestaurantID(); // return restaurant id user entered food from
 }
 
-void Customer::customerLoginMenu(Customer& customer) {
+void Customer::customerLoginMenu(Customer& customer, HashTable<string, Customer>& customersTable) {
 	cout << "\n-------------------------" << endl;
 	cout << "      Customer Login      " << endl;
 	cout << "-------------------------" << endl;
-	if (customer.customerLogin("Customers.csv")) {
+	if (customer.customerLogin(customersTable, "Customers.csv")) {
 		waitForEnterKey();
 		clearScreen();
 		string customerOptionStr;
@@ -372,7 +338,7 @@ void Customer::customerLoginMenu(Customer& customer) {
 				// Implement other options as needed
 			}
 			else if (customerOptionStr == "3") {
-				// Implement other options as needed
+
 			}
 			else if (customerOptionStr == "4") {
 				cout << "\nWe are logging you out now. Thank you!" << endl;
@@ -384,88 +350,80 @@ void Customer::customerLoginMenu(Customer& customer) {
 	}
 }
 
-void Customer::customerRegisterMenu(Customer& customer)
+void Customer::customerRegisterMenu(Customer& customer, HashTable<string, Customer>& customersTable)
 {
 	cout << "\n-------------------------" << endl;
 	cout << "    Customer Register     " << endl;
 	cout << "-------------------------" << endl;
-	customer.registerCustomer("Customers.csv");
+	customer.registerCustomer(customersTable, "Customers.csv");
 }
 
 void Customer::browseFoodItemsMenu(Customer& customer, Restaurant& restaurant) {
-	HashTable<int, FoodItem> foodItemsHashTable = customer.browseFoodItems("FoodItems.csv", restaurant.getAllRestaurants("Restaurants.csv"), restaurant.getRestaurantID());
-	int foodItemLength = foodItemsHashTable.getLength();
-	int foodItemChoice;
-	do {
-		cin >> foodItemChoice;
-
-		if (foodItemChoice >= 1 && foodItemChoice <= foodItemLength) {
-			orderFoodItems(customer, restaurant, foodItemChoice, foodItemsHashTable);
-			break;
-		}
-		else {
-			cout << "Invalid option. Please try again: ";
-			foodItemChoice = -1;
-			cin.clear();
-			cin.ignore(numeric_limits<streamsize>::max(), '\n');
-		}
-	} while (true);
+    bool continueOrdering = true;
+    while (continueOrdering) {
+        HashTable<int, FoodItem> foodItemsHashTable = customer.browseFoodItems("FoodItems.csv", restaurant.getAllRestaurants("Restaurants.csv"), restaurant.getRestaurantID());
+        int foodItemLength = foodItemsHashTable.getLength();
+        int foodItemChoice;
+        do {
+            cin >> foodItemChoice;
+            if (foodItemChoice >= 1 && foodItemChoice <= foodItemLength) {
+                continueOrdering = orderFoodItems(customer, restaurant, foodItemChoice, foodItemsHashTable);
+                break;
+            } else {
+                cout << "Invalid option. Please try again: ";
+                foodItemChoice = -1;
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            }
+        } while (true);
+    }
 }
 
-void Customer::orderFoodItems(Customer& customer, Restaurant& restaurant, int foodItemChoice, HashTable<int, FoodItem>& foodItemsTable) {
-	int quantity;
-	FoodItem foodItem = foodItemsTable.get(foodItemChoice);
+bool Customer::orderFoodItems(Customer& customer, Restaurant& restaurant, int foodItemChoice, HashTable<int, FoodItem>& foodItemsTable) {
+    int quantity;
+    FoodItem foodItem = foodItemsTable.get(foodItemChoice);
 
-	do {
-		cout << "Enter quantity for " << foodItem.getName() << ": ";
-		cin >> quantity;
+    do {
+        cout << "Enter quantity for " << foodItem.getName() << ": ";
+        cin >> quantity;
+        if (quantity >= 1 && quantity <= 20) {
+            customer.addOrderItem(foodItem, quantity);
+            cout << quantity << " " << foodItem.getName() << " added to your order successfully." << endl;
+            waitForEnterKey();
+            clearScreen();
 
-		if (quantity >= 1 && quantity <= 99) {
-			// Use the existing orderItemsList from the member variable
-			customer.addOrderItem(foodItem, quantity);
-			cout << quantity << " " << foodItem.getName() << " added to your order successfully." << endl;
-			waitForEnterKey();
-			clearScreen();
+            // Ask the customer if they want to add more food items to their order
+            string addMoreFoodItemsStr;
+            do {
+                LinkedList<OrderItem> orderItemsListCopy = customer.getOrderItemsList();
+                int restaurantID = customer.orderItemsMenu(orderItemsListCopy, restaurant.getAllRestaurants("Restaurants.csv"));
+                restaurant.setRestaurantID(restaurantID);
+                cin >> addMoreFoodItemsStr;
 
-			// Ask the customer if they want to add more food items to their order
-			string addMoreFoodItemsStr;
-			do {
-				LinkedList<OrderItem> orderItemsListCopy = customer.getOrderItemsList();
-				int restaurantID = customer.orderItemsMenu(orderItemsListCopy, restaurant.getAllRestaurants("Restaurants.csv"));
-				restaurant.setRestaurantID(restaurantID);
-				cin >> addMoreFoodItemsStr;
-
-				if (addMoreFoodItemsStr == "1") {
-					browseFoodItemsMenu(customer, restaurant);
-				}
-				else if (addMoreFoodItemsStr == "2") {
-					// Implement other options as needed
-				}
-				else if (addMoreFoodItemsStr == "3") {
-					// Implement other options as needed
-				}
-				else if (addMoreFoodItemsStr == "4") {
-					orderItemsList.clear();
-					cout << "Ordered items cancelled." << endl;
-					waitForEnterKey();
-					clearScreen();
-				}
-				else {
-					cout << "\nInvalid option. Please try again." << endl;
-				}
-			} while (addMoreFoodItemsStr != "4");
-			break;
-		}
-		else {
-			cout << "Invalid quantity. Please try again." << endl;
-			quantity = -1;
-			cin.clear();
-			cin.ignore(numeric_limits<streamsize>::max(), '\n');
-		}
-	} while (true);
+                if (addMoreFoodItemsStr == "1") {
+                    return true; // Continue ordering more food items
+                }
+                // Handle other options as needed
+                else if (addMoreFoodItemsStr == "4") {
+                    orderItemsList.clear();
+                    cout << "Ordered items cancelled." << endl;
+                    waitForEnterKey();
+                    clearScreen();
+                    return false; // Stop ordering food items
+                } else {
+                    cout << "\nInvalid option. Please try again." << endl;
+                }
+            } while (true);
+        } else {
+            cout << "Range of quantity is 1-20. Please try again." << endl;
+            quantity = -1;
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        }
+    } while (true);
 }
 
-void Customer::createOrder(const string& foodItemsFile, const string& ordersFile) {
+void Customer::createOrder(const string& ordersFile) {
 	// TODO: Implement this. Read the food items file, let the customer choose an item, and add the order to the orders file.
 }
 
@@ -476,3 +434,4 @@ void Customer::cancelOrder(const string& ordersFile) {
 void Customer::redeemPoints() {
 	// TODO: Implement this. Deduct points from the customer's loyalty points and display a success message.
 }
+

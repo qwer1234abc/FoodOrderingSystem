@@ -1,7 +1,6 @@
 #include <iostream>
 #include "Customer.h"
 #include "Admin.h"
-#include "LinkedList.h"
 // test
 
 using namespace std;
@@ -21,6 +20,11 @@ void waitForEnterKey() {
 
 int main()
 {
+
+	Customer customer;
+	HashTable<string, Customer> customerTable = customer.getAllCustomers("Customers.csv");
+
+
 	string selectedOptionStr;
 
 	do {
@@ -28,12 +32,11 @@ int main()
 		cin >> selectedOptionStr;
 
 		if (selectedOptionStr == "1") {
-			Customer customer;
-			customer.customerLoginMenu(customer);
+			customer.customerLoginMenu(customer, customerTable);
 		}
 		else if (selectedOptionStr == "2") {
 			Customer customer;
-			customer.customerRegisterMenu(customer);
+			customer.customerRegisterMenu(customer, customerTable);
 		}
 		else if (selectedOptionStr == "3") {
 			cout << "\n-------------------------" << endl;
