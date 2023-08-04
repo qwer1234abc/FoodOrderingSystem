@@ -1,1 +1,2 @@
-orderID,customerID,foodItemID,restaurantID,orderStatus
+orderID,customerID,foodItemsList,restaurantID,totalPrice,orderStatus
+1,1,5:5,4,62.5,Not Prepared

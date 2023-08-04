@@ -314,7 +314,6 @@ int Customer::orderItemsMenu(const LinkedList<OrderItem>& orderItemsList, const 
 	cout << setfill('=') << setw(totalWidth) << "=" << setfill(' ') << endl;
 	cout << "Enter your choice: ";
 
-
 	return firstOrderItem.getFoodItem().getRestaurantID(); // return restaurant id user entered food from
 }
 
@@ -359,72 +358,183 @@ void Customer::customerRegisterMenu(Customer& customer, HashTable<string, Custom
 }
 
 void Customer::browseFoodItemsMenu(Customer& customer, Restaurant& restaurant) {
-    bool continueOrdering = true;
-    while (continueOrdering) {
-        HashTable<int, FoodItem> foodItemsHashTable = customer.browseFoodItems("FoodItems.csv", restaurant.getAllRestaurants("Restaurants.csv"), restaurant.getRestaurantID());
-        int foodItemLength = foodItemsHashTable.getLength();
-        int foodItemChoice;
-        do {
-            cin >> foodItemChoice;
-            if (foodItemChoice >= 1 && foodItemChoice <= foodItemLength) {
-                continueOrdering = orderFoodItems(customer, restaurant, foodItemChoice, foodItemsHashTable);
-                break;
-            } else {
-                cout << "Invalid option. Please try again: ";
-                foodItemChoice = -1;
-                cin.clear();
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            }
-        } while (true);
-    }
+	bool continueOrdering = true;
+	while (continueOrdering) {
+		HashTable<int, FoodItem> foodItemsHashTable = customer.browseFoodItems("FoodItems.csv", restaurant.getAllRestaurants("Restaurants.csv"), restaurant.getRestaurantID());
+		int foodItemLength = foodItemsHashTable.getLength();
+		int foodItemChoice;
+		do {
+			cin >> foodItemChoice;
+			if (foodItemChoice >= 1 && foodItemChoice <= foodItemLength) {
+				continueOrdering = orderFoodItems(customer, restaurant, foodItemChoice, foodItemsHashTable);
+				break;
+			}
+			else {
+				cout << "Invalid option. Please try again: ";
+				foodItemChoice = -1;
+				cin.clear();
+				cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			}
+		} while (true);
+	}
 }
 
 bool Customer::orderFoodItems(Customer& customer, Restaurant& restaurant, int foodItemChoice, HashTable<int, FoodItem>& foodItemsTable) {
-    int quantity;
-    FoodItem foodItem = foodItemsTable.get(foodItemChoice);
+	int quantity;
+	FoodItem foodItem = foodItemsTable.get(foodItemChoice);
 
-    do {
-        cout << "Enter quantity for " << foodItem.getName() << ": ";
-        cin >> quantity;
-        if (quantity >= 1 && quantity <= 20) {
-            customer.addOrderItem(foodItem, quantity);
-            cout << quantity << " " << foodItem.getName() << " added to your order successfully." << endl;
-            waitForEnterKey();
-            clearScreen();
+	do {
+		cout << "Enter quantity for " << foodItem.getName() << ": ";
+		cin >> quantity;
+		if (quantity >= 1 && quantity <= 20) {
+			customer.addOrderItem(foodItem, quantity);
+			cout << quantity << " " << foodItem.getName() << " added to your order successfully." << endl;
+			waitForEnterKey();
+			clearScreen();
 
-            // Ask the customer if they want to add more food items to their order
-            string addMoreFoodItemsStr;
-            do {
-                LinkedList<OrderItem> orderItemsListCopy = customer.getOrderItemsList();
-                int restaurantID = customer.orderItemsMenu(orderItemsListCopy, restaurant.getAllRestaurants("Restaurants.csv"));
-                restaurant.setRestaurantID(restaurantID);
-                cin >> addMoreFoodItemsStr;
+			// Ask the customer if they want to add more food items to their order
+			string addMoreFoodItemsStr;
+			do {
+				int restaurantID = customer.orderItemsMenu(customer.orderItemsList, restaurant.getAllRestaurants("Restaurants.csv"));
+				restaurant.setRestaurantID(restaurantID);
+				cin >> addMoreFoodItemsStr;
 
-                if (addMoreFoodItemsStr == "1") {
-                    return true; // Continue ordering more food items
-                }
-                // Handle other options as needed
-                else if (addMoreFoodItemsStr == "4") {
-                    orderItemsList.clear();
-                    cout << "Ordered items cancelled." << endl;
-                    waitForEnterKey();
-                    clearScreen();
-                    return false; // Stop ordering food items
-                } else {
-                    cout << "\nInvalid option. Please try again." << endl;
-                }
-            } while (true);
-        } else {
-            cout << "Range of quantity is 1-20. Please try again." << endl;
-            quantity = -1;
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        }
-    } while (true);
+				if (addMoreFoodItemsStr == "1") {
+					return true; // Continue ordering more food items
+				}
+				else if (addMoreFoodItemsStr == "2") {
+					// Remove an item from the order
+					int itemNumber;
+					do {
+						cout << "Enter item number to remove: ";
+						cin >> itemNumber;
+						if (itemNumber >= 1 && itemNumber <= customer.orderItemsList.getLength()) {
+							customer.orderItemsList.remove(itemNumber - 1);
+							cout << "Item removed successfully." << endl;
+							waitForEnterKey();
+							clearScreen();
+							break;
+						}
+						else {
+							cout << "Invalid option. Please try again." << endl;
+							itemNumber = -1;
+							cin.clear();
+							cin.ignore(numeric_limits<streamsize>::max(), '\n');
+						}
+					} while (true);
+				}
+				else if (addMoreFoodItemsStr == "3") {
+					long double totalPrice = 0.0; // Initialize the total price to zero
+
+					for (int i = 0; i < orderItemsList.getLength(); i++) // loop through all the items in the orderitemslist list
+					{
+						OrderItem orderItem = orderItemsList.retrieve(i);
+						FoodItem foodItem = orderItem.getFoodItem(); // retrieve the item
+						double itemPrice = foodItem.getPrice() * orderItem.getQuantity(); // calculate price with the price * quantity of the item
+						totalPrice += itemPrice;
+					}
+					cout << "\nTotal price is $" << totalPrice << "." << endl;
+					string confirmOrderStr;
+					do
+					{
+						cout << "Do you want to confirm the order? (Y/N): ";
+						cin >> confirmOrderStr;
+
+						if (confirmOrderStr == "n" || confirmOrderStr == "N") {
+							cout << "Ordered items cancelled." << endl;
+							waitForEnterKey();
+							clearScreen();
+							break;
+						}
+						else if (confirmOrderStr == "y" || confirmOrderStr == "Y") {
+							createOrder("Orders.csv", customer.getCustomerID(), orderItemsList, restaurant.getRestaurantID(), totalPrice);
+							cout << "XD;";
+							waitForEnterKey();
+							clearScreen();
+							// go back to the main menu
+							break;
+						}
+						else {
+							cout << "\nInvalid option. Please try again." << endl;
+						}
+					} while (true);
+				}
+				// Handle other options as needed
+				else if (addMoreFoodItemsStr == "4") {
+					orderItemsList.clear();
+					cout << "Ordered items cancelled." << endl;
+					waitForEnterKey();
+					clearScreen();
+					return false; // Stop ordering food items
+				}
+				else {
+					cout << "\nInvalid option. Please try again." << endl;
+				}
+			} while (true);
+		}
+		else {
+			cout << "Range of quantity is 1-20. Please try again." << endl;
+			quantity = -1;
+			cin.clear();
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		}
+	} while (true);
 }
 
-void Customer::createOrder(const string& ordersFile) {
-	// TODO: Implement this. Read the food items file, let the customer choose an item, and add the order to the orders file.
+void Customer::createOrder(const string& filename, int customerID, LinkedList<OrderItem>& orderItemsList, int restaurantID, long double totalPrice) {
+	if (orderItemsList.isEmpty()) {
+		cout << "Error: No items in the order. Please add items to the order first." << endl;
+		return;
+	}
+	int orderID = 0; // Default ID if no accounts are present
+
+	// Get the last order ID from the file
+	ifstream file(filename); // create input file stream object named file and opens the file
+	if (file.is_open()) {
+		string line;
+		while (getline(file, line)) { // reads the file and getline reads each line into "line" variable
+			istringstream iss(line); // extract comma-separated values from each line
+			string orderIDFromFile;
+			if (getline(iss, orderIDFromFile, ',')) { // read first value up to ',' and store in "orderIDFromFile" variable
+				try {
+					int tempID = stoi(orderIDFromFile); // convert extracted value from string to int
+					if (tempID > orderID) {
+						orderID = tempID; // Update orderID with the last ID
+					}
+				}
+				catch (const invalid_argument& e) {
+				}
+			}
+		}
+		file.close();
+	}
+	else {
+		cout << "Error: Unable to open the file.\n";
+	}
+
+	// Increment the order ID for the new order
+	orderID++;
+
+	Order newOrder(orderID, customerID, orderItemsList, restaurantID, totalPrice, "Not Prepared");
+
+	// Save the order details to the CSV file
+	string foodItemsString = newOrder.orderItemsListToString(newOrder.getOrderItemList());
+
+	// Save the order details to the CSV file
+	ofstream fileToWrite(filename, ios::app); // creates output file stream object and opens file in APPEND mode
+	if (fileToWrite.is_open()) {
+		fileToWrite << newOrder.getOrderID() << "," << newOrder.getCustomerID() << ","
+			<< foodItemsString << "," // Use the converted string
+			<< newOrder.getRestaurantID() << "," << newOrder.getTotalPrice() << ","
+			<< newOrder.getStatus() << "\n";
+		fileToWrite.close();
+		cout << "Order created and sent to restaurant." << endl;
+	}
+	else {
+		cout << "Error: Unable to open the file.\n";
+	}
+
+	orderItemsList.clear();
 }
 
 void Customer::cancelOrder(const string& ordersFile) {

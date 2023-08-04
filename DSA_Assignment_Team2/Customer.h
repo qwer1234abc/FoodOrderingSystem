@@ -41,7 +41,7 @@ public:
 	void customerRegisterMenu(Customer& customer, HashTable<string, Customer>& customersTable);
 	void browseFoodItemsMenu(Customer& customer, Restaurant& restaurant);
 	bool orderFoodItems(Customer& customer, Restaurant& restaurant, int foodItemChoice, HashTable<int, FoodItem>& foodItemsTable);
-	void createOrder(const string& ordersFile);  // To create a new order
+	void createOrder(const string& ordersFile, int customerID, LinkedList<OrderItem>& orderItemsList, int restaurantID, long double totalPrice);  // To create a new order
 	void cancelOrder(const string& ordersFile);  // To cancel an existing order
 	void redeemPoints();
 

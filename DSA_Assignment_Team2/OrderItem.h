@@ -17,5 +17,6 @@ public:
 
 	FoodItem getFoodItem() const;
 	int getQuantity() const;
+	string getNameAndQuantity() const;
 };
 

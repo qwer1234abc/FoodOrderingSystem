@@ -12,7 +12,7 @@ class Order
 private:
 	int orderID;
 	int customerID;
-	LinkedList<OrderItem> orderItemList;
+	LinkedList<OrderItem> orderItemsList;
 	int restaurantID;
 	double totalPrice;
 	string status;
@@ -27,7 +27,9 @@ public:
 	int getRestaurantID() const;
 	double getTotalPrice() const;
 	string getStatus() const;
-	Queue<Order> GetIncomingOrders(const string& orderFileName);
-	bool UpdateStatus(int orderID);
+	string orderItemsListToString(const LinkedList<OrderItem>& orderItems);
+	Queue<Order> GetAllOrders(const string& filename);
+	Queue<Order> filterCustomerOrders(const Queue<Order>& orders, int customerID);
+	Queue<Order> filterRestaurantOrders(const Queue<Order>& orders, int restaurantID);
 };
 

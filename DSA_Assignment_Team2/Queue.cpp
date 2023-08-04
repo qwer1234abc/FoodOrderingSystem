@@ -4,8 +4,7 @@
 template<typename ItemType>
 Queue<ItemType>::Queue()
 {
-    frontNode = nullptr;
-    backNode = nullptr;
+    frontNode = backNode = nullptr;
 }
 
 // destructor

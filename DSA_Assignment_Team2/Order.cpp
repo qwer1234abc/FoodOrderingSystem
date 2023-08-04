@@ -13,7 +13,7 @@ Order::Order(int id, int c, LinkedList<OrderItem>& o, int r, double p, const str
 {
 	orderID = id;
 	customerID = c;
-	orderItemList = o;
+	orderItemsList = o;
 	restaurantID = r;
 	totalPrice = p;
 	status = s;
@@ -31,7 +31,7 @@ int Order::getCustomerID() const
 
 LinkedList<OrderItem> Order::getOrderItemList() const
 {
-	return orderItemList;
+	return orderItemsList;
 }
 
 int Order::getRestaurantID() const
@@ -48,44 +48,98 @@ string Order::getStatus() const
 {
 	return status;
 }
-
 /*
-Queue Order::GetIncomingOrders(const string& orderFileName) {
-	Queue queue;
-
-	ifstream file(orderFileName);
-	if (file.is_open()) {
-		string header;
-		getline(file, header);
-
+Queue<Order> Order::GetAllOrders(const string& filename)
+{
+	Queue<Order> orders;
+	ifstream inFile(filename);
+	if (!inFile.is_open())
+	{
+		cout << "File not found!" << endl;
+		return orders;
+	}
+	else
+	{
 		string line;
-		while (getline(file, line)) {
+		while (getline(inFile, line))
+		{
 			istringstream iss(line);
-			string orderIDStr, customerIDStr, foodItemIDStr, restaurantIDStr, orderStatusStr, totalPriceStr;
+			string field;
 
-			getline(iss, orderIDStr, ',');
-			getline(iss, customerIDStr, ',');
-			getline(iss, foodItemIDStr, ',');
-			getline(iss, restaurantIDStr, ',');
-			getline(iss, orderStatusStr, ',');
-			getline(iss, totalPriceStr, ',');
+			getline(iss, field, ','); // Order ID
+			int orderID = stoi(field);
 
-			if (orderStatusStr != "Prepared") {
-				orderID = stoi(orderIDStr);
-				customerID = stoi(customerIDStr);
-				// how to use the linkedlist?
-				restaurantID = stoi(restaurantIDStr);
-				status = orderStatusStr;
-				totalPrice = stod(totalPriceStr);
+			getline(iss, field, ','); // Customer ID
+			int customerID = stoi(field);
+
+			getline(iss, field, ','); // Food Items List
+			LinkedList<OrderItem> orderItemsList;
+			stringstream foodItemsStream(field);
+			string itemString;
+			while (getline(foodItemsStream, itemString, '|')) { // Iterate over items
+				size_t sepPos = itemString.find(':');
+				string foodItemID = itemString.substr(0, sepPos);
+				int quantity = stoi(itemString.substr(sepPos + 1));
+
+				FoodItem foodItem = getFoodItemByName(foodItemID);
+
+				OrderItem orderItem(foodItem, quantity); 
+				orderItemsList.insert(orderItem);
 			}
 
+			getline(iss, field, ','); // Restaurant ID
+			int restaurantID = stoi(field);
+
+			getline(iss, field, ','); // Total Price
+			double totalPrice = stod(field);
+
+			getline(iss, field, ','); // Order Status
+			string status = field;
+
+			Order order(orderID, customerID, orderItemsList, restaurantID, totalPrice, status);
+
+			orders.enqueue(order);
 		}
 	}
-	return queue;
+	return orders;
 }
+
+Queue<Order> Order::filterCustomerOrders(const Queue<Order>& allOrders, int targetCustomerID) {
+	Queue<Order> filteredQueue;
+
+	Order currentOrder;
+	while (allOrders.dequeue(currentOrder)) {
+		if (currentOrder.getCustomerID() == targetCustomerID) {
+			filteredQueue.enqueue(currentOrder);
+		}
+	}
+
+	return filteredQueue;
+}
+
+Queue<Order> Order::filterRestaurantOrders(const Queue<Order>& allOrders, int targetRestaurantID) {
+	Queue<Order> filteredQueue;
+
+	Order currentOrder;
+	while (allOrders.dequeue(currentOrder)) {
+		if (currentOrder.getRestaurantID() == targetRestaurantID) {
+			filteredQueue.enqueue(currentOrder);
+		}
+	}
+
+	return filteredQueue;
+}
+
 */
 
-
-
-
-	
+string Order::orderItemsListToString(const LinkedList<OrderItem>&orderItems) {
+	string result;
+	for (int i = 0; i < orderItems.getLength(); ++i) {
+		OrderItem item = orderItems.retrieve(i);
+		result += to_string(item.getFoodItem().getFoodItemID()) + ":" + to_string(item.getQuantity());
+		if (i < orderItems.getLength() - 1) {
+			result += "|"; // Separator for different items
+		}
+	}
+	return result;
+}
