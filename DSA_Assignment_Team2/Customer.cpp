@@ -6,7 +6,8 @@
 
 using namespace std;
 
-Customer::Customer() {}
+
+Customer::Customer() : orderItemsList() {}
 
 Customer::Customer(int id, const string& n, const string& l, const string& p, int lp) {
 	customerID = id;
@@ -317,11 +318,16 @@ int Customer::orderItemsMenu(const LinkedList<OrderItem>& orderItemsList, const 
 	return firstOrderItem.getFoodItem().getRestaurantID(); // return restaurant id user entered food from
 }
 
-void Customer::customerLoginMenu(Customer& customer, HashTable<string, Customer>& customersTable) {
+void Customer::customerLoginMenu(Customer& customer, HashTable<string, Customer>& customersTable, Queue<Order>& orderQueue) {
 	cout << "\n-------------------------" << endl;
 	cout << "      Customer Login      " << endl;
 	cout << "-------------------------" << endl;
 	if (customer.customerLogin(customersTable, "Customers.csv")) {
+		// Filter the order queue to only display the customer's orders
+		orderQueue.displayItems();
+		Order currentOrder;
+		Queue<Order> customerOrderQueue = currentOrder.filterCustomerOrders(orderQueue, customer.getCustomerID());
+		orderQueue.filterQueueForCustomer(customer.getCustomerID());
 		waitForEnterKey();
 		clearScreen();
 		string customerOptionStr;
@@ -334,7 +340,6 @@ void Customer::customerLoginMenu(Customer& customer, HashTable<string, Customer>
 				browseFoodItemsMenu(customer, restaurant);
 			}
 			else if (customerOptionStr == "2") {
-				// Implement other options as needed
 			}
 			else if (customerOptionStr == "3") {
 
@@ -426,9 +431,9 @@ bool Customer::orderFoodItems(Customer& customer, Restaurant& restaurant, int fo
 				else if (addMoreFoodItemsStr == "3") {
 					long double totalPrice = 0.0; // Initialize the total price to zero
 
-					for (int i = 0; i < orderItemsList.getLength(); i++) // loop through all the items in the orderitemslist list
+					for (int i = 0; i < customer.orderItemsList.getLength(); i++) // loop through all the items in the orderitemslist list
 					{
-						OrderItem orderItem = orderItemsList.retrieve(i);
+						OrderItem orderItem = customer.orderItemsList.retrieve(i);
 						FoodItem foodItem = orderItem.getFoodItem(); // retrieve the item
 						double itemPrice = foodItem.getPrice() * orderItem.getQuantity(); // calculate price with the price * quantity of the item
 						totalPrice += itemPrice;
@@ -447,12 +452,10 @@ bool Customer::orderFoodItems(Customer& customer, Restaurant& restaurant, int fo
 							break;
 						}
 						else if (confirmOrderStr == "y" || confirmOrderStr == "Y") {
-							createOrder("Orders.csv", customer.getCustomerID(), orderItemsList, restaurant.getRestaurantID(), totalPrice);
-							cout << "XD;";
+							createOrder("Orders.csv", customer.getCustomerID(), customer.orderItemsList, restaurant.getRestaurantID(), totalPrice);
 							waitForEnterKey();
 							clearScreen();
-							// go back to the main menu
-							break;
+							return false;
 						}
 						else {
 							cout << "\nInvalid option. Please try again." << endl;
@@ -461,7 +464,7 @@ bool Customer::orderFoodItems(Customer& customer, Restaurant& restaurant, int fo
 				}
 				// Handle other options as needed
 				else if (addMoreFoodItemsStr == "4") {
-					orderItemsList.clear();
+					customer.orderItemsList.clear();
 					cout << "Ordered items cancelled." << endl;
 					waitForEnterKey();
 					clearScreen();
@@ -517,8 +520,7 @@ void Customer::createOrder(const string& filename, int customerID, LinkedList<Or
 
 	Order newOrder(orderID, customerID, orderItemsList, restaurantID, totalPrice, "Not Prepared");
 
-	// Save the order details to the CSV file
-	string foodItemsString = newOrder.orderItemsListToString(newOrder.getOrderItemList());
+	string foodItemsString = newOrder.orderItemsListToString(orderItemsList);
 
 	// Save the order details to the CSV file
 	ofstream fileToWrite(filename, ios::app); // creates output file stream object and opens file in APPEND mode

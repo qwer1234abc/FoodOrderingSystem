@@ -13,7 +13,10 @@ Order::Order(int id, int c, LinkedList<OrderItem>& o, int r, double p, const str
 {
 	orderID = id;
 	customerID = c;
-	orderItemsList = o;
+	for (int i = 0; i < o.getLength(); ++i) {
+		OrderItem item = o.retrieve(i);
+		orderItemsList.insert(item);
+	}
 	restaurantID = r;
 	totalPrice = p;
 	status = s;
@@ -48,8 +51,8 @@ string Order::getStatus() const
 {
 	return status;
 }
-/*
-Queue<Order> Order::GetAllOrders(const string& filename)
+
+Queue<Order> Order::getAllOrders(const string& filename, HashTable<int, FoodItem> foodItemsTable)
 {
 	Queue<Order> orders;
 	ifstream inFile(filename);
@@ -58,53 +61,51 @@ Queue<Order> Order::GetAllOrders(const string& filename)
 		cout << "File not found!" << endl;
 		return orders;
 	}
-	else
+	string header;
+	getline(inFile, header);
+
+	string line;
+	while (getline(inFile, line))
 	{
-		string line;
-		while (getline(inFile, line))
-		{
-			istringstream iss(line);
-			string field;
+		istringstream iss(line);
+		string orderIDStr, customerIDStr, orderItemsListStr, restaurantIDStr, totalPriceStr, statusStr;
 
-			getline(iss, field, ','); // Order ID
-			int orderID = stoi(field);
+		getline(iss, orderIDStr, ','); // Order ID
+		getline(iss, customerIDStr, ','); // Customer ID
+		getline(iss, orderItemsListStr, ','); // Order Items List
 
-			getline(iss, field, ','); // Customer ID
-			int customerID = stoi(field);
+		LinkedList<OrderItem> orderItemsList;
+		stringstream foodItemsStream(orderItemsListStr);
+		string itemString;
+		while (getline(foodItemsStream, itemString, '|')) { // Iterate over items
+			size_t sepPos = itemString.find(':');
+			string foodItemID = itemString.substr(0, sepPos);
+			int quantity = stoi(itemString.substr(sepPos + 1));
 
-			getline(iss, field, ','); // Food Items List
-			LinkedList<OrderItem> orderItemsList;
-			stringstream foodItemsStream(field);
-			string itemString;
-			while (getline(foodItemsStream, itemString, '|')) { // Iterate over items
-				size_t sepPos = itemString.find(':');
-				string foodItemID = itemString.substr(0, sepPos);
-				int quantity = stoi(itemString.substr(sepPos + 1));
+			FoodItem foodItem = foodItemsTable.get(stoi(foodItemID));
 
-				FoodItem foodItem = getFoodItemByName(foodItemID);
-
-				OrderItem orderItem(foodItem, quantity); 
-				orderItemsList.insert(orderItem);
-			}
-
-			getline(iss, field, ','); // Restaurant ID
-			int restaurantID = stoi(field);
-
-			getline(iss, field, ','); // Total Price
-			double totalPrice = stod(field);
-
-			getline(iss, field, ','); // Order Status
-			string status = field;
-
-			Order order(orderID, customerID, orderItemsList, restaurantID, totalPrice, status);
-
-			orders.enqueue(order);
+			OrderItem orderItem(foodItem, quantity);
+			orderItemsList.insert(orderItem);
 		}
+
+		getline(iss, restaurantIDStr, ','); // Restaurant ID
+		getline(iss, totalPriceStr, ','); // Total Price
+		getline(iss, statusStr, ','); // Status
+
+		int orderID = stoi(orderIDStr);
+		int customerID = stoi(customerIDStr);
+		int restaurantID = stoi(restaurantIDStr);
+		double totalPrice = stod(totalPriceStr);
+		string status = statusStr;
+
+		Order order(orderID, customerID, orderItemsList, restaurantID, totalPrice, status);
+
+		orders.enqueue(order);
 	}
 	return orders;
 }
 
-Queue<Order> Order::filterCustomerOrders(const Queue<Order>& allOrders, int targetCustomerID) {
+Queue<Order> Order::filterCustomerOrders(Queue<Order>& allOrders, int targetCustomerID) {
 	Queue<Order> filteredQueue;
 
 	Order currentOrder;
@@ -117,7 +118,7 @@ Queue<Order> Order::filterCustomerOrders(const Queue<Order>& allOrders, int targ
 	return filteredQueue;
 }
 
-Queue<Order> Order::filterRestaurantOrders(const Queue<Order>& allOrders, int targetRestaurantID) {
+Queue<Order> Order::filterRestaurantOrders(Queue<Order>& allOrders, int targetRestaurantID) {
 	Queue<Order> filteredQueue;
 
 	Order currentOrder;
@@ -130,9 +131,7 @@ Queue<Order> Order::filterRestaurantOrders(const Queue<Order>& allOrders, int ta
 	return filteredQueue;
 }
 
-*/
-
-string Order::orderItemsListToString(const LinkedList<OrderItem>&orderItems) {
+string Order::orderItemsListToString(const LinkedList<OrderItem>& orderItems) {
 	string result;
 	for (int i = 0; i < orderItems.getLength(); ++i) {
 		OrderItem item = orderItems.retrieve(i);

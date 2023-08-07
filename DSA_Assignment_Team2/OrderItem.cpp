@@ -21,3 +21,7 @@ int OrderItem::getQuantity() const
 	return quantity;
 }
 
+string OrderItem::getNameAndQuantity() const
+{
+	return fooditem.getName() + " (" + to_string(quantity) + ")";
+}

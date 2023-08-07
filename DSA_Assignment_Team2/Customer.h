@@ -37,7 +37,7 @@ public:
 	HashTable<int, FoodItem> browseFoodItems(const string& foodItemsFile, const LinkedList<Restaurant>& restaurants, int restaurantID); // To browse all food items
 	void addOrderItem(FoodItem& foodItem, int quantity);  // To add an item to the order
 	int orderItemsMenu(const LinkedList<OrderItem>& orderItemsList, const LinkedList<Restaurant>& restaurants);
-	void customerLoginMenu(Customer& customer, HashTable<string, Customer>& customersTable);
+	void customerLoginMenu(Customer& customer, HashTable<string, Customer>& customersTable, Queue<Order>& orderQueue);
 	void customerRegisterMenu(Customer& customer, HashTable<string, Customer>& customersTable);
 	void browseFoodItemsMenu(Customer& customer, Restaurant& restaurant);
 	bool orderFoodItems(Customer& customer, Restaurant& restaurant, int foodItemChoice, HashTable<int, FoodItem>& foodItemsTable);

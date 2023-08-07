@@ -23,16 +23,22 @@ int main()
 
 	Customer customer;
 	HashTable<string, Customer> customerTable = customer.getAllCustomers("Customers.csv");
-
+	FoodItem fooditem;
+	HashTable<int, FoodItem> foodItemsTable = fooditem.getAllFoodItems("FoodItems.csv");
+	Order order;
+	Queue<Order> orderQueue = order.getAllOrders("Orders.csv", foodItemsTable);
 
 	string selectedOptionStr;
 
+	orderQueue.displayItems();
+
 	do {
+		orderQueue.displayItems();
 		displayMainMenu();
 		cin >> selectedOptionStr;
 
 		if (selectedOptionStr == "1") {
-			customer.customerLoginMenu(customer, customerTable);
+			customer.customerLoginMenu(customer, customerTable, orderQueue);
 		}
 		else if (selectedOptionStr == "2") {
 			Customer customer;

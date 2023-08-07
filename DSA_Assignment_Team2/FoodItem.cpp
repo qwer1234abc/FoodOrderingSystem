@@ -62,13 +62,11 @@ HashTable<int, FoodItem> FoodItem::getAllFoodItems(const string& filename)
 		cout << "Error: Unable to open the file " << filename << endl;
 		return foodItemsTable; // Return an empty table as there are no food items read
 	}
-
 	// Skip the header line
 	string header;
 	getline(foodOptionsfile, header);
 
 	string line;
-	int key = 1;
 	while (getline(foodOptionsfile, line)) // read the lines in the file
 	{
 		istringstream iss(line); // extract comma-separated values from each line
@@ -86,19 +84,12 @@ HashTable<int, FoodItem> FoodItem::getAllFoodItems(const string& filename)
 		double price = stod(priceStr);
 		int restaurantIDFromFile = stoi(restaurantIDStr);
 
-		// Check if the restaurant ID is provided and skip items from other restaurants
-		if (restaurantID != -1 && restaurantID != restaurantIDFromFile)
-		{
-			continue;
-		}
-
 		// Create a FoodItem object
 		FoodItem foodItem(foodItemID, name, category, price, restaurantIDFromFile);
 
 		// Add the FoodItem object to the hashtable, with the id as the key and the food item as the value
-		foodItemsTable.add(key, foodItem);
-		key++;
+		foodItemsTable.add(foodItemID, foodItem);
 	}
-
 	foodOptionsfile.close();
+	return foodItemsTable;
 }

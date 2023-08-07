@@ -22,7 +22,7 @@ public:
     ~Queue();
 
     // enqueue (add) item at the back of queue
-    bool enqueue(ItemType item);
+    void enqueue(const ItemType& item);
 
     // dequeue (remove) item from front of queue
     bool dequeue();
@@ -44,4 +44,6 @@ public:
 
     // return number of elements in the queue
     int getNoOfElements();
+
+    void filterQueueForCustomer(int customerID);
 };

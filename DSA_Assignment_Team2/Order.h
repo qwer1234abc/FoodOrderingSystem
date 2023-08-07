@@ -28,8 +28,8 @@ public:
 	double getTotalPrice() const;
 	string getStatus() const;
 	string orderItemsListToString(const LinkedList<OrderItem>& orderItems);
-	Queue<Order> GetAllOrders(const string& filename);
-	Queue<Order> filterCustomerOrders(const Queue<Order>& orders, int customerID);
-	Queue<Order> filterRestaurantOrders(const Queue<Order>& orders, int restaurantID);
+	Queue<Order> getAllOrders(const string& filename, HashTable<int, FoodItem> foodItemsTable);
+	Queue<Order> filterCustomerOrders(Queue<Order>& orders, int customerID);
+	Queue<Order> filterRestaurantOrders(Queue<Order>& orders, int restaurantID);
 };
 

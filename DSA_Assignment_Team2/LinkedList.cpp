@@ -116,6 +116,7 @@ void LinkedList<T>::clear() {
 		temp = head;
 	}
 	size = 0;
+	head = nullptr;
 }
 
 // Explicit instantiation for supported types
