@@ -13,10 +13,7 @@ Order::Order(int id, int c, LinkedList<OrderItem>& o, int r, double p, const str
 {
 	orderID = id;
 	customerID = c;
-	for (int i = 0; i < o.getLength(); ++i) {
-		OrderItem item = o.retrieve(i);
-		orderItemsList.insert(item);
-	}
+	orderItemsList = o;
 	restaurantID = r;
 	totalPrice = p;
 	status = s;
@@ -97,8 +94,8 @@ Queue<Order> Order::getAllOrders(const string& filename, HashTable<int, FoodItem
 		int restaurantID = stoi(restaurantIDStr);
 		double totalPrice = stod(totalPriceStr);
 		string status = statusStr;
-
-		Order order(orderID, customerID, orderItemsList, restaurantID, totalPrice, status);
+		LinkedList<OrderItem> orderItemsListCopy = orderItemsList;
+		Order order(orderID, customerID, orderItemsListCopy, restaurantID, totalPrice, status);
 
 		orders.enqueue(order);
 	}

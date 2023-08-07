@@ -324,10 +324,8 @@ void Customer::customerLoginMenu(Customer& customer, HashTable<string, Customer>
 	cout << "-------------------------" << endl;
 	if (customer.customerLogin(customersTable, "Customers.csv")) {
 		// Filter the order queue to only display the customer's orders
-		orderQueue.displayItems();
-		Order currentOrder;
-		Queue<Order> customerOrderQueue = currentOrder.filterCustomerOrders(orderQueue, customer.getCustomerID());
-		orderQueue.filterQueueForCustomer(customer.getCustomerID());
+		Order order;
+		Queue<Order> customerOrdersQueue = order.filterCustomerOrders(orderQueue, customer.getCustomerID());
 		waitForEnterKey();
 		clearScreen();
 		string customerOptionStr;
@@ -337,9 +335,12 @@ void Customer::customerLoginMenu(Customer& customer, HashTable<string, Customer>
 
 			if (customerOptionStr == "1") {
 				Restaurant restaurant;
-				browseFoodItemsMenu(customer, restaurant);
+				browseFoodItemsMenu(customer, restaurant, customerOrdersQueue);
 			}
 			else if (customerOptionStr == "2") {
+				waitForEnterKey();
+				clearScreen();
+				displayOrderHisotry(customerOrdersQueue);
 			}
 			else if (customerOptionStr == "3") {
 
@@ -354,6 +355,62 @@ void Customer::customerLoginMenu(Customer& customer, HashTable<string, Customer>
 	}
 }
 
+void Customer::displayOrderHisotry(Queue<Order>& customerOrdersQueue)
+{
+	if (customerOrdersQueue.isEmpty())
+	{
+		cout << "No order history." << endl;
+		waitForEnterKey();
+		clearScreen();
+		return;
+	}
+
+	Queue<Order> tempQueue; // Temporary queue to store the orders
+
+	// Display the order history without dequeuing the items
+	cout << "Order History" << endl;
+	cout << "-------------------------------------" << endl;
+
+	while (!customerOrdersQueue.isEmpty())
+	{
+		Order order;
+		customerOrdersQueue.getFront(order); // Retrieve the front order without dequeuing
+		customerOrdersQueue.dequeue(); // Move to the next order
+
+		cout << "Order ID: " << order.getOrderID() << endl;
+
+		LinkedList<OrderItem> orderItemsList = order.getOrderItemList();
+		int itemCount = orderItemsList.getLength();
+
+		for (int i = 0; i < itemCount; i++)
+		{
+			OrderItem orderItem;
+			orderItemsList.retrieve(i, orderItem);
+			FoodItem foodItem = orderItem.getFoodItem();
+
+			cout << "Food Item: " << foodItem.getName() << endl;
+			cout << "Quantity: " << orderItem.getQuantity() << endl;
+		}
+
+		cout << "Status: " << order.getStatus() << endl;
+		cout << "Total Price: " << order.getTotalPrice() << endl;
+		cout << "-------------------------------------" << endl;
+
+		tempQueue.enqueue(order); // Store the order in the temporary queue
+	}
+
+	// Re-enqueue the orders back to the original queue
+	while (!tempQueue.isEmpty())
+	{
+		Order order;
+		tempQueue.dequeue(order);
+		customerOrdersQueue.enqueue(order);
+	}
+
+	waitForEnterKey();
+	clearScreen();
+}
+
 void Customer::customerRegisterMenu(Customer& customer, HashTable<string, Customer>& customersTable)
 {
 	cout << "\n-------------------------" << endl;
@@ -362,7 +419,7 @@ void Customer::customerRegisterMenu(Customer& customer, HashTable<string, Custom
 	customer.registerCustomer(customersTable, "Customers.csv");
 }
 
-void Customer::browseFoodItemsMenu(Customer& customer, Restaurant& restaurant) {
+void Customer::browseFoodItemsMenu(Customer& customer, Restaurant& restaurant, Queue<Order>& customerOrdersQueue) {
 	bool continueOrdering = true;
 	while (continueOrdering) {
 		HashTable<int, FoodItem> foodItemsHashTable = customer.browseFoodItems("FoodItems.csv", restaurant.getAllRestaurants("Restaurants.csv"), restaurant.getRestaurantID());
@@ -371,7 +428,7 @@ void Customer::browseFoodItemsMenu(Customer& customer, Restaurant& restaurant) {
 		do {
 			cin >> foodItemChoice;
 			if (foodItemChoice >= 1 && foodItemChoice <= foodItemLength) {
-				continueOrdering = orderFoodItems(customer, restaurant, foodItemChoice, foodItemsHashTable);
+				continueOrdering = orderFoodItems(customer, restaurant, foodItemChoice, foodItemsHashTable, customerOrdersQueue);
 				break;
 			}
 			else {
@@ -384,7 +441,7 @@ void Customer::browseFoodItemsMenu(Customer& customer, Restaurant& restaurant) {
 	}
 }
 
-bool Customer::orderFoodItems(Customer& customer, Restaurant& restaurant, int foodItemChoice, HashTable<int, FoodItem>& foodItemsTable) {
+bool Customer::orderFoodItems(Customer& customer, Restaurant& restaurant, int foodItemChoice, HashTable<int, FoodItem>& foodItemsTable, Queue<Order>& customerOrdersQueue) {
 	int quantity;
 	FoodItem foodItem = foodItemsTable.get(foodItemChoice);
 
@@ -452,7 +509,7 @@ bool Customer::orderFoodItems(Customer& customer, Restaurant& restaurant, int fo
 							break;
 						}
 						else if (confirmOrderStr == "y" || confirmOrderStr == "Y") {
-							createOrder("Orders.csv", customer.getCustomerID(), customer.orderItemsList, restaurant.getRestaurantID(), totalPrice);
+							createOrder("Orders.csv", customer.getCustomerID(), customer.orderItemsList, restaurant.getRestaurantID(), totalPrice, customerOrdersQueue);
 							waitForEnterKey();
 							clearScreen();
 							return false;
@@ -484,7 +541,7 @@ bool Customer::orderFoodItems(Customer& customer, Restaurant& restaurant, int fo
 	} while (true);
 }
 
-void Customer::createOrder(const string& filename, int customerID, LinkedList<OrderItem>& orderItemsList, int restaurantID, long double totalPrice) {
+void Customer::createOrder(const string& filename, int customerID, LinkedList<OrderItem>& orderItemsList, int restaurantID, long double totalPrice, Queue<Order>& customerOrdersQueue) {
 	if (orderItemsList.isEmpty()) {
 		cout << "Error: No items in the order. Please add items to the order first." << endl;
 		return;
@@ -531,11 +588,11 @@ void Customer::createOrder(const string& filename, int customerID, LinkedList<Or
 			<< newOrder.getStatus() << "\n";
 		fileToWrite.close();
 		cout << "Order created and sent to restaurant." << endl;
+		customerOrdersQueue.enqueue(newOrder);
 	}
 	else {
 		cout << "Error: Unable to open the file.\n";
 	}
-
 	orderItemsList.clear();
 }
 

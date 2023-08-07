@@ -28,4 +28,8 @@ public:
 	bool insert(const T item);
 	bool remove(int index);
 	void clear();
+	LinkedList(const LinkedList& other);
+
+	// Overload the assignment operator to create a deep copy of the LinkedList
+	LinkedList& operator=(const LinkedList& other);
 };

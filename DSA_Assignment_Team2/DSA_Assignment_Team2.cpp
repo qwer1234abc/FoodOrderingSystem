@@ -30,10 +30,7 @@ int main()
 
 	string selectedOptionStr;
 
-	orderQueue.displayItems();
-
 	do {
-		orderQueue.displayItems();
 		displayMainMenu();
 		cin >> selectedOptionStr;
 

@@ -39,11 +39,12 @@ public:
 	int orderItemsMenu(const LinkedList<OrderItem>& orderItemsList, const LinkedList<Restaurant>& restaurants);
 	void customerLoginMenu(Customer& customer, HashTable<string, Customer>& customersTable, Queue<Order>& orderQueue);
 	void customerRegisterMenu(Customer& customer, HashTable<string, Customer>& customersTable);
-	void browseFoodItemsMenu(Customer& customer, Restaurant& restaurant);
-	bool orderFoodItems(Customer& customer, Restaurant& restaurant, int foodItemChoice, HashTable<int, FoodItem>& foodItemsTable);
-	void createOrder(const string& ordersFile, int customerID, LinkedList<OrderItem>& orderItemsList, int restaurantID, long double totalPrice);  // To create a new order
+	void browseFoodItemsMenu(Customer& customer, Restaurant& restaurant, Queue<Order>& customerOrdersQueue);
+	bool orderFoodItems(Customer& customer, Restaurant& restaurant, int foodItemChoice, HashTable<int, FoodItem>& foodItemsTable, Queue<Order>& customerOrdersQueue);
+	void createOrder(const string& ordersFile, int customerID, LinkedList<OrderItem>& orderItemsList, int restaurantID, long double totalPrice, Queue<Order>& customerOrdersQueue);  // To create a new order
 	void cancelOrder(const string& ordersFile);  // To cancel an existing order
 	void redeemPoints();
+	void displayOrderHisotry(Queue<Order>& customerOrdersQueue);
 
 	void clearScreen() {
 		cout << "\033[2J\033[1;1H";

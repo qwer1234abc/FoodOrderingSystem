@@ -62,7 +62,7 @@ T LinkedList<T>::retrieve(int index) const {
 }
 
 template <class T>
-bool LinkedList<T>::insert(T item) {
+bool LinkedList<T>::insert(const T item) {
 	Node* newNode = new Node;
 	newNode->item = item;
 	newNode->next = nullptr;
@@ -118,7 +118,36 @@ void LinkedList<T>::clear() {
 	size = 0;
 	head = nullptr;
 }
+template <class T>
+LinkedList<T>::LinkedList(const LinkedList& other) {
+	// Initialize this list as an empty list
+	head = nullptr;
+	size = 0;
 
+	// Iterate through the other list and insert elements into this list
+	Node* current = other.head;
+	while (current != nullptr) {
+		insert(current->item);
+		current = current->next;
+	}
+}
+
+// Assignment operator
+template <class T>
+LinkedList<T>& LinkedList<T>::operator=(const LinkedList& other) {
+	if (this != &other) {
+		// Clear the current list
+		clear();
+
+		// Iterate through the other list and insert elements into this list
+		Node* current = other.head;
+		while (current != nullptr) {
+			insert(current->item);
+			current = current->next;
+		}
+	}
+	return *this;
+}
 // Explicit instantiation for supported types
 template class LinkedList<Restaurant>;
 template class LinkedList<OrderItem>;
