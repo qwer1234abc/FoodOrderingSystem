@@ -1,6 +1,6 @@
 orderID,customerID,foodItemsList,restaurantID,totalPrice,orderStatus
 1,1,5:5,4,62.5,Not Prepared
-2,1,1:1|4:2,1,23.3,Not Prepared
+2,1,1:1|4:2,1,23.3,Preparing
 3,1,5:5|18:1,4,70.5,Not Prepared
 4,1,3:3,3,30,Not Prepared
 5,1,6:1,5,9,Not Prepared
@@ -25,3 +25,5 @@ orderID,customerID,foodItemsList,restaurantID,totalPrice,orderStatus
 24,3,1:3,1,16.5,Preparing
 25,3,1:5|10:5|1:1,1,70.5,Prepared
 26,3,1:5|16:4,1,46.7,Not Prepared
+27,7,2:3|2:5,2,200,Cancelled
+28,7,1:5,1,27.5,Prepared

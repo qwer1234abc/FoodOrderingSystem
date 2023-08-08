@@ -28,6 +28,7 @@ public:
 	string getPassword() const;
 	int getLoyaltyPoints() const;
 	LinkedList<OrderItem> getOrderItemsList() const;
+	string getLoginIDByCustomerID(const string& filename, int customerID);
 
 	// Member functions
 	bool customerLogin(HashTable<string, Customer>& customersTable, const string& filename);

@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include "Order.h"
+#include "Customer.h"
 using namespace std;
 
 class Admin
@@ -29,7 +30,7 @@ public:
 	void displayIncomingOrder(Queue<Order>& restaurantOrdersQueue);
 	void updateOrderStatus(Queue<Order>& restaurantOrdersQueue);
 	void updateOrderStatusInCSV(const string& filename, int orderIDToUpdate, const string& newStatus);
-	void viewCustomerInformationForOrder(Queue<Order>& restaurantOrdersQueue);
+	void viewCustomerInformationForOrder(Queue<Order>& restaurantOrdersQueue, Queue<Order>& allOrders, int restaurantID);
 
 	void clearScreen() {
 		cout << "\033[2J\033[1;1H";

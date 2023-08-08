@@ -110,6 +110,7 @@ Queue<Order> Order::getAllOrders(const string& filename, HashTable<int, FoodItem
 Queue<Order> Order::filterCustomerOrders(Queue<Order>& allOrders, int targetCustomerID) {
 	Queue<Order> filteredQueue;
 
+
 	Order currentOrder;
 	while (allOrders.dequeue(currentOrder)) {
 		if (currentOrder.getCustomerID() == targetCustomerID) {
@@ -145,12 +146,45 @@ Queue<Order> Order::filterUnPreparedCustomerOrders(Queue<Order>& customerOrders)
 
 Queue<Order> Order::filterRestaurantIncomingOrders(Queue<Order>& allOrders, int targetRestaurantID) {
 	Queue<Order> filteredQueue;
+	Queue<Order> tempQueue; // Temporary queue to store orders
+
 
 	Order currentOrder;
 	while (allOrders.dequeue(currentOrder)) {
 		if (currentOrder.getRestaurantID() == targetRestaurantID && currentOrder.getStatus() == "Not Prepared") {
 			filteredQueue.enqueue(currentOrder);
 		}
+		tempQueue.enqueue(currentOrder); // Store the order in the temporary queue
+	}
+
+	// Re-queue the orders back to the original queue
+	while (!tempQueue.isEmpty()) {
+		Order order;
+		tempQueue.dequeue(order);
+		allOrders.enqueue(order);
+	}
+
+	return filteredQueue;
+}
+
+Queue<Order> Order::filterRestaurantSpecificCustomerOrders(Queue<Order>& allOrders, int targetRestaurantID, int targetCustomerID)
+{
+	Queue<Order> filteredQueue;
+	Queue<Order> tempQueue; // Temporary queue to store orders
+
+	Order currentOrder;
+	while (allOrders.dequeue(currentOrder)) {
+		if (currentOrder.getRestaurantID() == targetRestaurantID && currentOrder.getCustomerID() == targetCustomerID) {
+			filteredQueue.enqueue(currentOrder);
+		}
+		tempQueue.enqueue(currentOrder); // Store the order in the temporary queue
+	}
+
+	// Re-queue the orders back to the original queue
+	while (!tempQueue.isEmpty()) {
+		Order order;
+		tempQueue.dequeue(order);
+		allOrders.enqueue(order);
 	}
 
 	return filteredQueue;

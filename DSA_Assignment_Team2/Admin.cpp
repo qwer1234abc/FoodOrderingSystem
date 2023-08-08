@@ -145,7 +145,9 @@ void Admin::adminLoginMenu(Admin& admin, HashTable<string, Admin>& adminTable, Q
 			}
 			else if (adminOptionStr == "2")
 			{
-
+				viewCustomerInformationForOrder(restaurantOrdersQueue, orderQueue, admin.getRestaurantID());
+				waitForEnterKey();
+				clearScreen();
 			}
 			else if (adminOptionStr == "3")
 			{
@@ -390,4 +392,138 @@ void Admin::updateOrderStatusInCSV(const string& filename, int orderIDToUpdate, 
 	}
 
 	outFile.close();
+}
+
+void Admin::viewCustomerInformationForOrder(Queue<Order>& restaurantOrdersQueue, Queue<Order>& allOrders, int restaurantID)
+{
+	if (restaurantOrdersQueue.isEmpty()) {
+		cout << "No orders to view customer information." << endl;
+		return;
+	}
+
+	int customerOrderID;
+	bool validOrderID = false;
+	Order customerOrder;
+
+	while (!validOrderID) {
+		cout << "Enter the Order ID you want to view customer information for (enter 0 to exit): ";
+		cin >> customerOrderID;
+
+		if (cin.fail()) {
+			cin.clear(); // Clear the error flags
+			cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Clear the input buffer
+			cout << "Invalid input. Please enter a valid Order ID." << endl;
+			continue;
+		}
+
+		if (customerOrderID == 0) {
+			cout << "Exiting update process." << endl;
+			return;
+		}
+
+		Queue<Order> updatedQueue; // Temporary queue for updated orders
+
+		while (!restaurantOrdersQueue.isEmpty()) {
+			Order order;
+			restaurantOrdersQueue.dequeue(order);
+
+			if (order.getOrderID() == customerOrderID) {
+				validOrderID = true; // Found a valid order ID
+				customerOrder = order;
+			}
+
+			updatedQueue.enqueue(order);
+		}
+
+		// Re-enqueue orders back to the main queue
+		while (!updatedQueue.isEmpty()) {
+			Order order;
+			updatedQueue.dequeue(order);
+			restaurantOrdersQueue.enqueue(order);
+		}
+
+		if (!validOrderID) {
+			cout << "Invalid Order ID. Please try again." << endl;
+		}
+	}
+
+	if (validOrderID) {
+		Customer customer;
+		string customerLoginID = customer.getLoginIDByCustomerID("Customers.csv", customerOrder.getCustomerID());
+		HashTable<string, Customer> customerTable = customer.getAllCustomers("Customers.csv");
+		customer = customerTable.get(customerLoginID);
+
+		Order order;
+		Queue<Order> specificCustomerOrderQueue = order.filterRestaurantSpecificCustomerOrders(allOrders, restaurantID, customer.getCustomerID());
+
+		if (specificCustomerOrderQueue.isEmpty()) {
+			cout << customer.getName() + " has no past orders in this restaurant." << endl;
+			waitForEnterKey();
+			clearScreen();
+			return;
+		}
+
+		Queue<Order> tempQueue; // Temporary queue to store the orders
+		int totalWidth = 80;
+		string header = "Past Orders For " + customer.getName();
+
+		string dashes(totalWidth, '=');
+
+		int spacesOnEachSide = (totalWidth - header.length()) / 2;
+		string centeredHeader = string(spacesOnEachSide, ' ') + header;
+		string displayName = "Customer Name: " + customer.getName();
+		string displayLoyaltyPoints = "Loyalty Points: " + customer.getLoyaltyPoints();
+		cout << dashes << endl;
+		cout << left << setw(40) << displayName  << displayLoyaltyPoints << endl;
+		cout << dashes << endl;
+		cout << centeredHeader << endl;
+		cout << dashes << endl;
+
+		// Display headers
+		cout << left << setw(10) << "Order ID" << setw(30) << "Food Item" << setw(10) << "Quantity"
+			<< setw(15) << "Status" << setw(15) << "Total Price" << endl;
+		cout << string(totalWidth, '-') << endl;
+
+		while (!specificCustomerOrderQueue.isEmpty())
+		{
+			specificCustomerOrderQueue.getFront(order);
+			specificCustomerOrderQueue.dequeue();
+
+			LinkedList<OrderItem> orderItemsList = order.getOrderItemList();
+			int itemCount = orderItemsList.getLength();
+
+			for (int i = 0; i < itemCount; i++)
+			{
+				OrderItem orderItem;
+				orderItemsList.retrieve(i, orderItem);
+				FoodItem foodItem = orderItem.getFoodItem();
+
+				if (i == 0) {
+					cout << left << setw(10) << order.getOrderID()
+						<< setw(30) << foodItem.getName()
+						<< setw(10) << orderItem.getQuantity()
+						<< setw(15) << order.getStatus()
+						<< fixed << setprecision(2) << setw(15) << order.getTotalPrice() << endl;
+				}
+				else {
+					cout << left << setw(10) << ""
+						<< setw(30) << foodItem.getName()
+						<< setw(10) << orderItem.getQuantity()
+						<< setw(15) << ""
+						<< setw(15) << "" << endl;
+				}
+
+			}
+			tempQueue.enqueue(order);
+			cout << string(totalWidth, '-') << endl;
+
+		}
+		allOrders;
+		while (!tempQueue.isEmpty())
+		{
+			Order order;
+			tempQueue.dequeue(order);
+			specificCustomerOrderQueue.enqueue(order);
+		}
+	}
 }

@@ -41,6 +41,39 @@ LinkedList<OrderItem> Customer::getOrderItemsList() const {
 	return orderItemsList;
 }
 
+string Customer::getLoginIDByCustomerID(const string& filename, int customerID) {
+	ifstream file(filename); // create input file stream object named file and opens the file
+
+	if (!file.is_open())
+	{
+		cout << "Error: Unable to open the file " << filename << endl;
+		return "";
+	}
+
+	string header;
+	getline(file, header); // read the first line of the file and store it in the variable "header"
+
+	string line;
+	while (getline(file, line))
+	{
+		istringstream iss(line); // extract comma-separated values from each line
+		string customerIDFromFile, nameFromFile, loginIDFromFile, passwordFromFile, loyaltyPointsFromFile;
+		getline(iss, customerIDFromFile, ',');
+		getline(iss, nameFromFile, ',');
+		getline(iss, loginIDFromFile, ',');
+		getline(iss, passwordFromFile, ',');
+		getline(iss, loyaltyPointsFromFile, ',');
+
+		if (stoi(customerIDFromFile) == customerID) {
+			return loginIDFromFile;
+		}
+	}
+
+	file.close();
+
+	return "";
+}
+
 HashTable<string, Customer> Customer::getAllCustomers(const string& filename)
 {
 	HashTable <string, Customer> customersTable;

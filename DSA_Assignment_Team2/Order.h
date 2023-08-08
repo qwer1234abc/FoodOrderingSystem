@@ -34,5 +34,6 @@ public:
 	Queue<Order> filterCustomerOrders(Queue<Order>& orders, int customerID);
 	Queue<Order> filterUnPreparedCustomerOrders(Queue<Order>& customerOrders);
 	Queue<Order> filterRestaurantIncomingOrders(Queue<Order>& orders, int restaurantID);
+	Queue<Order> filterRestaurantSpecificCustomerOrders(Queue<Order>& allOrders, int targetRestaurantID, int targetCustomerID);
 };
 
