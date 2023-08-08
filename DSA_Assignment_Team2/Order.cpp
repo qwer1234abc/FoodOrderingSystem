@@ -49,7 +49,7 @@ string Order::getStatus() const
 	return status;
 }
 
-Queue<Order> Order::getAllOrders(const string& filename, HashTable<int, FoodItem> foodItemsTable)
+Queue<Order> Order::getAllOrders(const string& filename, HashTable<int, FoodItem>& foodItemsTable)
 {
 	Queue<Order> orders;
 	ifstream inFile(filename);

@@ -5,7 +5,6 @@
 
 using namespace std;
 
-
 void displayMainMenu();
 
 void clearScreen() {
@@ -26,11 +25,11 @@ int main()
 	FoodItem fooditem;
 	HashTable<int, FoodItem> foodItemsTable = fooditem.getAllFoodItems("FoodItems.csv");
 	Order order;
-	Queue<Order> orderQueue = order.getAllOrders("Orders.csv", foodItemsTable);
 
 	string selectedOptionStr;
 
 	do {
+		Queue<Order> orderQueue = order.getAllOrders("Orders.csv", foodItemsTable);
 		displayMainMenu();
 		cin >> selectedOptionStr;
 

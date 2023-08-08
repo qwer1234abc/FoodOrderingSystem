@@ -96,6 +96,13 @@ void Customer::registerCustomer(HashTable<string, Customer>& customersTable, con
 	cin >> ws;
 	getline(cin, password);
 
+	for (char c : loginID) {
+		if (!isalnum(c)) {
+			cout << "Error: Login ID must contain only alphanumeric characters.\n";
+			return;
+		}
+	}
+
 	string lowercaseLoginID = loginID;
 
 	for (char& c : lowercaseLoginID) { // convert all the characters in the input to lowercase
@@ -347,6 +354,7 @@ void Customer::customerLoginMenu(Customer& customer, HashTable<string, Customer>
 			}
 			else if (customerOptionStr == "4") {
 				cout << "\nWe are logging you out now. Thank you!" << endl;
+				return;
 			}
 			else {
 				cout << "\nInvalid option. Please try again." << endl;
