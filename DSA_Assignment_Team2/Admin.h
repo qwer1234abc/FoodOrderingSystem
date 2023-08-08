@@ -27,6 +27,9 @@ public:
 	void displayAdminMenu();
 	void adminLoginMenu(Admin& admin, HashTable<string, Admin>& adminTable, Queue<Order>& orderQueue);
 	void displayIncomingOrder(Queue<Order>& restaurantOrdersQueue);
+	void updateOrderStatus(Queue<Order>& restaurantOrdersQueue);
+	void updateOrderStatusInCSV(const string& filename, int orderIDToUpdate, const string& newStatus);
+	void viewCustomerInformationForOrder(Queue<Order>& restaurantOrdersQueue);
 
 	void clearScreen() {
 		cout << "\033[2J\033[1;1H";

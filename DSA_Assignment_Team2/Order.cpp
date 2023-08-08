@@ -143,12 +143,12 @@ Queue<Order> Order::filterUnPreparedCustomerOrders(Queue<Order>& customerOrders)
 }
 
 
-Queue<Order> Order::filterRestaurantOrders(Queue<Order>& allOrders, int targetRestaurantID) {
+Queue<Order> Order::filterRestaurantIncomingOrders(Queue<Order>& allOrders, int targetRestaurantID) {
 	Queue<Order> filteredQueue;
 
 	Order currentOrder;
 	while (allOrders.dequeue(currentOrder)) {
-		if (currentOrder.getRestaurantID() == targetRestaurantID) {
+		if (currentOrder.getRestaurantID() == targetRestaurantID && currentOrder.getStatus() == "Not Prepared") {
 			filteredQueue.enqueue(currentOrder);
 		}
 	}

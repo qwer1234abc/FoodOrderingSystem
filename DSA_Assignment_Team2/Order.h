@@ -33,6 +33,6 @@ public:
 	Queue<Order> getAllOrders(const string& filename, HashTable<int, FoodItem>& foodItemsTable);
 	Queue<Order> filterCustomerOrders(Queue<Order>& orders, int customerID);
 	Queue<Order> filterUnPreparedCustomerOrders(Queue<Order>& customerOrders);
-	Queue<Order> filterRestaurantOrders(Queue<Order>& orders, int restaurantID);
+	Queue<Order> filterRestaurantIncomingOrders(Queue<Order>& orders, int restaurantID);
 };
 

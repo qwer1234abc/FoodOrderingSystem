@@ -353,7 +353,7 @@ void Customer::customerLoginMenu(Customer& customer, HashTable<string, Customer>
 				displayOrders(customerOrdersQueue);
 			}
 			else if (customerOptionStr == "3") {
-				cancelOrder("Orders.csv", customerOrdersQueue);
+				cancelOrder(customerOrdersQueue);
 				waitForEnterKey();
 				clearScreen();
 			}
@@ -380,9 +380,17 @@ void Customer::displayOrders(Queue<Order>& customerOrdersQueue)
 
 	Queue<Order> tempQueue; // Temporary queue to store the orders
 
-	// Display the order history without dequeuing the items
-	cout << "\nOrder History:" << endl;
-	cout << string(80, '=') << endl; // Using string constructor to generate dashes
+	int totalWidth = 80;
+	string header = "Order History";
+
+	string dashes(totalWidth, '=');
+
+	int spacesOnEachSide = (totalWidth - header.length()) / 2;
+	string centeredHeader = string(spacesOnEachSide, ' ') + header;
+
+	cout << dashes << endl;
+	cout << centeredHeader << endl;
+	cout << dashes << endl;
 
 	cout << left << setw(10) << "Order ID" << setw(30) << "Food Item" << setw(10) << "Quantity"
 		<< setw(15) << "Status" << setw(15) << "Total Price" << endl;
@@ -595,7 +603,7 @@ void Customer::createOrder(const string& filename, int customerID, LinkedList<Or
 	orderItemsList.clear();
 }
 
-void Customer::cancelOrder(const string& filename, Queue<Order>& customerOrdersQueue) {
+void Customer::cancelOrder(Queue<Order>& customerOrdersQueue) {
 	Order order;
 	Queue<Order> unPreparedOrdersQueue = order.filterUnPreparedCustomerOrders(customerOrdersQueue);
 
@@ -606,16 +614,23 @@ void Customer::cancelOrder(const string& filename, Queue<Order>& customerOrdersQ
 
 	Queue<Order> tempQueue; // Temporary queue to store the orders
 
-	// Display the order history without dequeuing the items
-	cout << "\nUnprepared Orders:" << endl;
-	cout << string(80, '=') << endl;
+	int totalWidth = 80;
+	string header = "Unprepared Orders";
+
+	string dashes(totalWidth, '=');
+
+	int spacesOnEachSide = (totalWidth - header.length()) / 2;
+	string centeredHeader = string(spacesOnEachSide, ' ') + header;
+
+	cout << dashes << endl;
+	cout << centeredHeader << endl;
+	cout << dashes << endl;
 
 	cout << left << setw(10) << "Order ID" << setw(30) << "Food Item" << setw(10) << "Quantity"
 		<< setw(15) << "Status" << setw(15) << "Total Price" << endl;
 	cout << string(80, '-') << endl;
 
 	while (!unPreparedOrdersQueue.isEmpty()) {
-		Order order;
 		unPreparedOrdersQueue.getFront(order);
 		unPreparedOrdersQueue.dequeue();
 
@@ -651,7 +666,7 @@ void Customer::cancelOrder(const string& filename, Queue<Order>& customerOrdersQ
 	// Ask for user input for valid Order ID
 	int orderIDToCancel;
 	bool validOrderID = false;
-	Order canceledOrder;
+	Order cancelledOrder;
 
 	while (!validOrderID) {
 		cout << "Enter the Order ID you want to cancel (enter 0 to exit): ";
@@ -670,11 +685,10 @@ void Customer::cancelOrder(const string& filename, Queue<Order>& customerOrdersQ
 		}
 
 		while (!tempQueue.isEmpty()) {
-			Order order;
 			tempQueue.dequeue(order);
 			if (order.getOrderID() == orderIDToCancel) {
 				validOrderID = true; // Found a valid order ID
-				canceledOrder = order; // Store the cancelled order
+				cancelledOrder = order; // Store the cancelled order
 				cout << "Order with ID " << orderIDToCancel << " is canceled." << endl;
 				break;
 			}
@@ -693,7 +707,7 @@ void Customer::cancelOrder(const string& filename, Queue<Order>& customerOrdersQ
 	}
 
 	if (validOrderID) {
-		canceledOrder.setStatus("Cancelled");
+		cancelledOrder.setStatus("Cancelled");
 
 		// Update the status of the cancelled order in the original queue
 		Queue<Order> updatedCustomerOrdersQueue;
@@ -702,8 +716,8 @@ void Customer::cancelOrder(const string& filename, Queue<Order>& customerOrdersQ
 			Order originalOrder;
 			customerOrdersQueue.dequeue(originalOrder);
 
-			if (originalOrder.getOrderID() == canceledOrder.getOrderID()) {
-				originalOrder = canceledOrder;  // Update status of the cancelled order
+			if (originalOrder.getOrderID() == cancelledOrder.getOrderID()) {
+				originalOrder = cancelledOrder;  // Update status of the cancelled order
 			}
 
 			updatedCustomerOrdersQueue.enqueue(originalOrder);
@@ -716,7 +730,7 @@ void Customer::cancelOrder(const string& filename, Queue<Order>& customerOrdersQ
 			customerOrdersQueue.enqueue(updatedOrder);
 		}
 
-		updateOrderStatusInCSV(filename, canceledOrder.getOrderID(), "Cancelled");
+		updateOrderStatusInCSV("Orders.csv", cancelledOrder.getOrderID(), cancelledOrder.getStatus());
 	}
 
 	// Re-queue the remaining orders

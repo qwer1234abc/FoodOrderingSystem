@@ -184,12 +184,15 @@ void HashTable<int, FoodItem>::print(const LinkedList<Restaurant>& restaurants)
 	// Calculate the padding to center the header
 	int totalWidth = 86; // Increased total width to accommodate the restaurant name
 	string header = "Food Items Menu";
-	int padding = (totalWidth - header.length()) / 2;
 
-	// Print header
-	cout << setfill('=') << setw(totalWidth) << "=" << setfill(' ') << endl;
-	cout << setw(padding + header.length()) << header << endl;
-	cout << setfill('=') << setw(totalWidth) << "=" << setfill(' ') << endl;
+	string dashes(totalWidth, '=');
+
+	int spacesOnEachSide = (totalWidth - header.length()) / 2;
+	string centeredHeader = string(spacesOnEachSide, ' ') + header;
+
+	cout << dashes << endl;
+	cout << centeredHeader << endl;
+	cout << dashes << endl;
 
 	for (int i = 0; i < MAX_SIZE; i++)
 	{
@@ -216,8 +219,8 @@ void HashTable<int, FoodItem>::print(const LinkedList<Restaurant>& restaurants, 
 {
 	// Calculate the padding to center the header
 	int totalWidth = 86; // Increased total width to accommodate the restaurant name
-	string header = "Food Items Menu";
-	int padding = (totalWidth - header.length()) / 2;
+	string dashes(totalWidth, '=');
+
 
 	// Get the restaurant name for the provided restaurant ID
 	string restaurantName = "";
@@ -230,11 +233,12 @@ void HashTable<int, FoodItem>::print(const LinkedList<Restaurant>& restaurants, 
 		}
 	}
 
-	// Print the restaurant name in the header
-	cout << setfill('=') << setw(totalWidth) << "=" << setfill(' ') << endl;
-	cout << setw(padding + header.length()) << header << endl;
-	cout << "Restaurant: " << restaurantName << endl;
-	cout << setfill('=') << setw(totalWidth) << "=" << setfill(' ') << endl;
+	int spacesOnEachSide = (totalWidth - restaurantName.length()) / 2;
+	string centeredHeader = string(spacesOnEachSide, ' ') + restaurantName;
+
+	cout << dashes << endl;
+	cout << centeredHeader << endl;
+	cout << dashes << endl;
 
 	for (int i = 0; i < MAX_SIZE; i++)
 	{

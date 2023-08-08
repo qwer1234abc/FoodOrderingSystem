@@ -43,7 +43,7 @@ public:
 	void browseFoodItemsMenu(Customer& customer, Restaurant& restaurant, Queue<Order>& customerOrdersQueue);
 	bool orderFoodItems(Customer& customer, Restaurant& restaurant, int foodItemChoice, HashTable<int, FoodItem>& foodItemsTable, Queue<Order>& customerOrdersQueue);
 	void createOrder(const string& filename, int customerID, LinkedList<OrderItem>& orderItemsList, int restaurantID, long double totalPrice, Queue<Order>& customerOrdersQueue);  // To create a new order
-	void cancelOrder(const string& filename, Queue<Order>& customerOrdersQueue);  // To cancel an existing order
+	void cancelOrder(Queue<Order>& customerOrdersQueue);  // To cancel an existing order
 	void redeemPoints();
 	void displayOrders(Queue<Order>& customerOrdersQueue);
 	void updateOrderStatusInCSV(const string& filename, int orderIDToCancel, const string& newStatus);

@@ -115,14 +115,10 @@ bool Admin::adminLogin(HashTable<string, Admin>& adminTable, const string& filen
 }
 
 void Admin::displayAdminMenu() {
-	cout << "Welcome " << name << ", " << "here is the admin menu:" << endl;
-	cout << "====================================" << endl;
-	cout << "             Admin Menu            " << endl;
-	cout << "====================================" << endl;
-	cout << "1. View Incoming Orders" << endl;
-	cout << "2. Update Status of Orders" << endl;
-	cout << "3. View Customer Information" << endl;
-	cout << "4. Log out" << endl;
+	cout << "\n====================================" << endl;
+	cout << "1. Update Status of Orders" << endl;
+	cout << "2. View Customer Information" << endl;
+	cout << "3. Log out" << endl;
 	cout << "====================================" << endl;
 	cout << "Enter your choice: ";
 }
@@ -135,15 +131,32 @@ void Admin::adminLoginMenu(Admin& admin, HashTable<string, Admin>& adminTable, Q
 	if (admin.adminLogin(adminTable, "Admins.csv")) {
 		// Filter the order queue to only display the restaurant's orders
 		Order order;
-		Queue<Order> restaurantOrdersQueue = order.filterRestaurantOrders(orderQueue, admin.getRestaurantID());
+		Queue<Order> restaurantOrdersQueue = order.filterRestaurantIncomingOrders(orderQueue, admin.getRestaurantID());
 		waitForEnterKey();
 		clearScreen();
 		string adminOptionStr;
 		do {
 			admin.displayIncomingOrder(restaurantOrdersQueue);
-
 			cin >> adminOptionStr;
-		} while (adminOptionStr != "4");
+
+			if (adminOptionStr == "1")
+			{
+				updateOrderStatus(restaurantOrdersQueue);
+			}
+			else if (adminOptionStr == "2")
+			{
+
+			}
+			else if (adminOptionStr == "3")
+			{
+				cout << "\nWe are logging you out now. Thank you!" << endl;
+				return;
+			}
+			else
+			{
+				cout << "\nInvalid option. Please try again." << endl;
+			}
+		} while (adminOptionStr != "3");
 	}
 }
 
@@ -157,14 +170,22 @@ void Admin::displayIncomingOrder(Queue<Order>& restaurantOrdersQueue)
 	}
 
 	Queue<Order> tempQueue; // Temporary queue to store the orders
+	int totalWidth = 80;
+	string header = "Incoming Orders";
 
-	cout << "\nIncoming Orders:" << endl;
-	cout << string(80, '=') << endl; // Using string constructor to generate dashes
+	string dashes(totalWidth, '=');
+
+	int spacesOnEachSide = (totalWidth - header.length()) / 2;
+	string centeredHeader = string(spacesOnEachSide, ' ') + header;
+
+	cout << dashes << endl;
+	cout << centeredHeader << endl;
+	cout << dashes << endl;
 
 	// Display headers
 	cout << left << setw(10) << "Order ID" << setw(30) << "Food Item" << setw(10) << "Quantity"
 		<< setw(15) << "Status" << setw(15) << "Total Price" << endl;
-	cout << string(80, '-') << endl;
+	cout << string(totalWidth, '-') << endl;
 
 	while (!restaurantOrdersQueue.isEmpty())
 	{
@@ -198,7 +219,7 @@ void Admin::displayIncomingOrder(Queue<Order>& restaurantOrdersQueue)
 
 		}
 		tempQueue.enqueue(order);
-		cout << string(80, '-') << endl;
+		cout << string(totalWidth, '-') << endl;
 	}
 
 	while (!tempQueue.isEmpty())
@@ -207,6 +228,166 @@ void Admin::displayIncomingOrder(Queue<Order>& restaurantOrdersQueue)
 		tempQueue.dequeue(order);
 		restaurantOrdersQueue.enqueue(order);
 	}
-	waitForEnterKey();
-	clearScreen();
+
+	displayAdminMenu();
+}
+
+void Admin::updateOrderStatus(Queue<Order>& restaurantOrdersQueue) {
+	if (restaurantOrdersQueue.isEmpty()) {
+		cout << "No orders to update." << endl;
+		return;
+	}
+
+	int orderIDToUpdate;
+	bool validOrderID = false;
+	Order updatedOrder;
+
+	while (!validOrderID) {
+		cout << "Enter the Order ID you want to update (enter 0 to exit): ";
+		cin >> orderIDToUpdate;
+
+		if (cin.fail()) {
+			cin.clear(); // Clear the error flags
+			cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Clear the input buffer
+			cout << "Invalid input. Please enter a valid Order ID." << endl;
+			continue;
+		}
+
+		if (orderIDToUpdate == 0) {
+			cout << "Exiting update process." << endl;
+			return;
+		}
+
+		Queue<Order> updatedQueue; // Temporary queue for updated orders
+
+		while (!restaurantOrdersQueue.isEmpty()) {
+			Order order;
+			restaurantOrdersQueue.dequeue(order);
+
+			if (order.getOrderID() == orderIDToUpdate) {
+				validOrderID = true; // Found a valid order ID
+				updatedOrder = order; // Store the order to be updated
+				cout << "\n-------------------------" << endl;
+				cout << "      Status Options     " << endl;
+				cout << "-------------------------" << endl;
+				cout << "1. Preparing" << endl;
+				cout << "2. Prepared" << endl;
+			}
+			else {
+				updatedQueue.enqueue(order); // Store orders that are not being updated
+			}
+		}
+
+		// Re-enqueue orders back to the main queue
+		while (!updatedQueue.isEmpty()) {
+			Order order;
+			updatedQueue.dequeue(order);
+			restaurantOrdersQueue.enqueue(order);
+		}
+
+		if (!validOrderID) {
+			cout << "Invalid Order ID. Please try again." << endl;
+		}
+	}
+
+	if (validOrderID) {
+		int status;
+		bool updated = false;
+		while (true)
+		{
+			cout << "Enter the new status for the order: ";
+			cin >> status;
+
+
+			if (cin.fail()) {
+				cin.clear(); // Clear the error flags
+				cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Clear the input buffer
+				cout << "Invalid input. Please enter a valid input." << endl;
+				continue;
+			}
+
+			if (status == 1) {
+				updatedOrder.setStatus("Preparing");
+				updated = true;
+				cout << "Order status updated to 'Preparing'." << endl;
+				break;
+			}
+			else if (status == 2) {
+				updatedOrder.setStatus("Prepared");
+				updated = true;
+				cout << "Order status updated to 'Prepared'." << endl;
+				break;
+			}
+			else {
+				cout << "Invalid status. Please enter 1 for Preparing, 2 for Prepared.\n" << endl;
+			}
+		}
+		if (updated)
+		{
+			// Update the status of the updated order in the original queue
+			Queue<Order> updatedCustomerOrdersQueue;
+
+			while (!restaurantOrdersQueue.isEmpty()) {
+				Order originalOrder;
+				restaurantOrdersQueue.dequeue(originalOrder);
+
+				if (originalOrder.getOrderID() == updatedOrder.getOrderID()) {
+					originalOrder = updatedOrder;  // Update status of the updated order
+				}
+
+				updatedCustomerOrdersQueue.enqueue(originalOrder);
+			}
+
+			// Update the original queue with the modified orders
+			while (!updatedCustomerOrdersQueue.isEmpty()) {
+				Order updatedOrder;
+				updatedCustomerOrdersQueue.dequeue(updatedOrder);
+				restaurantOrdersQueue.enqueue(updatedOrder);
+			}
+
+			updateOrderStatusInCSV("Orders.csv", updatedOrder.getOrderID(), updatedOrder.getStatus());
+		}
+	}
+}
+
+void Admin::updateOrderStatusInCSV(const string& filename, int orderIDToUpdate, const string& newStatus)
+{
+	ifstream inFile(filename);
+	if (!inFile.is_open()) {
+		cerr << "Failed to open the file." << endl;
+		return;
+	}
+
+	stringstream buffer;
+	buffer << inFile.rdbuf(); // Read entire file into the buffer
+	inFile.close();
+
+	ofstream outFile(filename);
+	if (!outFile.is_open()) {
+		cerr << "Failed to open the file." << endl;
+		return;
+	}
+
+	string line;
+	buffer.seekg(0); // Rewind the buffer to the beginning
+	getline(buffer, line); // Skip the header line
+	outFile << line << endl; // Write the header line to the output file
+
+	while (getline(buffer, line)) {
+		stringstream lineStream(line);
+		string token;
+		getline(lineStream, token, ',');
+		int orderID = stoi(token);
+
+		if (orderID == orderIDToUpdate) {
+			// Replace the order status in this line
+			string newLine = line.substr(0, line.rfind(',') + 1) + newStatus;
+			outFile << newLine << endl;
+		}
+		else {
+			outFile << line << endl;
+		}
+	}
+
+	outFile.close();
 }
