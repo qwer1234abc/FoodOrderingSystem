@@ -44,6 +44,4 @@ public:
 
     // return number of elements in the queue
     int getNoOfElements();
-
-    void filterQueueForCustomer(int customerID);
 };

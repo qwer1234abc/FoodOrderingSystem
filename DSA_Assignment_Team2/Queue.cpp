@@ -163,16 +163,4 @@ int Queue<ItemType>::getNoOfElements()
 	return count;
 }
 
-template<typename ItemType>
-void Queue<ItemType>::filterQueueForCustomer(int customerID)
-{
-
-	Order currentOrder;
-	while (dequeue(currentOrder)) {
-		if (currentOrder.getCustomerID() == customerID) {
-			enqueue(currentOrder);
-		}
-	}
-}
-
 template class Queue<Order>;

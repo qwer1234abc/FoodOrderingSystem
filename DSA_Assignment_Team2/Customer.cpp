@@ -92,6 +92,10 @@ void Customer::registerCustomer(HashTable<string, Customer>& customersTable, con
 	cout << "Login ID: ";
 	cin >> ws;
 	getline(cin, loginID);
+	if (loginID.length() > 20) {
+		cout << "Error: Login ID must not exceed 20 characters.\n";
+		return;
+	}
 	cout << "Password: ";
 	cin >> ws;
 	getline(cin, password);
@@ -167,6 +171,10 @@ bool Customer::customerLogin(HashTable<string, Customer>& customersTable, const 
 	cout << "Login ID: ";
 	cin >> ws;
 	getline(cin, loginID);
+	if (loginID.length() > 20) {
+		cout << "Error: Login ID must not exceed 20 characters.\n";
+		return false; // Return false because login is not successful
+	}
 	cout << "Password: ";
 	cin >> ws;
 	getline(cin, password);
@@ -178,8 +186,8 @@ bool Customer::customerLogin(HashTable<string, Customer>& customersTable, const 
 	}
 
 	Customer customer = customersTable.get(lowercaseLoginID);
-	if (customer.getCustomerID() != 0 && customer.getLoginID() == lowercaseLoginID && customer.getPassword() == password)
-	{
+
+	if (customer.getCustomerID() != 0 && customer.getLoginID() == lowercaseLoginID && customer.getPassword() == password) {
 		customerID = customer.getCustomerID(); // convert customerID to from string to integer
 		name = customer.getName();
 		loyaltyPoints = customer.getLoyaltyPoints(); // convert loyalty points to integer
@@ -189,8 +197,7 @@ bool Customer::customerLogin(HashTable<string, Customer>& customersTable, const 
 	else if (customer.getCustomerID() == 0) {
 		cout << "Customer with this Login ID does not exist. Please try again.\n";
 	}
-	else
-	{
+	else {
 		cout << "Incorrect Login ID or password. Please try again.\n";
 	}
 	return false;
@@ -315,10 +322,8 @@ int Customer::orderItemsMenu(const LinkedList<OrderItem>& orderItemsList, const 
 	OrderItem firstOrderItem = orderItemsList.retrieve(0); // retrieve the first order item from the orderitemlist
 	string restaurantName = firstOrderItem.getFoodItem().getRestaurantNameByID(firstOrderItem.getFoodItem().getRestaurantID(), restaurants); // get restaurant id of the food item
 	cout << "1. Add more items from " << restaurantName << endl;
-
-	cout << "2. Remove an item" << endl;
-	cout << "3. Confirm order" << endl;
-	cout << "4. Cancel Order (Exit)" << endl;
+	cout << "2. Confirm order" << endl;
+	cout << "3. Cancel Order (Exit)" << endl;
 	cout << setfill('=') << setw(totalWidth) << "=" << setfill(' ') << endl;
 	cout << "Enter your choice: ";
 
@@ -345,12 +350,12 @@ void Customer::customerLoginMenu(Customer& customer, HashTable<string, Customer>
 				browseFoodItemsMenu(customer, restaurant, customerOrdersQueue);
 			}
 			else if (customerOptionStr == "2") {
-				waitForEnterKey();
-				clearScreen();
-				displayOrderHisotry(customerOrdersQueue);
+				displayOrders(customerOrdersQueue);
 			}
 			else if (customerOptionStr == "3") {
-
+				cancelOrder("Orders.csv", customerOrdersQueue);
+				waitForEnterKey();
+				clearScreen();
 			}
 			else if (customerOptionStr == "4") {
 				cout << "\nWe are logging you out now. Thank you!" << endl;
@@ -363,7 +368,7 @@ void Customer::customerLoginMenu(Customer& customer, HashTable<string, Customer>
 	}
 }
 
-void Customer::displayOrderHisotry(Queue<Order>& customerOrdersQueue)
+void Customer::displayOrders(Queue<Order>& customerOrdersQueue)
 {
 	if (customerOrdersQueue.isEmpty())
 	{
@@ -376,14 +381,14 @@ void Customer::displayOrderHisotry(Queue<Order>& customerOrdersQueue)
 	Queue<Order> tempQueue; // Temporary queue to store the orders
 
 	// Display the order history without dequeuing the items
-	cout << "Order History" << endl;
-	cout << "-------------------------------------" << endl;
+	cout << "Order History:" << endl;
+	cout << string(40, '=') << endl; // Using string constructor to generate dashes
 
 	while (!customerOrdersQueue.isEmpty())
 	{
 		Order order;
-		customerOrdersQueue.getFront(order); // Retrieve the front order without dequeuing
-		customerOrdersQueue.dequeue(); // Move to the next order
+		customerOrdersQueue.getFront(order);
+		customerOrdersQueue.dequeue();
 
 		cout << "Order ID: " << order.getOrderID() << endl;
 
@@ -402,19 +407,17 @@ void Customer::displayOrderHisotry(Queue<Order>& customerOrdersQueue)
 
 		cout << "Status: " << order.getStatus() << endl;
 		cout << "Total Price: " << order.getTotalPrice() << endl;
-		cout << "-------------------------------------" << endl;
+		cout << string(40, '=') << endl;
 
-		tempQueue.enqueue(order); // Store the order in the temporary queue
+		tempQueue.enqueue(order);
 	}
 
-	// Re-enqueue the orders back to the original queue
 	while (!tempQueue.isEmpty())
 	{
 		Order order;
 		tempQueue.dequeue(order);
 		customerOrdersQueue.enqueue(order);
 	}
-
 	waitForEnterKey();
 	clearScreen();
 }
@@ -473,27 +476,6 @@ bool Customer::orderFoodItems(Customer& customer, Restaurant& restaurant, int fo
 					return true; // Continue ordering more food items
 				}
 				else if (addMoreFoodItemsStr == "2") {
-					// Remove an item from the order
-					int itemNumber;
-					do {
-						cout << "Enter item number to remove: ";
-						cin >> itemNumber;
-						if (itemNumber >= 1 && itemNumber <= customer.orderItemsList.getLength()) {
-							customer.orderItemsList.remove(itemNumber - 1);
-							cout << "Item removed successfully." << endl;
-							waitForEnterKey();
-							clearScreen();
-							break;
-						}
-						else {
-							cout << "Invalid option. Please try again." << endl;
-							itemNumber = -1;
-							cin.clear();
-							cin.ignore(numeric_limits<streamsize>::max(), '\n');
-						}
-					} while (true);
-				}
-				else if (addMoreFoodItemsStr == "3") {
 					long double totalPrice = 0.0; // Initialize the total price to zero
 
 					for (int i = 0; i < customer.orderItemsList.getLength(); i++) // loop through all the items in the orderitemslist list
@@ -527,8 +509,7 @@ bool Customer::orderFoodItems(Customer& customer, Restaurant& restaurant, int fo
 						}
 					} while (true);
 				}
-				// Handle other options as needed
-				else if (addMoreFoodItemsStr == "4") {
+				else if (addMoreFoodItemsStr == "3") {
 					customer.orderItemsList.clear();
 					cout << "Ordered items cancelled." << endl;
 					waitForEnterKey();
@@ -604,9 +585,165 @@ void Customer::createOrder(const string& filename, int customerID, LinkedList<Or
 	orderItemsList.clear();
 }
 
-void Customer::cancelOrder(const string& ordersFile) {
-	// TODO: Implement this. Read the orders file, let the customer choose an order to cancel, and update the order status in the file.
+void Customer::cancelOrder(const string& filename, Queue<Order>& customerOrdersQueue) {
+	Order order;
+	Queue<Order> unPreparedOrdersQueue = order.filterUnPreparedCustomerOrders(customerOrdersQueue);
+	if (unPreparedOrdersQueue.isEmpty()) {
+		cout << "No orders to cancel." << endl;
+		return;
+	}
+
+	Queue<Order> tempQueue; // Temporary queue to store the orders
+
+	// Display the order history without dequeuing the items
+	cout << "Unprepared Orders:" << endl;
+	cout << string(40, '=') << endl; // Using string constructor to generate dashes
+
+	while (!unPreparedOrdersQueue.isEmpty()) {
+		Order order;
+		unPreparedOrdersQueue.getFront(order);
+		unPreparedOrdersQueue.dequeue();
+
+		cout << "Order ID: " << order.getOrderID() << endl;
+
+		LinkedList<OrderItem> orderItemsList = order.getOrderItemList();
+		int itemCount = orderItemsList.getLength();
+
+		for (int i = 0; i < itemCount; i++) {
+			OrderItem orderItem;
+			orderItemsList.retrieve(i, orderItem);
+			FoodItem foodItem = orderItem.getFoodItem();
+
+			cout << "Food Item: " << foodItem.getName() << endl;
+			cout << "Quantity: " << orderItem.getQuantity() << endl;
+		}
+
+		cout << "Status: " << order.getStatus() << endl;
+		cout << "Total Price: " << order.getTotalPrice() << endl;
+		cout << string(40, '=') << endl;
+
+		tempQueue.enqueue(order);
+	}
+
+	// Ask for user input for valid Order ID
+	int orderIDToCancel;
+	bool validOrderID = false;
+	Order canceledOrder;
+
+	while (!validOrderID) {
+		cout << "Enter the Order ID you want to cancel (enter 0 to exit): ";
+		cin >> orderIDToCancel;
+
+		if (cin.fail()) {
+			cin.clear(); // Clear the error flags
+			cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Clear the input buffer
+			cout << "Invalid input. Please enter a valid Order ID." << endl;
+			continue;
+		}
+
+		if (orderIDToCancel == 0) {
+			cout << "Exiting cancellation process." << endl;
+			return;
+		}
+
+		while (!tempQueue.isEmpty()) {
+			Order order;
+			tempQueue.dequeue(order);
+			if (order.getOrderID() == orderIDToCancel) {
+				validOrderID = true; // Found a valid order ID
+				canceledOrder = order; // Store the cancelled order
+				cout << "Order with ID " << orderIDToCancel << " is canceled." << endl;
+				break;
+			}
+			unPreparedOrdersQueue.enqueue(order);
+		}
+
+		// Move orders from unPreparedOrdersQueue to tempQueue
+		while (!unPreparedOrdersQueue.isEmpty()) {
+			unPreparedOrdersQueue.dequeue(order);
+			tempQueue.enqueue(order);
+		}
+
+		if (!validOrderID) {
+			cout << "Invalid Order ID. Please try again." << endl;
+		}
+	}
+
+	if (validOrderID) {
+		canceledOrder.setStatus("Cancelled");
+
+		// Update the status of the cancelled order in the original queue
+		Queue<Order> updatedCustomerOrdersQueue;
+
+		while (!customerOrdersQueue.isEmpty()) {
+			Order originalOrder;
+			customerOrdersQueue.dequeue(originalOrder);
+
+			if (originalOrder.getOrderID() == canceledOrder.getOrderID()) {
+				originalOrder = canceledOrder;  // Update status of the cancelled order
+			}
+
+			updatedCustomerOrdersQueue.enqueue(originalOrder);
+		}
+
+		// Update the original queue with the modified orders
+		while (!updatedCustomerOrdersQueue.isEmpty()) {
+			Order updatedOrder;
+			updatedCustomerOrdersQueue.dequeue(updatedOrder);
+			customerOrdersQueue.enqueue(updatedOrder);
+		}
+
+		updateOrderStatusInCSV(filename, canceledOrder.getOrderID(), "Cancelled");
+	}
+
+	// Re-queue the remaining orders
+	while (!tempQueue.isEmpty()) {
+		tempQueue.dequeue(order);
+		unPreparedOrdersQueue.enqueue(order);
+	}
 }
+
+void Customer::updateOrderStatusInCSV(const string& filename, int orderIDToCancel, const string& newStatus) {
+	ifstream inFile(filename);
+	if (!inFile.is_open()) {
+		cerr << "Failed to open the file." << endl;
+		return;
+	}
+
+	stringstream buffer;
+	buffer << inFile.rdbuf(); // Read entire file into the buffer
+	inFile.close();
+
+	ofstream outFile(filename);
+	if (!outFile.is_open()) {
+		cerr << "Failed to open the file." << endl;
+		return;
+	}
+
+	string line;
+	buffer.seekg(0); // Rewind the buffer to the beginning
+	getline(buffer, line); // Skip the header line
+	outFile << line << endl; // Write the header line to the output file
+
+	while (getline(buffer, line)) {
+		stringstream lineStream(line);
+		string token;
+		getline(lineStream, token, ',');
+		int orderID = stoi(token);
+
+		if (orderID == orderIDToCancel) {
+			// Replace the order status in this line
+			string newLine = line.substr(0, line.rfind(',') + 1) + newStatus;
+			outFile << newLine << endl;
+		}
+		else {
+			outFile << line << endl;
+		}
+	}
+
+	outFile.close();
+}
+
 
 void Customer::redeemPoints() {
 	// TODO: Implement this. Deduct points from the customer's loyalty points and display a success message.

@@ -49,6 +49,11 @@ string Order::getStatus() const
 	return status;
 }
 
+void Order::setStatus(const string& status)
+{
+	this->status = status;
+}
+
 Queue<Order> Order::getAllOrders(const string& filename, HashTable<int, FoodItem>& foodItemsTable)
 {
 	Queue<Order> orders;
@@ -114,6 +119,29 @@ Queue<Order> Order::filterCustomerOrders(Queue<Order>& allOrders, int targetCust
 
 	return filteredQueue;
 }
+
+Queue<Order> Order::filterUnPreparedCustomerOrders(Queue<Order>& customerOrders) {
+	Queue<Order> filteredQueue;
+	Queue<Order> tempQueue; // Temporary queue to store orders
+
+	Order currentOrder;
+	while (customerOrders.dequeue(currentOrder)) {
+		if (currentOrder.getStatus() == "Not Prepared") {
+			filteredQueue.enqueue(currentOrder);
+		}
+		tempQueue.enqueue(currentOrder); // Store the order in the temporary queue
+	}
+
+	// Re-queue the orders back to the original queue
+	while (!tempQueue.isEmpty()) {
+		Order order;
+		tempQueue.dequeue(order);
+		customerOrders.enqueue(order);
+	}
+
+	return filteredQueue;
+}
+
 
 Queue<Order> Order::filterRestaurantOrders(Queue<Order>& allOrders, int targetRestaurantID) {
 	Queue<Order> filteredQueue;

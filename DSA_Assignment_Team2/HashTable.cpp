@@ -36,7 +36,6 @@ int HashTable<KeyType, ItemType>::hash(int key)
 template<typename KeyType, typename ItemType>
 int HashTable<KeyType, ItemType>::hash(const string& key)
 {
-	// Implement a better hash function for alphanumeric keys
 	const int PRIME = 31; // A prime number to use in the hash calculation
 	long long int hashValue = 0;
 
@@ -53,7 +52,7 @@ int HashTable<KeyType, ItemType>::hash(const string& key)
 		}
 		else
 		{
-			charVal = -1; // For other characters, you can adjust this to your preference.
+			charVal = -1;
 		}
 
 		if (charVal != -1)
@@ -62,14 +61,20 @@ int HashTable<KeyType, ItemType>::hash(const string& key)
 		}
 	}
 
-	return hashValue % MAX_SIZE;
+	int index = hashValue % MAX_SIZE;
+	if (index < 0)
+	{
+		index += MAX_SIZE;
+	}
+
+	return index;
 }
 
 // Other member function implementations remain the same, but now work with FoodItem objects
 template<typename KeyType, typename ItemType>
 bool HashTable<KeyType, ItemType>::add(KeyType newKey, ItemType newItem)
 {
-	int index = hash(newKey);
+	long long int index = hash(newKey);
 	Node<KeyType, ItemType>* newNode = new Node<KeyType, ItemType>;
 	newNode->key = newKey;
 	newNode->item = newItem;
@@ -108,7 +113,7 @@ bool HashTable<KeyType, ItemType>::add(KeyType newKey, ItemType newItem)
 template<typename KeyType, typename ItemType>
 void HashTable<KeyType, ItemType>::remove(KeyType key)
 {
-	int index = hash(key);
+	long long int index = hash(key);
 
 	if (items[index] == nullptr)
 	{
@@ -142,7 +147,7 @@ void HashTable<KeyType, ItemType>::remove(KeyType key)
 template<typename KeyType, typename ItemType>
 ItemType HashTable<KeyType, ItemType>::get(KeyType key)
 {
-	int index = hash(key);
+	long long int index = hash(key);
 
 	if (items[index] == nullptr)
 	{

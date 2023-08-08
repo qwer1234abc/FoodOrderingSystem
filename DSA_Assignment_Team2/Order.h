@@ -26,10 +26,13 @@ public:
 	LinkedList<OrderItem> getOrderItemList() const;
 	int getRestaurantID() const;
 	double getTotalPrice() const;
+
+	void setStatus(const string& status);
 	string getStatus() const;
 	string orderItemsListToString(const LinkedList<OrderItem>& orderItems);
 	Queue<Order> getAllOrders(const string& filename, HashTable<int, FoodItem>& foodItemsTable);
 	Queue<Order> filterCustomerOrders(Queue<Order>& orders, int customerID);
+	Queue<Order> filterUnPreparedCustomerOrders(Queue<Order>& customerOrders);
 	Queue<Order> filterRestaurantOrders(Queue<Order>& orders, int restaurantID);
 };
 
