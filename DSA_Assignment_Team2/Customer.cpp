@@ -381,16 +381,18 @@ void Customer::displayOrders(Queue<Order>& customerOrdersQueue)
 	Queue<Order> tempQueue; // Temporary queue to store the orders
 
 	// Display the order history without dequeuing the items
-	cout << "Order History:" << endl;
-	cout << string(40, '=') << endl; // Using string constructor to generate dashes
+	cout << "\nOrder History:" << endl;
+	cout << string(80, '=') << endl; // Using string constructor to generate dashes
+
+	cout << left << setw(10) << "Order ID" << setw(30) << "Food Item" << setw(10) << "Quantity"
+		<< setw(15) << "Status" << setw(15) << "Total Price" << endl;
+	cout << string(80, '-') << endl;
 
 	while (!customerOrdersQueue.isEmpty())
 	{
 		Order order;
 		customerOrdersQueue.getFront(order);
 		customerOrdersQueue.dequeue();
-
-		cout << "Order ID: " << order.getOrderID() << endl;
 
 		LinkedList<OrderItem> orderItemsList = order.getOrderItemList();
 		int itemCount = orderItemsList.getLength();
@@ -401,15 +403,23 @@ void Customer::displayOrders(Queue<Order>& customerOrdersQueue)
 			orderItemsList.retrieve(i, orderItem);
 			FoodItem foodItem = orderItem.getFoodItem();
 
-			cout << "Food Item: " << foodItem.getName() << endl;
-			cout << "Quantity: " << orderItem.getQuantity() << endl;
+			if (i == 0) {
+				cout << left << setw(10) << order.getOrderID()
+					<< setw(30) << foodItem.getName()
+					<< setw(10) << orderItem.getQuantity()
+					<< setw(15) << order.getStatus()
+					<< fixed << setprecision(2) << setw(15) << order.getTotalPrice() << endl;
+			}
+			else {
+				cout << left << setw(10) << ""
+					<< setw(30) << foodItem.getName()
+					<< setw(10) << orderItem.getQuantity()
+					<< setw(15) << ""
+					<< setw(15) << "" << endl;
+			}
 		}
-
-		cout << "Status: " << order.getStatus() << endl;
-		cout << "Total Price: " << order.getTotalPrice() << endl;
-		cout << string(40, '=') << endl;
-
 		tempQueue.enqueue(order);
+		cout << string(80, '-') << endl;
 	}
 
 	while (!tempQueue.isEmpty())
@@ -588,6 +598,7 @@ void Customer::createOrder(const string& filename, int customerID, LinkedList<Or
 void Customer::cancelOrder(const string& filename, Queue<Order>& customerOrdersQueue) {
 	Order order;
 	Queue<Order> unPreparedOrdersQueue = order.filterUnPreparedCustomerOrders(customerOrdersQueue);
+
 	if (unPreparedOrdersQueue.isEmpty()) {
 		cout << "No orders to cancel." << endl;
 		return;
@@ -596,33 +607,45 @@ void Customer::cancelOrder(const string& filename, Queue<Order>& customerOrdersQ
 	Queue<Order> tempQueue; // Temporary queue to store the orders
 
 	// Display the order history without dequeuing the items
-	cout << "Unprepared Orders:" << endl;
-	cout << string(40, '=') << endl; // Using string constructor to generate dashes
+	cout << "\nUnprepared Orders:" << endl;
+	cout << string(80, '=') << endl;
+
+	cout << left << setw(10) << "Order ID" << setw(30) << "Food Item" << setw(10) << "Quantity"
+		<< setw(15) << "Status" << setw(15) << "Total Price" << endl;
+	cout << string(80, '-') << endl;
 
 	while (!unPreparedOrdersQueue.isEmpty()) {
 		Order order;
 		unPreparedOrdersQueue.getFront(order);
 		unPreparedOrdersQueue.dequeue();
 
-		cout << "Order ID: " << order.getOrderID() << endl;
-
 		LinkedList<OrderItem> orderItemsList = order.getOrderItemList();
 		int itemCount = orderItemsList.getLength();
 
-		for (int i = 0; i < itemCount; i++) {
+		for (int i = 0; i < itemCount; i++)
+		{
 			OrderItem orderItem;
 			orderItemsList.retrieve(i, orderItem);
 			FoodItem foodItem = orderItem.getFoodItem();
 
-			cout << "Food Item: " << foodItem.getName() << endl;
-			cout << "Quantity: " << orderItem.getQuantity() << endl;
+			if (i == 0) {
+				cout << left << setw(10) << order.getOrderID()
+					<< setw(30) << foodItem.getName()
+					<< setw(10) << orderItem.getQuantity()
+					<< setw(15) << order.getStatus()
+					<< setw(15) << order.getTotalPrice() << endl;
+			}
+			else {
+				cout << left << setw(10) << ""
+					<< setw(30) << foodItem.getName()
+					<< setw(10) << orderItem.getQuantity()
+					<< setw(15) << ""
+					<< setw(15) << "" << endl;
+			}
 		}
 
-		cout << "Status: " << order.getStatus() << endl;
-		cout << "Total Price: " << order.getTotalPrice() << endl;
-		cout << string(40, '=') << endl;
-
 		tempQueue.enqueue(order);
+		cout << string(80, '-') << endl;
 	}
 
 	// Ask for user input for valid Order ID

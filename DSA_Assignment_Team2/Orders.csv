@@ -15,4 +15,8 @@ orderID,customerID,foodItemsList,restaurantID,totalPrice,orderStatus
 14,1,1:1,1,5.5,Cancelled
 15,3,1:1,1,5.5,Cancelled
 16,3,1:1,1,5.5,Cancelled
-17,3,5:4,4,50,Not Prepared
+17,3,5:4,4,50,Cancelled
+18,3,1:12|10:20,1,216,Not Prepared
+19,3,1:20|10:20|4:20|16:20,1,534,Not Prepared
+20,3,1:1,1,5.5,Not Prepared
+21,3,1:1,1,5.5,Not Prepared

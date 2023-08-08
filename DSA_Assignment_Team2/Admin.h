@@ -21,10 +21,21 @@ public:
 	string getLoginID() const;
 	string getPassword() const;
 	int getRestaurantID() const;
-
-	bool adminLogin(const string& filename);
+	
+	HashTable<string, Admin> getAllAdmins(const string& filename);
+	bool adminLogin(HashTable<string, Admin>& adminTable, const string& filename);
 	void displayAdminMenu();
-	void AdminLoginMenu(Admin& admin);
+	void adminLoginMenu(Admin& admin, HashTable<string, Admin>& adminTable, Queue<Order>& orderQueue);
+	void displayIncomingOrder(Queue<Order>& restaurantOrdersQueue);
 
+	void clearScreen() {
+		cout << "\033[2J\033[1;1H";
+	}
+
+	void waitForEnterKey() {
+		cout << "Press Enter to continue...";
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		cin.get();
+	}
 };
 

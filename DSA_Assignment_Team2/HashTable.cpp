@@ -258,3 +258,4 @@ void HashTable<int, FoodItem>::print(const LinkedList<Restaurant>& restaurants, 
 }
 template class HashTable<int, FoodItem>;
 template class HashTable<string, Customer>;
+template class HashTable<string, Admin>;

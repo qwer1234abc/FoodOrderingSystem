@@ -19,9 +19,10 @@ void waitForEnterKey() {
 
 int main()
 {
-
 	Customer customer;
 	HashTable<string, Customer> customerTable = customer.getAllCustomers("Customers.csv");
+	Admin admin;
+	HashTable<string, Admin> adminTable = admin.getAllAdmins("Admins.csv");
 	FoodItem fooditem;
 	HashTable<int, FoodItem> foodItemsTable = fooditem.getAllFoodItems("FoodItems.csv");
 	Order order;
@@ -37,16 +38,10 @@ int main()
 			customer.customerLoginMenu(customer, customerTable, orderQueue);
 		}
 		else if (selectedOptionStr == "2") {
-			Customer customer;
 			customer.customerRegisterMenu(customer, customerTable);
 		}
 		else if (selectedOptionStr == "3") {
-			cout << "\n-------------------------" << endl;
-			cout << "       Admin Login        " << endl;
-			cout << "-------------------------" << endl;
-			Admin admin;
-
-			admin.adminLogin("Admins.csv");
+			admin.adminLoginMenu(admin, adminTable, orderQueue);
 		}
 		else if (selectedOptionStr == "4") {
 			cout << "\nThank you for using our app. Goodbye!" << endl;
