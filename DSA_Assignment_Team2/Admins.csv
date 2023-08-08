@@ -1,2 +1,7 @@
 adminID,name,loginID,password,retaurantID
-1,Admin,admin,admin,1
+1,Admin,admin1,admin1,1
+2,Admin,admin2,admin2,2
+3,Admin,admin3,admin3,3
+4,Admin,admin4,admin4,4
+5,Admin,admin5,admin5,5
+6,Admin,admin6,admin6,6

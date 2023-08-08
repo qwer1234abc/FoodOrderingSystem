@@ -641,7 +641,7 @@ void Customer::cancelOrder(Queue<Order>& customerOrdersQueue) {
 	Queue<Order> unPreparedOrdersQueue = order.filterUnPreparedCustomerOrders(customerOrdersQueue);
 
 	if (unPreparedOrdersQueue.isEmpty()) {
-		cout << "No orders to cancel." << endl;
+		cout << "No available orders to cancel." << endl;
 		return;
 	}
 
