@@ -295,7 +295,7 @@ void Admin::updateOrderStatus(Queue<Order>& restaurantOrdersQueue) {
 		bool updated = false;
 		while (true)
 		{
-			cout << "Enter the new status for the order: ";
+			cout << "Enter the new status for the order (enter 0 to exit): ";
 			cin >> status;
 
 
@@ -306,7 +306,11 @@ void Admin::updateOrderStatus(Queue<Order>& restaurantOrdersQueue) {
 				continue;
 			}
 
-			if (status == 1) {
+			if (status == 0) {
+				cout << "Exiting update process." << endl;
+				return;
+			}
+			else if (status == 1) {
 				updatedOrder.setStatus("Preparing");
 				updated = true;
 				cout << "Order status updated to 'Preparing'." << endl;
