@@ -275,9 +275,7 @@ void Admin::updateOrderStatus(Queue<Order>& restaurantOrdersQueue) {
 				cout << "1. Preparing" << endl;
 				cout << "2. Prepared" << endl;
 			}
-			else {
-				updatedQueue.enqueue(order); // Store orders that are not being updated
-			}
+			updatedQueue.enqueue(order); // Store orders that are not being updated
 		}
 
 		// Re-enqueue orders back to the main queue
@@ -474,7 +472,7 @@ void Admin::viewCustomerInformationForOrder(Queue<Order>& restaurantOrdersQueue,
 		string displayName = "Customer Name: " + customer.getName();
 		string displayLoyaltyPoints = "Loyalty Points: " + customer.getLoyaltyPoints();
 		cout << dashes << endl;
-		cout << left << setw(40) << displayName  << displayLoyaltyPoints << endl;
+		cout << left << setw(40) << displayName << displayLoyaltyPoints << endl;
 		cout << dashes << endl;
 		cout << centeredHeader << endl;
 		cout << dashes << endl;
