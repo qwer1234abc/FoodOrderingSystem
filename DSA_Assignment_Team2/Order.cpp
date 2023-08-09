@@ -151,7 +151,7 @@ Queue<Order> Order::filterRestaurantIncomingOrders(Queue<Order>& allOrders, int 
 
 	Order currentOrder;
 	while (allOrders.dequeue(currentOrder)) {
-		if (currentOrder.getRestaurantID() == targetRestaurantID && currentOrder.getStatus() == "Not Prepared") {
+		if (currentOrder.getRestaurantID() == targetRestaurantID && (currentOrder.getStatus() == "Not Prepared" || currentOrder.getStatus() == "Preparing")) {
 			filteredQueue.enqueue(currentOrder);
 		}
 		tempQueue.enqueue(currentOrder); // Store the order in the temporary queue
