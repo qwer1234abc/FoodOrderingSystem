@@ -142,6 +142,8 @@ void Admin::adminLoginMenu(Admin& admin, HashTable<string, Admin>& adminTable, Q
 			if (adminOptionStr == "1")
 			{
 				updateOrderStatus(restaurantOrdersQueue);
+				waitForEnterKey();
+				clearScreen();
 			}
 			else if (adminOptionStr == "2")
 			{
@@ -311,23 +313,34 @@ void Admin::updateOrderStatus(Queue<Order>& restaurantOrdersQueue) {
 				return;
 			}
 			else if (status == 1) {
-				updatedOrder.setStatus("Preparing");
-				updated = true;
-				cout << "Order status updated to 'Preparing'." << endl;
-				break;
+				if (updatedOrder.getStatus() == "Preparing")
+				{
+					cout << "Order status is already in 'Preparing State'." << endl;
+				}
+				else
+				{
+					updatedOrder.setStatus("Preparing");
+					updated = true;
+					cout << "Order status updated to 'Preparing'." << endl;
+					break;
+				}
 			}
 			else if (status == 2) {
-				updatedOrder.setStatus("Prepared");
-				updated = true;
-				cout << "Order status updated to 'Prepared'." << endl;
-				break;
+				if (updatedOrder.getStatus() == "Preparing") {
+					updatedOrder.setStatus("Prepared");
+					updated = true;
+					cout << "Order status updated to 'Prepared'." << endl;
+					break;
+				}
+				else {
+					cout << "Order status cannot be updated to 'Prepared' directly without being in 'Preparing' state." << endl;
+				}
 			}
 			else {
 				cout << "Invalid status. Please enter 1 for Preparing, 2 for Prepared.\n" << endl;
 			}
 		}
-		if (updated)
-		{
+		if (updated) {
 			// Update the status of the updated order in the original queue
 			Queue<Order> updatedCustomerOrdersQueue;
 
@@ -339,7 +352,9 @@ void Admin::updateOrderStatus(Queue<Order>& restaurantOrdersQueue) {
 					originalOrder = updatedOrder;  // Update status of the updated order
 				}
 
-				updatedCustomerOrdersQueue.enqueue(originalOrder);
+				if (originalOrder.getStatus() != "Prepared") {
+					updatedCustomerOrdersQueue.enqueue(originalOrder);
+				}
 			}
 
 			// Update the original queue with the modified orders
@@ -419,7 +434,7 @@ void Admin::viewCustomerInformationForOrder(Queue<Order>& restaurantOrdersQueue,
 		}
 
 		if (customerOrderID == 0) {
-			cout << "Exiting update process." << endl;
+			cout << "Exiting view customer information process." << endl;
 			return;
 		}
 
