@@ -228,7 +228,7 @@ void HashTable<int, FoodItem>::print(const LinkedList<Restaurant>& restaurants)
 void HashTable<int, FoodItem>::print(const LinkedList<Restaurant>& restaurants, int restaurantID)
 {
 	// Calculate the padding to center the header
-	int totalWidth = 73; // Increased total width to accommodate the restaurant name
+	int totalWidth = 74; // Increased total width to accommodate the restaurant name
 	string dashes(totalWidth, '=');
 
 
