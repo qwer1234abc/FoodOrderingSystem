@@ -134,10 +134,12 @@
     <ClCompile Include="FoodItem.cpp" />
     <ClCompile Include="HashTable.cpp" />
     <ClCompile Include="LinkedList.cpp" />
+    <ClCompile Include="Notification.cpp" />
     <ClCompile Include="Order.cpp" />
     <ClCompile Include="OrderItem.cpp" />
     <ClCompile Include="Queue.cpp" />
     <ClCompile Include="Restaurant.cpp" />
+    <ClCompile Include="Stack.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Admin.h" />
@@ -146,10 +148,12 @@
     <ClInclude Include="FoodItem.h" />
     <ClInclude Include="HashTable.h" />
     <ClInclude Include="LinkedList.h" />
+    <ClInclude Include="Notification.h" />
     <ClInclude Include="Order.h" />
     <ClInclude Include="OrderItem.h" />
     <ClInclude Include="Queue.h" />
     <ClInclude Include="Restaurant.h" />
+    <ClInclude Include="Stack.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
