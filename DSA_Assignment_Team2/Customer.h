@@ -6,7 +6,7 @@
 #include "Order.h"
 #include "Admin.h"
 #include "Notification.h"
-
+#include "Array.h"
 using namespace std;
 
 class Customer {

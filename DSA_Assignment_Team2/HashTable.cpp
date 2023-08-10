@@ -153,15 +153,17 @@ ItemType HashTable<KeyType, ItemType>::get(KeyType key)
 	{
 		return ItemType();
 	}
-
-	Node<KeyType, ItemType>* current = items[index];
-	while (current != nullptr)
+	else
 	{
-		if (current->key == key)
+		Node<KeyType, ItemType>* current = items[index];
+		while (current != nullptr)
 		{
-			return current->item;
+			if (current->key == key)
+			{
+				return current->item;
+			}
+			current = current->next;
 		}
-		current = current->next;
 	}
 
 	return ItemType();
@@ -194,27 +196,35 @@ void HashTable<int, FoodItem>::print(const LinkedList<Restaurant>& restaurants)
 	cout << centeredHeader << endl;
 	cout << dashes << endl;
 
+	Array tempFoodItemArray(size);
+
 	for (int i = 0; i < MAX_SIZE; i++)
 	{
 		Node<int, FoodItem>* current = items[i];
 		while (current != nullptr)
 		{
-			// Get the restaurant name for the current food item
-			string restaurantName = current->item.getRestaurantNameByID(current->item.getRestaurantID(), restaurants);
-
-			// Print the FoodItem details along with the restaurant name
-			cout << setw(4) << left << current->key << " | "
-				<< setw(23) << left << current->item.getName() << " | "
-				<< setw(23) << left << restaurantName << " | " // Restaurant name
-				<< setw(18) << left << current->item.getCategory() << " | "
-				<< "$" << fixed << setprecision(2) << current->item.getPrice() << endl;
+			tempFoodItemArray.insert(current->item);
 			current = current->next;
 		}
+	}
+
+	tempFoodItemArray.quickSort(0, tempFoodItemArray.getLength() - 1);
+
+	for (int i = 0; i < tempFoodItemArray.getLength(); i++)
+	{
+		FoodItem current = tempFoodItemArray.retrieve(i);
+		string restaurantName = current.getRestaurantNameByID(current.getRestaurantID(), restaurants);
+		cout << setw(4) << left << i + 1 << " | "
+			<< setw(23) << left << current.getName() << " | "
+			<< setw(23) << left << restaurantName << " | " // Restaurant name
+			<< setw(18) << left << current.getCategory() << " | "
+			<< "$" << fixed << setprecision(2) << current.getPrice() << endl;
 	}
 
 	cout << setfill('=') << setw(totalWidth) << "=" << setfill(' ') << endl;
 	cout << "Enter your food item number: ";
 }
+
 void HashTable<int, FoodItem>::print(const LinkedList<Restaurant>& restaurants, int restaurantID)
 {
 	// Calculate the padding to center the header
@@ -240,26 +250,36 @@ void HashTable<int, FoodItem>::print(const LinkedList<Restaurant>& restaurants, 
 	cout << centeredHeader << endl;
 	cout << dashes << endl;
 
+	Array tempFoodItemArray(size);
+
 	for (int i = 0; i < MAX_SIZE; i++)
 	{
 		Node<int, FoodItem>* current = items[i];
 		while (current != nullptr)
 		{
-			// Print the FoodItem details if it belongs to the specified restaurant
-			if (current->item.getRestaurantID() == restaurantID)
-			{
-				cout << setw(4) << left << current->key << " | "
-					<< setw(23) << left << current->item.getName() << " | "
-					<< setw(18) << left << current->item.getCategory() << " | "
-					<< "$" << fixed << setprecision(2) << current->item.getPrice() << endl;
-			}
+			tempFoodItemArray.insert(current->item);
 			current = current->next;
+		}
+	}
+
+	tempFoodItemArray.quickSort(0, tempFoodItemArray.getLength() - 1);
+
+	for (int i = 0; i < tempFoodItemArray.getLength(); i++)
+	{
+		FoodItem current = tempFoodItemArray.retrieve(i);
+		if (current.getRestaurantID() == restaurantID)
+		{
+			cout << setw(4) << left << i + 1 << " | "
+				<< setw(23) << left << current.getName() << " | "
+				<< setw(18) << left << current.getCategory() << " | "
+				<< "$" << fixed << setprecision(2) << current.getPrice() << endl;
 		}
 	}
 
 	cout << setfill('=') << setw(totalWidth) << "=" << setfill(' ') << endl;
 	cout << "Enter your food item number: ";
 }
+
 template class HashTable<int, FoodItem>;
 template class HashTable<string, Customer>;
 template class HashTable<string, Admin>;

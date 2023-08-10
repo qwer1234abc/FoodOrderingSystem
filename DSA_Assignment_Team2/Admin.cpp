@@ -139,11 +139,12 @@ void Admin::adminLoginMenu(Admin& admin, HashTable<string, Admin>& adminTable, Q
 		string adminOptionStr;
 		do {
 			admin.displayIncomingOrder(restaurantOrdersQueue);
+			displayAdminMenu();
 			cin >> adminOptionStr;
 
 			if (adminOptionStr == "1")
 			{
-				updateOrderStatus(restaurantOrdersQueue, notificationStack);
+				updateOrderStatus(restaurantOrdersQueue, notificationStack, orderQueue);
 				waitForEnterKey();
 				clearScreen();
 			}
@@ -176,8 +177,6 @@ void Admin::displayIncomingOrder(Queue<Order>& restaurantOrdersQueue)
 {
 	if (restaurantOrdersQueue.isEmpty()) {
 		cout << "There are no incoming orders." << endl;
-		waitForEnterKey();
-		clearScreen();
 		return;
 	}
 
@@ -240,11 +239,9 @@ void Admin::displayIncomingOrder(Queue<Order>& restaurantOrdersQueue)
 		tempQueue.dequeue(order);
 		restaurantOrdersQueue.enqueue(order);
 	}
-
-	displayAdminMenu();
 }
 
-void Admin::updateOrderStatus(Queue<Order>& restaurantOrdersQueue, Stack<Notification>& notificationStack) {
+void Admin::updateOrderStatus(Queue<Order>& restaurantOrdersQueue, Stack<Notification>& notificationStack, Queue<Order>& allOrdersQueue) {
 	if (restaurantOrdersQueue.isEmpty()) {
 		cout << "No orders to update." << endl;
 		return;
@@ -374,6 +371,25 @@ void Admin::updateOrderStatus(Queue<Order>& restaurantOrdersQueue, Stack<Notific
 				}
 			}
 
+			Queue<Order> updatedAllOrdersQueue;
+			while (!allOrdersQueue.isEmpty())
+			{
+				Order originalOrder;
+				allOrdersQueue.dequeue(originalOrder);
+
+				if (originalOrder.getOrderID() == updatedOrder.getOrderID()) {
+					originalOrder = updatedOrder;  // Update status of the updated order
+				}
+				updatedAllOrdersQueue.enqueue(originalOrder);
+			}
+
+			while (!updatedAllOrdersQueue.isEmpty())
+			{
+				Order updatedOrder;
+				updatedAllOrdersQueue.dequeue(updatedOrder);
+				allOrdersQueue.enqueue(updatedOrder);
+			}
+
 			// Update the original queue with the modified orders
 			while (!updatedCustomerOrdersQueue.isEmpty()) {
 				Order updatedOrder;
@@ -469,7 +485,7 @@ void Admin::viewCustomerInformationForOrder(Queue<Order>& restaurantOrdersQueue,
 			return;
 		}
 
-		Queue<Order> updatedQueue; // Temporary queue for updated orders
+		Queue<Order> tQueue; // Temporary queue for orders
 
 		while (!restaurantOrdersQueue.isEmpty()) {
 			Order order;
@@ -480,13 +496,13 @@ void Admin::viewCustomerInformationForOrder(Queue<Order>& restaurantOrdersQueue,
 				customerOrder = order;
 			}
 
-			updatedQueue.enqueue(order);
+			tQueue.enqueue(order);
 		}
 
 		// Re-enqueue orders back to the main queue
-		while (!updatedQueue.isEmpty()) {
+		while (!tQueue.isEmpty()) {
 			Order order;
-			updatedQueue.dequeue(order);
+			tQueue.dequeue(order);
 			restaurantOrdersQueue.enqueue(order);
 		}
 

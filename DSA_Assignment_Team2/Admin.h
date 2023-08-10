@@ -29,7 +29,7 @@ public:
 	void displayAdminMenu();
 	void adminLoginMenu(Admin& admin, HashTable<string, Admin>& adminTable, Queue<Order>& orderQueue, Stack<Notification>& notificationStack);
 	void displayIncomingOrder(Queue<Order>& restaurantOrdersQueue);
-	void updateOrderStatus(Queue<Order>& restaurantOrdersQueue, Stack<Notification>& notificationStack);
+	void updateOrderStatus(Queue<Order>& restaurantOrdersQueue, Stack<Notification>& notificationStack, Queue<Order>& allOrdersQueue);
 	void updateOrderStatusInCSV(const string& filename, int orderIDToUpdate, const string& newStatus);
 	void viewCustomerInformationForOrder(Queue<Order>& restaurantOrdersQueue, Queue<Order>& allOrders, int restaurantID);
 	void insertNotificationInCSV(const string& filename, Notification& newNotification);
