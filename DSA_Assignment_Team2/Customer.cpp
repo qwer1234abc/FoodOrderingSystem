@@ -323,14 +323,14 @@ void Customer::addOrderItem(FoodItem& fooditem, int quantity) {
 int Customer::orderItemsMenu(const LinkedList<OrderItem>& orderItemsList, const LinkedList<Restaurant>& restaurants)
 {
 	// Calculate the padding to center the header
-	int totalWidth = 45;
+	int totalWidth = 50;
 	string header = "Here are your ordered items:";
 	int padding = (totalWidth - header.length()) / 2;
 
 	// Print header
 	cout << setw(padding + header.length()) << header << endl;
 	cout << setfill('=') << setw(totalWidth) << "=" << setfill(' ') << endl;
-	cout << setw(10) << left << "Quantity" << setw(25) << left << "Food Item" << setw(15) << left << "Price" << endl;
+	cout << setw(10) << left << "Quantity" << setw(30) << left << "Food Item" << setw(20) << left << "Price" << endl;
 	cout << setfill('-') << setw(totalWidth) << "-" << setfill(' ') << endl;
 
 	long double totalPrice = 0.0; // Initialize the total price to zero
@@ -342,7 +342,7 @@ int Customer::orderItemsMenu(const LinkedList<OrderItem>& orderItemsList, const 
 		double itemPrice = foodItem.getPrice() * orderItem.getQuantity(); // calculate price with the price * quantity of the item
 
 		cout << setw(10) << left << orderItem.getQuantity()
-			<< setw(25) << left << foodItem.getName()
+			<< setw(30) << left << foodItem.getName()
 			<< "$" << fixed << setprecision(2) << itemPrice << endl;
 
 		totalPrice += itemPrice; // Add the item's price to the total price

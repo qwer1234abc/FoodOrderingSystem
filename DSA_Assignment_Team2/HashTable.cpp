@@ -184,7 +184,7 @@ int HashTable<KeyType, ItemType>::getLength()
 void HashTable<int, FoodItem>::print(const LinkedList<Restaurant>& restaurants)
 {
 	// Calculate the padding to center the header
-	int totalWidth = 86; // Increased total width to accommodate the restaurant name
+	int totalWidth = 95; // Increased total width to accommodate the restaurant name
 	string header = "Food Items Menu";
 
 	string dashes(totalWidth, '=');
@@ -215,7 +215,7 @@ void HashTable<int, FoodItem>::print(const LinkedList<Restaurant>& restaurants)
 		FoodItem current = tempFoodItemArray.retrieve(i);
 		string restaurantName = current.getRestaurantNameByID(current.getRestaurantID(), restaurants);
 		cout << setw(4) << left << i + 1 << " | "
-			<< setw(23) << left << current.getName() << " | "
+			<< setw(30) << left << current.getName() << " | "
 			<< setw(23) << left << restaurantName << " | " // Restaurant name
 			<< setw(18) << left << current.getCategory() << " | "
 			<< "$" << fixed << setprecision(2) << current.getPrice() << endl;
@@ -228,7 +228,7 @@ void HashTable<int, FoodItem>::print(const LinkedList<Restaurant>& restaurants)
 void HashTable<int, FoodItem>::print(const LinkedList<Restaurant>& restaurants, int restaurantID)
 {
 	// Calculate the padding to center the header
-	int totalWidth = 86; // Increased total width to accommodate the restaurant name
+	int totalWidth = 73; // Increased total width to accommodate the restaurant name
 	string dashes(totalWidth, '=');
 
 
@@ -270,8 +270,8 @@ void HashTable<int, FoodItem>::print(const LinkedList<Restaurant>& restaurants, 
 		if (current.getRestaurantID() == restaurantID)
 		{
 			cout << setw(4) << left << i + 1 << " | "
-				<< setw(23) << left << current.getName() << " | "
-				<< setw(18) << left << current.getCategory() << " | "
+				<< setw(30) << left << current.getName() << " | "
+				<< setw(23) << left << current.getCategory() << " | "
 				<< "$" << fixed << setprecision(2) << current.getPrice() << endl;
 		}
 	}

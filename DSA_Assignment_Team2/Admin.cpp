@@ -600,24 +600,11 @@ void Admin::viewFoodItemsRevenue(Queue<Order>& restaurantRevenueOrdersQueue)
 		return;
 	}
 
-	Queue<Order> tempQueue; // Temporary queue to store the orders
-
-	int totalWidth = 80;
-	string header = "Food Items Revenue";
-
-	string dashes(totalWidth, '=');
-
-	int spacesOnEachSide = (totalWidth - header.length()) / 2;
-	string centeredHeader = string(spacesOnEachSide, ' ') + header;
-
-	cout << dashes << endl;
-	cout << centeredHeader << endl;
-	cout << dashes << endl;
-
-	// Display headers
-	cout << left << setw(30) << "Food Item" << setw(10) << "Quantity"
-		<< setw(15) << "Total Price" << endl;
-	cout << string(totalWidth, '-') << endl;
+	LinkedList<string> foodItemNamesList;
+	LinkedList<int> foodItemQuantitiesList;
+	LinkedList<double> foodItemTotalRevenueList;
+	int numFoodItems = 0;
+	Queue<Order> tempQueue;
 
 	while (!restaurantRevenueOrdersQueue.isEmpty())
 	{
@@ -633,18 +620,76 @@ void Admin::viewFoodItemsRevenue(Queue<Order>& restaurantRevenueOrdersQueue)
 			orderItemsList.retrieve(i, orderItem);
 			FoodItem foodItem = orderItem.getFoodItem();
 
-			cout << left << setw(30) << foodItem.getName()
-				<< setw(10) << orderItem.getQuantity()
-				<< fixed << setprecision(2) << setw(15) << order.getTotalPrice() << endl;
+			string itemName = foodItem.getName();
+			double totalRevenue = foodItem.getPrice() * orderItem.getQuantity();
 
+			int existingIndex = -1;
+			for (int j = 0; j < numFoodItems; j++)
+			{
+				string existingItemName;
+				foodItemNamesList.retrieve(j, existingItemName);
+				if (existingItemName == itemName)
+				{
+					existingIndex = j;
+					break;
+				}
+			}
+
+			if (existingIndex == -1)
+			{
+				foodItemNamesList.insert(itemName);
+				foodItemQuantitiesList.insert(orderItem.getQuantity());
+				foodItemTotalRevenueList.insert(totalRevenue);
+				numFoodItems++;
+			}
+			else
+			{
+				int existingQuantity;
+				double existingRevenue;
+				foodItemQuantitiesList.retrieve(existingIndex, existingQuantity);
+				foodItemTotalRevenueList.retrieve(existingIndex, existingRevenue);
+				foodItemQuantitiesList.remove(existingIndex);
+				foodItemTotalRevenueList.remove(existingIndex);
+				foodItemQuantitiesList.insert(existingIndex, existingQuantity + orderItem.getQuantity());
+				foodItemTotalRevenueList.insert(existingIndex, existingRevenue + totalRevenue);
+			}
 		}
 		tempQueue.enqueue(order);
-		cout << string(totalWidth, '-') << endl;
-
 	}
 
-	// Re-enqueue orders back to the main queue
-	while (!tempQueue.isEmpty()) {
+	const int totalWidth = 80;
+	string header = "Food Items Revenue";
+	string dashes(totalWidth, '=');
+
+	int spacesOnEachSide = (totalWidth - header.length()) / 2;
+	string centeredHeader = string(spacesOnEachSide, ' ') + header;
+
+	cout << dashes << endl;
+	cout << centeredHeader << endl;
+	cout << dashes << endl;
+
+	cout << left << setw(35) << "Food Item" << setw(20) << "Quantity Sold"
+		<< setw(15) << "Total Profit" << endl;
+	cout << string(totalWidth, '-') << endl;
+
+	for (int i = 0; i < numFoodItems; i++)
+	{
+		string itemName;
+		int quantity;
+		double revenue;
+		foodItemNamesList.retrieve(i, itemName);
+		foodItemQuantitiesList.retrieve(i, quantity);
+		foodItemTotalRevenueList.retrieve(i, revenue);
+
+		cout << left << setw(35) << itemName
+			<< setw(20) << quantity
+			<< fixed << setprecision(2) << "$" << setw(15) << revenue << endl;
+	}
+
+	cout << string(totalWidth, '-') << endl;
+
+	while (!tempQueue.isEmpty())
+	{
 		Order order;
 		tempQueue.dequeue(order);
 		restaurantRevenueOrdersQueue.enqueue(order);

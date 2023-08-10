@@ -83,6 +83,35 @@ bool LinkedList<T>::insert(const T item) {
 }
 
 template <class T>
+bool LinkedList<T>::insert(int index, const T item)
+{
+
+	if (index < 0 || index > size) {
+		return false;
+	}
+
+	Node* newNode = new Node;
+	newNode->item = item;
+	newNode->next = nullptr;
+
+	if (index == 0) {
+		newNode->next = head;
+		head = newNode;
+	}
+	else {
+		Node* current = head;
+		for (int i = 0; i < index - 1; i++) {
+			current = current->next;
+		}
+		newNode->next = current->next;
+		current->next = newNode;
+	}
+
+	size++;
+	return true;
+}
+
+template <class T>
 bool LinkedList<T>::remove(int index) {
 	if (index < 0 || index >= size) {
 		return false;
@@ -151,3 +180,6 @@ LinkedList<T>& LinkedList<T>::operator=(const LinkedList& other) {
 // Explicit instantiation for supported types
 template class LinkedList<Restaurant>;
 template class LinkedList<OrderItem>;
+template class LinkedList<string>;
+template class LinkedList<int>;
+template class LinkedList<double>;

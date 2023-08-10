@@ -26,6 +26,7 @@ public:
 	bool retrieve(int index, T& item) const;
 	T retrieve(int index) const;
 	bool insert(const T item);
+	bool insert(int index, const T item);
 	bool remove(int index);
 	void clear();
 	LinkedList(const LinkedList& other);
