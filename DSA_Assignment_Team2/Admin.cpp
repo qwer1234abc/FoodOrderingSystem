@@ -118,7 +118,8 @@ void Admin::displayAdminMenu() {
 	cout << "\n====================================" << endl;
 	cout << "1. Update Status of Orders" << endl;
 	cout << "2. View Customer Information" << endl;
-	cout << "3. Log out" << endl;
+	cout << "3. View Food Items Revenue" << endl;
+	cout << "4. Log out" << endl;
 	cout << "====================================" << endl;
 	cout << "Enter your choice: ";
 }
@@ -132,6 +133,7 @@ void Admin::adminLoginMenu(Admin& admin, HashTable<string, Admin>& adminTable, Q
 		// Filter the order queue to only display the restaurant's orders
 		Order order;
 		Queue<Order> restaurantOrdersQueue = order.filterRestaurantIncomingOrders(orderQueue, admin.getRestaurantID());
+		Queue<Order> restaurantRevenueOrdersQueue = order.filterRestaurantRevenueOrders(orderQueue, admin.getRestaurantID());
 		waitForEnterKey();
 		clearScreen();
 		string adminOptionStr;
@@ -153,6 +155,12 @@ void Admin::adminLoginMenu(Admin& admin, HashTable<string, Admin>& adminTable, Q
 			}
 			else if (adminOptionStr == "3")
 			{
+				viewFoodItemsRevenue(restaurantRevenueOrdersQueue);
+				waitForEnterKey();
+				clearScreen();
+			}
+			else if (adminOptionStr == "4")
+			{
 				cout << "\nWe are logging you out now. Thank you!" << endl;
 				return;
 			}
@@ -160,7 +168,7 @@ void Admin::adminLoginMenu(Admin& admin, HashTable<string, Admin>& adminTable, Q
 			{
 				cout << "\nInvalid option. Please try again." << endl;
 			}
-		} while (adminOptionStr != "3");
+		} while (adminOptionStr != "4");
 	}
 }
 
@@ -565,5 +573,64 @@ void Admin::viewCustomerInformationForOrder(Queue<Order>& restaurantOrdersQueue,
 			tempQueue.dequeue(order);
 			specificCustomerOrderQueue.enqueue(order);
 		}
+	}
+}
+
+void Admin::viewFoodItemsRevenue(Queue<Order>& restaurantRevenueOrdersQueue)
+{
+	if (restaurantRevenueOrdersQueue.isEmpty())
+	{
+		cout << "No revenues generated." << endl;
+		return;
+	}
+
+	Queue<Order> tempQueue; // Temporary queue to store the orders
+
+	int totalWidth = 80;
+	string header = "Food Items Revenue";
+
+	string dashes(totalWidth, '=');
+
+	int spacesOnEachSide = (totalWidth - header.length()) / 2;
+	string centeredHeader = string(spacesOnEachSide, ' ') + header;
+
+	cout << dashes << endl;
+	cout << centeredHeader << endl;
+	cout << dashes << endl;
+
+	// Display headers
+	cout << left << setw(30) << "Food Item" << setw(10) << "Quantity"
+		<< setw(15) << "Total Price" << endl;
+	cout << string(totalWidth, '-') << endl;
+
+	while (!restaurantRevenueOrdersQueue.isEmpty())
+	{
+		Order order;
+		restaurantRevenueOrdersQueue.dequeue(order);
+
+		LinkedList<OrderItem> orderItemsList = order.getOrderItemList();
+		int itemCount = orderItemsList.getLength();
+
+		for (int i = 0; i < itemCount; i++)
+		{
+			OrderItem orderItem;
+			orderItemsList.retrieve(i, orderItem);
+			FoodItem foodItem = orderItem.getFoodItem();
+
+			cout << left << setw(30) << foodItem.getName()
+				<< setw(10) << orderItem.getQuantity()
+				<< fixed << setprecision(2) << setw(15) << order.getTotalPrice() << endl;
+
+		}
+		tempQueue.enqueue(order);
+		cout << string(totalWidth, '-') << endl;
+
+	}
+
+	// Re-enqueue orders back to the main queue
+	while (!tempQueue.isEmpty()) {
+		Order order;
+		tempQueue.dequeue(order);
+		restaurantRevenueOrdersQueue.enqueue(order);
 	}
 }

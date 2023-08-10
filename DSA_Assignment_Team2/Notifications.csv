@@ -4,3 +4,4 @@ customerID,restaurantID,message
 3,2,Order with order ID of 32 has been updated to Preparing
 7,3,Order with order ID of 33 has been updated to Preparing
 7,3,Order with order ID of 33 has been updated to Prepared
+1,2,Order with order ID of 6 has been updated to Preparing

@@ -33,6 +33,7 @@ public:
 	void updateOrderStatusInCSV(const string& filename, int orderIDToUpdate, const string& newStatus);
 	void viewCustomerInformationForOrder(Queue<Order>& restaurantOrdersQueue, Queue<Order>& allOrders, int restaurantID);
 	void insertNotificationInCSV(const string& filename, Notification& newNotification);
+	void viewFoodItemsRevenue(Queue<Order>& restaurantOrdersQueue);
 
 	void clearScreen() {
 		cout << "\033[2J\033[1;1H";
