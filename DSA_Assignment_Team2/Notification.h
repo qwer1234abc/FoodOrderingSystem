@@ -1,27 +1,28 @@
 #pragma once
 #include <string>
 #include <iostream>
+#include "Stack.h"
 
 using namespace std;
 
 class Notification
 {
 private:
-	int notificationID;
 	int customerID;
 	int restaurantID;
 	string message;
-	string date;
 
 public:
 	Notification();
-	Notification(int notificationID, int customerID, int restaurantID, const string& message, const string& date);
+	Notification(int customerID, int restaurantID, const string& message);
 
-	int getNotificationID() const;
 	int getCustomerID() const;
 	int getRestaurantID() const;
 	string getMessage() const;
-	string getDate() const;
+
+	Stack<Notification> getAllNotifications(const string& filename);
+	Stack<Notification> filterCustomerNotifications(Stack<Notification>& notifications, int customerID);
+
 
 };
 

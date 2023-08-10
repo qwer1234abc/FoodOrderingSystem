@@ -20,5 +20,6 @@ public:
 	void setRestaurantID(int id);
 	void setName(const string& n);
 	LinkedList<Restaurant> getAllRestaurants(const string& filename);
+	string getNameByID(int id, LinkedList<Restaurant>& restaurantList);
 };
 

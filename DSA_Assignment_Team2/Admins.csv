@@ -1,4 +1,4 @@
-adminID,name,loginID,password,retaurantID
+adminID,name,loginID,password,restaurantID
 1,Admin,admin1,admin1,1
 2,Admin,admin2,admin2,2
 3,Admin,admin3,admin3,3

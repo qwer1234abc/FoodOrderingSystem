@@ -69,3 +69,15 @@ LinkedList<Restaurant> Restaurant::getAllRestaurants(const string& filename)
 	return restaurantList;
 }
 
+string Restaurant::getNameByID(int id, LinkedList<Restaurant>& restaurantList)
+{
+	for (int i = 0; i < restaurantList.getLength(); i++)
+	{
+		if (restaurantList.retrieve(i).getRestaurantID() == id)
+		{
+			return restaurantList.retrieve(i).getName();
+		}
+	}
+
+	return "";
+}

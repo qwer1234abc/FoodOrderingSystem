@@ -1,4 +1,5 @@
 #include "Stack.h"
+#include "Notification.h"
 
 template<typename ItemType>
 Stack<ItemType>::Stack()

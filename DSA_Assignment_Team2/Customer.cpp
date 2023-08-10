@@ -245,7 +245,8 @@ void Customer::displayCustomerMenu() {
 	cout << "1. Create a new order" << endl;
 	cout << "2. View order history" << endl;
 	cout << "3. Cancel an order" << endl;
-	cout << "4. Log out" << endl;
+	cout << "4. Notifications" << endl;
+	cout << "5. Log out" << endl;
 	cout << "=====================================" << endl;
 	cout << "Enter your choice: ";
 }
@@ -363,7 +364,7 @@ int Customer::orderItemsMenu(const LinkedList<OrderItem>& orderItemsList, const 
 	return firstOrderItem.getFoodItem().getRestaurantID(); // return restaurant id user entered food from
 }
 
-void Customer::customerLoginMenu(Customer& customer, HashTable<string, Customer>& customersTable, Queue<Order>& orderQueue) {
+void Customer::customerLoginMenu(Customer& customer, HashTable<string, Customer>& customersTable, Queue<Order>& orderQueue, Stack<Notification>& notificationStack) {
 	cout << "\n-------------------------" << endl;
 	cout << "      Customer Login      " << endl;
 	cout << "-------------------------" << endl;
@@ -371,6 +372,9 @@ void Customer::customerLoginMenu(Customer& customer, HashTable<string, Customer>
 		// Filter the order queue to only display the customer's orders
 		Order order;
 		Queue<Order> customerOrdersQueue = order.filterCustomerOrders(orderQueue, customer.getCustomerID());
+		Notification notification;
+		Stack<Notification> customerNotificationsStack = notification.filterCustomerNotifications(notificationStack, customer.getCustomerID());
+		customerNotificationsStack;
 		waitForEnterKey();
 		clearScreen();
 		string customerOptionStr;
@@ -391,14 +395,66 @@ void Customer::customerLoginMenu(Customer& customer, HashTable<string, Customer>
 				clearScreen();
 			}
 			else if (customerOptionStr == "4") {
+				displayNotifications(customerNotificationsStack);
+			}
+			else if (customerOptionStr == "5") {
 				cout << "\nWe are logging you out now. Thank you!" << endl;
 				return;
 			}
 			else {
 				cout << "\nInvalid option. Please try again." << endl;
 			}
-		} while (customerOptionStr != "4");
+		} while (customerOptionStr != "5");
 	}
+}
+
+void Customer::displayNotifications(Stack<Notification>& customerNotificationsStack)
+{
+	// display notifications
+
+	if (customerNotificationsStack.isEmpty())
+	{
+		cout << "No notifications." << endl;
+		waitForEnterKey();
+		clearScreen();
+		return;
+	}
+
+	Stack<Notification> tempStack; // Temporary stack to store the notifications
+
+	int totalWidth = 100;
+	string header = "Notifications";
+
+	string dashes(totalWidth, '=');
+
+	int spacesOnEachSide = (totalWidth - header.length()) / 2;
+	string centeredHeader = string(spacesOnEachSide, ' ') + header;
+
+	cout << dashes << endl;
+	cout << centeredHeader << endl;
+	cout << dashes << endl;
+
+	cout << left << setw(70) << "Message" << setw(10) << "Restaurant Name" << endl;
+	cout << setfill('-') << setw(totalWidth) << "-" << setfill(' ') << endl;
+
+	Restaurant restaurant;
+	LinkedList<Restaurant> restaurants = restaurant.getAllRestaurants("Restaurants.csv");
+	while (!customerNotificationsStack.isEmpty())
+	{
+		Notification notification = customerNotificationsStack.pop();
+		cout << left << setw(70) << notification.getMessage() << setw(10) << restaurant.getNameByID(notification.getRestaurantID(), restaurants) << endl;
+		tempStack.push(notification);
+	}
+
+	while (!tempStack.isEmpty())
+	{
+		customerNotificationsStack.push(tempStack.pop());
+	}
+
+	cout << setfill('-') << setw(totalWidth) << "-" << setfill(' ') << endl;
+
+	waitForEnterKey();
+	clearScreen();
 }
 
 void Customer::displayOrders(Queue<Order>& customerOrdersQueue)
@@ -813,9 +869,3 @@ void Customer::updateOrderStatusInCSV(const string& filename, int orderIDToCance
 
 	outFile.close();
 }
-
-
-void Customer::redeemPoints() {
-	// TODO: Implement this. Deduct points from the customer's loyalty points and display a success message.
-}
-

@@ -5,6 +5,7 @@
 #include "Restaurant.h"
 #include "Order.h"
 #include "Admin.h"
+#include "Notification.h"
 
 using namespace std;
 
@@ -39,15 +40,15 @@ public:
 	HashTable<int, FoodItem> browseFoodItems(const string& foodItemsFile, const LinkedList<Restaurant>& restaurants, int restaurantID); // To browse all food items
 	void addOrderItem(FoodItem& foodItem, int quantity);  // To add an item to the order
 	int orderItemsMenu(const LinkedList<OrderItem>& orderItemsList, const LinkedList<Restaurant>& restaurants);
-	void customerLoginMenu(Customer& customer, HashTable<string, Customer>& customersTable, Queue<Order>& orderQueue);
+	void customerLoginMenu(Customer& customer, HashTable<string, Customer>& customersTable, Queue<Order>& orderQueue, Stack<Notification>& notificationStack);
 	void customerRegisterMenu(Customer& customer, HashTable<string, Customer>& customersTable);
 	void browseFoodItemsMenu(Customer& customer, Restaurant& restaurant, Queue<Order>& customerOrdersQueue);
 	bool orderFoodItems(Customer& customer, Restaurant& restaurant, int foodItemChoice, HashTable<int, FoodItem>& foodItemsTable, Queue<Order>& customerOrdersQueue);
 	void createOrder(const string& filename, int customerID, LinkedList<OrderItem>& orderItemsList, int restaurantID, long double totalPrice, Queue<Order>& customerOrdersQueue);  // To create a new order
 	void cancelOrder(Queue<Order>& customerOrdersQueue);  // To cancel an existing order
-	void redeemPoints();
 	void displayOrders(Queue<Order>& customerOrdersQueue);
 	void updateOrderStatusInCSV(const string& filename, int orderIDToCancel, const string& newStatus);
+	void displayNotifications(Stack<Notification>& customerNotificationsStack);
 
 	void clearScreen() {
 		cout << "\033[2J\033[1;1H";

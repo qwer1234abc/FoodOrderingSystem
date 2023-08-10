@@ -123,7 +123,7 @@ void Admin::displayAdminMenu() {
 	cout << "Enter your choice: ";
 }
 
-void Admin::adminLoginMenu(Admin& admin, HashTable<string, Admin>& adminTable, Queue<Order>& orderQueue)
+void Admin::adminLoginMenu(Admin& admin, HashTable<string, Admin>& adminTable, Queue<Order>& orderQueue, Stack<Notification>& notificationStack)
 {
 	cout << "\n-------------------------" << endl;
 	cout << "       Admin Login        " << endl;
@@ -141,7 +141,7 @@ void Admin::adminLoginMenu(Admin& admin, HashTable<string, Admin>& adminTable, Q
 
 			if (adminOptionStr == "1")
 			{
-				updateOrderStatus(restaurantOrdersQueue);
+				updateOrderStatus(restaurantOrdersQueue, notificationStack);
 				waitForEnterKey();
 				clearScreen();
 			}
@@ -236,7 +236,7 @@ void Admin::displayIncomingOrder(Queue<Order>& restaurantOrdersQueue)
 	displayAdminMenu();
 }
 
-void Admin::updateOrderStatus(Queue<Order>& restaurantOrdersQueue) {
+void Admin::updateOrderStatus(Queue<Order>& restaurantOrdersQueue, Stack<Notification>& notificationStack) {
 	if (restaurantOrdersQueue.isEmpty()) {
 		cout << "No orders to update." << endl;
 		return;
@@ -341,6 +341,15 @@ void Admin::updateOrderStatus(Queue<Order>& restaurantOrdersQueue) {
 			}
 		}
 		if (updated) {
+			// Put the updated order in the notification stack
+			Customer customer;
+			string message = "Order with order ID of " + to_string(updatedOrder.getOrderID()) + " has been updated to " + updatedOrder.getStatus();
+			Notification newNotification = Notification(updatedOrder.getCustomerID(), updatedOrder.getRestaurantID(), message);
+
+			notificationStack.push(newNotification);
+
+			insertNotificationInCSV("Notifications.csv", newNotification);
+
 			// Update the status of the updated order in the original queue
 			Queue<Order> updatedCustomerOrdersQueue;
 
@@ -367,6 +376,20 @@ void Admin::updateOrderStatus(Queue<Order>& restaurantOrdersQueue) {
 			updateOrderStatusInCSV("Orders.csv", updatedOrder.getOrderID(), updatedOrder.getStatus());
 		}
 	}
+}
+
+void Admin::insertNotificationInCSV(const string& filename, Notification& newNotification)
+{
+	ofstream inFile(filename, ios::app);
+	if (!inFile.is_open()) {
+		cerr << "Failed to open the file." << endl;
+		return;
+	}
+
+	inFile << newNotification.getCustomerID() << "," << newNotification.getRestaurantID() << "," << newNotification.getMessage() << "\n";
+	inFile.close();
+
+	cout << "Order update notification sent to customer." << endl;
 }
 
 void Admin::updateOrderStatusInCSV(const string& filename, int orderIDToUpdate, const string& newStatus)

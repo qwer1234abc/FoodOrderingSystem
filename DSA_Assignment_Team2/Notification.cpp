@@ -1,19 +1,15 @@
 #include "Notification.h"
+#include <fstream>
+#include <iomanip>
+#include <sstream>
 
 Notification::Notification() {}
 
-Notification::Notification(int id, int cID, int rID, const string& m, const string& d)
+Notification::Notification(int cID, int rID, const string& m)
 {
-	notificationID = id;
 	customerID = cID;
 	restaurantID = rID;
 	message = m;
-	date = d;
-}
-
-int Notification::getNotificationID() const
-{
-	return notificationID;
 }
 
 int Notification::getCustomerID() const
@@ -31,8 +27,70 @@ string Notification::getMessage() const
 	return message;
 }
 
-string Notification::getDate() const
+Stack<Notification> Notification::getAllNotifications(const string& filename)
 {
-	return date;
+	Stack<Notification> notifications;
+	ifstream file(filename);
+
+	if (!file.is_open())
+	{
+		cout << "File not found!" << endl;
+		return notifications;
+	}
+
+	string header;
+	getline(file, header);
+
+	string line;
+
+	while (getline(file, line))
+	{
+		stringstream ss(line);
+		string messageID, customerID, restaurantID, message, date;
+
+		getline(ss, customerID, ',');
+		getline(ss, restaurantID, ',');
+		getline(ss, message, ',');
+
+		Notification notification(stoi(customerID), stoi(restaurantID), message);
+		notifications.push(notification);
+	}
+
+	file.close();
+	return notifications;
 }
+
+Stack<Notification> Notification::filterCustomerNotifications(Stack<Notification>& notifications, int customerID)
+{
+	Stack<Notification> filteredNotifications;
+	Stack<Notification> tempNotifications;
+
+	while (!notifications.isEmpty())
+	{
+		Notification notification = notifications.pop();
+		if (notification.getCustomerID() == customerID)
+		{
+			filteredNotifications.push(notification);
+		}
+		tempNotifications.push(notification);
+	}
+
+	while (!tempNotifications.isEmpty())
+	{
+		notifications.push(tempNotifications.pop());  // Push the notifications back in the same order
+	}
+
+	// Reverse the filtered notifications to maintain the original order
+	Stack<Notification> finalFilteredNotifications;
+	while (!filteredNotifications.isEmpty())
+	{
+		finalFilteredNotifications.push(filteredNotifications.pop());
+	}
+
+	return finalFilteredNotifications;
+}
+
+
+
+
 

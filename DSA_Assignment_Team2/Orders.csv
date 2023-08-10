@@ -22,10 +22,13 @@ orderID,customerID,foodItemsList,restaurantID,totalPrice,orderStatus
 21,3,1:1,1,5.5,Cancelled
 22,3,1:1,1,5.5,Cancelled
 23,3,1:1,1,5.5,Prepared
-24,3,1:3,1,16.5,Preparing
+24,3,1:3,1,16.5,Prepared
 25,3,1:5|10:5|1:1,1,70.5,Prepared
-26,3,1:5|16:4,1,46.7,Preparing
+26,3,1:5|16:4,1,46.7,Prepared
 27,7,2:3|2:5,2,200,Cancelled
 28,7,1:5,1,27.5,Prepared
-29,3,1:1,1,5.5,Not Prepared
+29,3,1:1,1,5.5,Prepared
 30,1,1:1,1,5.5,Not Prepared
+31,3,1:5,1,27.5,Preparing
+32,3,2:2,2,50,Preparing
+33,7,3:20,3,200,Prepared

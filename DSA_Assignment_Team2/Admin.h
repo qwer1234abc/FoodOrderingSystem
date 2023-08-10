@@ -3,6 +3,7 @@
 #include <string>
 #include "Order.h"
 #include "Customer.h"
+#include "Notification.h"
 using namespace std;
 
 class Admin
@@ -26,11 +27,12 @@ public:
 	HashTable<string, Admin> getAllAdmins(const string& filename);
 	bool adminLogin(HashTable<string, Admin>& adminTable, const string& filename);
 	void displayAdminMenu();
-	void adminLoginMenu(Admin& admin, HashTable<string, Admin>& adminTable, Queue<Order>& orderQueue);
+	void adminLoginMenu(Admin& admin, HashTable<string, Admin>& adminTable, Queue<Order>& orderQueue, Stack<Notification>& notificationStack);
 	void displayIncomingOrder(Queue<Order>& restaurantOrdersQueue);
-	void updateOrderStatus(Queue<Order>& restaurantOrdersQueue);
+	void updateOrderStatus(Queue<Order>& restaurantOrdersQueue, Stack<Notification>& notificationStack);
 	void updateOrderStatusInCSV(const string& filename, int orderIDToUpdate, const string& newStatus);
 	void viewCustomerInformationForOrder(Queue<Order>& restaurantOrdersQueue, Queue<Order>& allOrders, int restaurantID);
+	void insertNotificationInCSV(const string& filename, Notification& newNotification);
 
 	void clearScreen() {
 		cout << "\033[2J\033[1;1H";

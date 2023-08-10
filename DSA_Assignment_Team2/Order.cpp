@@ -54,8 +54,7 @@ void Order::setStatus(const string& status)
 	this->status = status;
 }
 
-Queue<Order> Order::getAllOrders(const string& filename, HashTable<int, FoodItem>& foodItemsTable)
-{
+Queue<Order> Order::getAllOrders(const string& filename, HashTable<int, FoodItem>& foodItemsTable) {
 	Queue<Order> orders;
 	ifstream inFile(filename);
 	if (!inFile.is_open())
@@ -110,7 +109,6 @@ Queue<Order> Order::getAllOrders(const string& filename, HashTable<int, FoodItem
 Queue<Order> Order::filterCustomerOrders(Queue<Order>& allOrders, int targetCustomerID) {
 	Queue<Order> filteredQueue;
 
-
 	Order currentOrder;
 	while (allOrders.dequeue(currentOrder)) {
 		if (currentOrder.getCustomerID() == targetCustomerID) {
@@ -148,7 +146,6 @@ Queue<Order> Order::filterRestaurantIncomingOrders(Queue<Order>& allOrders, int 
 	Queue<Order> filteredQueue;
 	Queue<Order> tempQueue; // Temporary queue to store orders
 
-
 	Order currentOrder;
 	while (allOrders.dequeue(currentOrder)) {
 		if (currentOrder.getRestaurantID() == targetRestaurantID && (currentOrder.getStatus() == "Not Prepared" || currentOrder.getStatus() == "Preparing")) {
@@ -167,8 +164,7 @@ Queue<Order> Order::filterRestaurantIncomingOrders(Queue<Order>& allOrders, int 
 	return filteredQueue;
 }
 
-Queue<Order> Order::filterRestaurantSpecificCustomerOrders(Queue<Order>& allOrders, int targetRestaurantID, int targetCustomerID)
-{
+Queue<Order> Order::filterRestaurantSpecificCustomerOrders(Queue<Order>& allOrders, int targetRestaurantID, int targetCustomerID) {
 	Queue<Order> filteredQueue;
 	Queue<Order> tempQueue; // Temporary queue to store orders
 

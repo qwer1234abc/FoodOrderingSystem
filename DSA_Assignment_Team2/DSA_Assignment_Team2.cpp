@@ -1,7 +1,6 @@
 #include <iostream>
 #include "Customer.h"
 #include "Admin.h"
-// test
 
 using namespace std;
 
@@ -26,6 +25,8 @@ int main()
 	FoodItem fooditem;
 	HashTable<int, FoodItem> foodItemsTable = fooditem.getAllFoodItems("FoodItems.csv");
 	Order order;
+	Notification notification;
+	Stack<Notification> notificationStack = notification.getAllNotifications("Notifications.csv");
 
 	string selectedOptionStr;
 
@@ -35,13 +36,13 @@ int main()
 		cin >> selectedOptionStr;
 
 		if (selectedOptionStr == "1") {
-			customer.customerLoginMenu(customer, customerTable, orderQueue);
+			customer.customerLoginMenu(customer, customerTable, orderQueue, notificationStack);
 		}
 		else if (selectedOptionStr == "2") {
 			customer.customerRegisterMenu(customer, customerTable);
 		}
 		else if (selectedOptionStr == "3") {
-			admin.adminLoginMenu(admin, adminTable, orderQueue);
+			admin.adminLoginMenu(admin, adminTable, orderQueue, notificationStack);
 		}
 		else if (selectedOptionStr == "4") {
 			cout << "\nThank you for using our app. Goodbye!" << endl;
