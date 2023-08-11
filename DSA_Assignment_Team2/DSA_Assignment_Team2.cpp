@@ -1,3 +1,6 @@
+// Member's name: Beh Jueen Hao Kelvin, Lim Yih Chern Xavier
+// Student ID: S10244263E, S10242016G
+// Team: 2
 #include <iostream>
 #include "Customer.h"
 #include "Admin.h"
