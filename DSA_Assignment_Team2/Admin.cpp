@@ -672,6 +672,8 @@ void Admin::viewFoodItemsRevenue(Queue<Order>& restaurantRevenueOrdersQueue)
 		<< setw(15) << "Total Profit" << endl;
 	cout << string(totalWidth, '-') << endl;
 
+	long double totalOverallRevenue = 0.0;
+
 	for (int i = 0; i < numFoodItems; i++)
 	{
 		string itemName;
@@ -684,7 +686,14 @@ void Admin::viewFoodItemsRevenue(Queue<Order>& restaurantRevenueOrdersQueue)
 		cout << left << setw(35) << itemName
 			<< setw(20) << quantity
 			<< fixed << setprecision(2) << "$" << setw(15) << revenue << endl;
+
+		totalOverallRevenue += revenue;
 	}
+
+	cout << string(totalWidth, '-') << endl;
+
+	cout << left << setw(55) << "Total Revenue"
+		<< fixed << setprecision(2) << "$" << setw(15) << totalOverallRevenue << endl;
 
 	cout << string(totalWidth, '-') << endl;
 
