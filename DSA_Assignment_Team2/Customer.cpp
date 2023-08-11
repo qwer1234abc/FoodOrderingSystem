@@ -9,12 +9,11 @@ using namespace std;
 
 Customer::Customer() : orderItemsList() {}
 
-Customer::Customer(int id, const string& n, const string& l, const string& p, int lp) {
+Customer::Customer(int id, const string& n, const string& l, const string& p) {
 	customerID = id;
 	name = n;
 	loginID = l;
 	password = p;
-	loyaltyPoints = lp;
 }
 
 int Customer::getCustomerID() const {
@@ -31,10 +30,6 @@ string Customer::getLoginID() const {
 
 string Customer::getPassword() const {
 	return password;
-}
-
-int Customer::getLoyaltyPoints() const {
-	return loyaltyPoints;
 }
 
 LinkedList<OrderItem> Customer::getOrderItemsList() const {
@@ -57,12 +52,11 @@ string Customer::getLoginIDByCustomerID(const string& filename, int customerID) 
 	while (getline(file, line))
 	{
 		istringstream iss(line); // extract comma-separated values from each line
-		string customerIDFromFile, nameFromFile, loginIDFromFile, passwordFromFile, loyaltyPointsFromFile;
+		string customerIDFromFile, nameFromFile, loginIDFromFile, passwordFromFile;
 		getline(iss, customerIDFromFile, ',');
 		getline(iss, nameFromFile, ',');
 		getline(iss, loginIDFromFile, ',');
 		getline(iss, passwordFromFile, ',');
-		getline(iss, loyaltyPointsFromFile, ',');
 
 		if (stoi(customerIDFromFile) == customerID) {
 			return loginIDFromFile;
@@ -92,12 +86,11 @@ HashTable<string, Customer> Customer::getAllCustomers(const string& filename)
 	while (getline(file, line))
 	{
 		istringstream iss(line); // extract comma-separated values from each line
-		string customerIDFromFile, nameFromFile, loginIDFromFile, passwordFromFile, loyaltyPointsFromFile;
+		string customerIDFromFile, nameFromFile, loginIDFromFile, passwordFromFile;
 		getline(iss, customerIDFromFile, ',');
 		getline(iss, nameFromFile, ',');
 		getline(iss, loginIDFromFile, ',');
 		getline(iss, passwordFromFile, ',');
-		getline(iss, loyaltyPointsFromFile, ',');
 
 		string lowercaseLoginIDFromFile = loginIDFromFile;
 
@@ -105,7 +98,7 @@ HashTable<string, Customer> Customer::getAllCustomers(const string& filename)
 			c = tolower(c);
 		}
 
-		Customer customer(stoi(customerIDFromFile), nameFromFile, lowercaseLoginIDFromFile, passwordFromFile, stoi(loyaltyPointsFromFile));
+		Customer customer(stoi(customerIDFromFile), nameFromFile, lowercaseLoginIDFromFile, passwordFromFile);
 		customersTable.add(lowercaseLoginIDFromFile, customer);
 	}
 
@@ -116,7 +109,6 @@ HashTable<string, Customer> Customer::getAllCustomers(const string& filename)
 
 void Customer::registerCustomer(HashTable<string, Customer>& customersTable, const string& filename) {
 	string name, loginID, password;
-	int loyaltyPoints = 0;
 
 	cout << "Enter customer details:\n";
 	cout << "Name: ";
@@ -181,14 +173,13 @@ void Customer::registerCustomer(HashTable<string, Customer>& customersTable, con
 	customerID++;
 
 	// Create a new Customer object
-	Customer newCustomer(customerID, name, lowercaseLoginID, password, loyaltyPoints);
+	Customer newCustomer(customerID, name, lowercaseLoginID, password);
 
 	// Save the customer details to the CSV file
 	ofstream fileToWrite(filename, ios::app); // creates output file stream object and opens file in APPEND mode
 	if (fileToWrite.is_open()) {
 		fileToWrite << newCustomer.getCustomerID() << "," << newCustomer.getName() << ","
-			<< newCustomer.getLoginID() << "," << newCustomer.getPassword() << ","
-			<< newCustomer.getLoyaltyPoints() << "\n";
+			<< newCustomer.getLoginID() << "," << newCustomer.getPassword() << "\n";
 		fileToWrite.close();
 		cout << "Registration successful!\n";
 		customersTable.add(lowercaseLoginID, newCustomer);
@@ -223,7 +214,6 @@ bool Customer::customerLogin(HashTable<string, Customer>& customersTable, const 
 	if (customer.getCustomerID() != 0 && customer.getLoginID() == lowercaseLoginID && customer.getPassword() == password) {
 		customerID = customer.getCustomerID(); // convert customerID to from string to integer
 		name = customer.getName();
-		loyaltyPoints = customer.getLoyaltyPoints(); // convert loyalty points to integer
 		cout << "Login successful!\n";
 		return true;
 	}
@@ -237,7 +227,7 @@ bool Customer::customerLogin(HashTable<string, Customer>& customersTable, const 
 }
 
 void Customer::displayCustomerMenu() {
-	cout << "Welcome " << name << "! " << "You have " << loyaltyPoints << " loyalty points." << endl;
+	cout << "Welcome " << name << "! " << endl;
 	cout << "Here is the customer menu:" << endl;
 	cout << "=====================================" << endl;
 	cout << "           Customer Menu            " << endl;

@@ -536,9 +536,8 @@ void Admin::viewCustomerInformationForOrder(Queue<Order>& restaurantOrdersQueue,
 		int spacesOnEachSide = (totalWidth - header.length()) / 2;
 		string centeredHeader = string(spacesOnEachSide, ' ') + header;
 		string displayName = "Customer Name: " + customer.getName();
-		string displayLoyaltyPoints = "Loyalty Points: " + customer.getLoyaltyPoints();
 		cout << dashes << endl;
-		cout << left << setw(40) << displayName << displayLoyaltyPoints << endl;
+		cout << left << setw(40) << displayName << endl;
 		cout << dashes << endl;
 		cout << centeredHeader << endl;
 		cout << dashes << endl;

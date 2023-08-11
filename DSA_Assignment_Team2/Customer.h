@@ -15,19 +15,17 @@ private:
 	string name;
 	string loginID;
 	string password;
-	int loyaltyPoints;
 	LinkedList<OrderItem> orderItemsList;
 
 public:
 	Customer();
-	Customer(int id, const string& n, const string& l, const string& p, int lp);
+	Customer(int id, const string& n, const string& l, const string& p);
 
 	// Getters
 	int getCustomerID() const;
 	string getName() const;
 	string getLoginID() const;
 	string getPassword() const;
-	int getLoyaltyPoints() const;
 	LinkedList<OrderItem> getOrderItemsList() const;
 	string getLoginIDByCustomerID(const string& filename, int customerID);
 

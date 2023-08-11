@@ -8,3 +8,6 @@ orderID,customerID,foodItemsList,restaurantID,totalPrice,orderStatus
 7,1,1:1|4:1|10:1|16:1|22:1|30:1|30:1|42:1|48:1|54:1|60:1|65:1|71:1|77:1|83:1|89:1|95:1|101:1|107:1|1:1,1,252.9,Cancelled
 8,1,1:1,1,5.5,Cancelled
 9,3,107:1,1,12,Preparing
+10,1,1:1,1,5.5,Cancelled
+11,1,1:1|1:1,1,11,Not Prepared
+12,1,1:1,1,5.5,Not Prepared
