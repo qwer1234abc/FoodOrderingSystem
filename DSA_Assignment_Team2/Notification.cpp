@@ -27,6 +27,7 @@ string Notification::getMessage() const
 	return message;
 }
 
+// Return a stack with all notifications
 Stack<Notification> Notification::getAllNotifications(const string& filename)
 {
 	Stack<Notification> notifications;
@@ -60,6 +61,7 @@ Stack<Notification> Notification::getAllNotifications(const string& filename)
 	return notifications;
 }
 
+// Return a stack of notifications that belongs to a customer
 Stack<Notification> Notification::filterCustomerNotifications(Stack<Notification>& notifications, int customerID)
 {
 	Stack<Notification> filteredNotifications;

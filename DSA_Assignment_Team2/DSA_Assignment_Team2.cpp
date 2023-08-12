@@ -22,14 +22,14 @@ void waitForEnterKey() {
 int main()
 {
 	Customer customer;
-	HashTable<string, Customer> customerTable = customer.getAllCustomers("Customers.csv");
+	HashTable<string, Customer> customerTable = customer.getAllCustomers("Customers.csv"); // Get all customers
 	Admin admin;
-	HashTable<string, Admin> adminTable = admin.getAllAdmins("Admins.csv");
+	HashTable<string, Admin> adminTable = admin.getAllAdmins("Admins.csv"); // Get all admins
 	FoodItem fooditem;
-	HashTable<int, FoodItem> foodItemsTable = fooditem.getAllFoodItems("FoodItems.csv");
+	HashTable<int, FoodItem> foodItemsTable = fooditem.getAllFoodItems("FoodItems.csv"); // Get all food items
 	Order order;
 	Notification notification;
-	Stack<Notification> notificationStack = notification.getAllNotifications("Notifications.csv");
+	Stack<Notification> notificationStack = notification.getAllNotifications("Notifications.csv"); // Get all notifications
 
 	string selectedOptionStr;
 

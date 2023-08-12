@@ -36,8 +36,10 @@ LinkedList<OrderItem> Customer::getOrderItemsList() const {
 	return orderItemsList;
 }
 
+// Get the Login ID by the customer ID
+// Returns the Login ID
 string Customer::getLoginIDByCustomerID(const string& filename, int customerID) {
-	ifstream file(filename); // create input file stream object named file and opens the file
+	ifstream file(filename); // Create input file stream object named file and opens the file
 
 	if (!file.is_open())
 	{
@@ -46,10 +48,10 @@ string Customer::getLoginIDByCustomerID(const string& filename, int customerID) 
 	}
 
 	string header;
-	getline(file, header); // read the first line of the file and store it in the variable "header"
+	getline(file, header); // Read the first line of the file and store it in the variable "header"
 
 	string line;
-	while (getline(file, line))
+	while (getline(file, line)) // Read the rest of the lines in the file
 	{
 		istringstream iss(line); // extract comma-separated values from each line
 		string customerIDFromFile, nameFromFile, loginIDFromFile, passwordFromFile;
@@ -68,6 +70,7 @@ string Customer::getLoginIDByCustomerID(const string& filename, int customerID) 
 	return "";
 }
 
+// Returns a hash table filled with customer objects
 HashTable<string, Customer> Customer::getAllCustomers(const string& filename)
 {
 	HashTable <string, Customer> customersTable;
@@ -189,6 +192,7 @@ void Customer::registerCustomer(HashTable<string, Customer>& customersTable, con
 	}
 }
 
+// Returns a boolean value, true if login details are correct and false if login details are wrong
 bool Customer::customerLogin(HashTable<string, Customer>& customersTable, const string& filename) {
 	string loginID, password;
 	cout << "Enter your login credentials:\n";
@@ -226,6 +230,7 @@ bool Customer::customerLogin(HashTable<string, Customer>& customersTable, const 
 	return false;
 }
 
+// Display customer menu
 void Customer::displayCustomerMenu() {
 	cout << "Welcome " << name << "! " << endl;
 	cout << "Here is the customer menu:" << endl;
@@ -305,11 +310,13 @@ HashTable<int, FoodItem> Customer::browseFoodItems(const string& foodItemsFile, 
 	return foodItemsTable; // Return the total number of food items read
 }
 
+// Add order to orderItemsList
 void Customer::addOrderItem(FoodItem& fooditem, int quantity) {
 	OrderItem order(fooditem, quantity);
 	orderItemsList.insert(order);
 }
 
+// Returns the restaurant ID of first food item customer added 
 int Customer::orderItemsMenu(const LinkedList<OrderItem>& orderItemsList, const LinkedList<Restaurant>& restaurants)
 {
 	// Calculate the padding to center the header
@@ -354,16 +361,17 @@ int Customer::orderItemsMenu(const LinkedList<OrderItem>& orderItemsList, const 
 	return firstOrderItem.getFoodItem().getRestaurantID(); // return restaurant id user entered food from
 }
 
+// Customer login menu
 void Customer::customerLoginMenu(Customer& customer, HashTable<string, Customer>& customersTable, Queue<Order>& orderQueue, Stack<Notification>& notificationStack) {
 	cout << "\n-------------------------" << endl;
 	cout << "      Customer Login      " << endl;
 	cout << "-------------------------" << endl;
-	if (customer.customerLogin(customersTable, "Customers.csv")) {
+	if (customer.customerLogin(customersTable, "Customers.csv")) { // If login details are successful
 		// Filter the order queue to only display the customer's orders
 		Order order;
-		Queue<Order> customerOrdersQueue = order.filterCustomerOrders(orderQueue, customer.getCustomerID());
+		Queue<Order> customerOrdersQueue = order.filterCustomerOrders(orderQueue, customer.getCustomerID()); // get customer's orders
 		Notification notification;
-		Stack<Notification> customerNotificationsStack = notification.filterCustomerNotifications(notificationStack, customer.getCustomerID());
+		Stack<Notification> customerNotificationsStack = notification.filterCustomerNotifications(notificationStack, customer.getCustomerID()); // get customer's notifications
 		customerNotificationsStack;
 		waitForEnterKey();
 		clearScreen();
@@ -447,6 +455,7 @@ void Customer::displayNotifications(Stack<Notification>& customerNotificationsSt
 	clearScreen();
 }
 
+// Display list of orders for customers
 void Customer::displayOrders(Queue<Order>& customerOrdersQueue)
 {
 	if (customerOrdersQueue.isEmpty())
@@ -527,6 +536,7 @@ void Customer::customerRegisterMenu(Customer& customer, HashTable<string, Custom
 	customer.registerCustomer(customersTable, "Customers.csv");
 }
 
+// Display food items menu
 void Customer::browseFoodItemsMenu(Customer& customer, Restaurant& restaurant, Queue<Order>& customerOrdersQueue) {
 	bool continueOrdering = true;
 	while (continueOrdering) {
@@ -549,6 +559,7 @@ void Customer::browseFoodItemsMenu(Customer& customer, Restaurant& restaurant, Q
 	}
 }
 
+// For customer to add food items to their order
 bool Customer::orderFoodItems(Customer& customer, Restaurant& restaurant, int foodItemChoice, HashTable<int, FoodItem>& foodItemsTable, Queue<Order>& customerOrdersQueue) {
 	int quantity;
 	FoodItem foodItem = foodItemsTable.get(foodItemChoice);
@@ -627,6 +638,7 @@ bool Customer::orderFoodItems(Customer& customer, Restaurant& restaurant, int fo
 	} while (true);
 }
 
+// For customer to create order
 void Customer::createOrder(const string& filename, int customerID, LinkedList<OrderItem>& orderItemsList, int restaurantID, long double totalPrice, Queue<Order>& customerOrdersQueue) {
 	if (orderItemsList.isEmpty()) {
 		cout << "Error: No items in the order. Please add items to the order first." << endl;
@@ -682,6 +694,7 @@ void Customer::createOrder(const string& filename, int customerID, LinkedList<Or
 	orderItemsList.clear();
 }
 
+// Allows customer to cancel order depending on the order status
 void Customer::cancelOrder(Queue<Order>& customerOrdersQueue) {
 	Order order;
 	Queue<Order> unPreparedOrdersQueue = order.filterUnPreparedCustomerOrders(customerOrdersQueue);
@@ -819,6 +832,7 @@ void Customer::cancelOrder(Queue<Order>& customerOrdersQueue) {
 	}
 }
 
+// Update order status in CSV file
 void Customer::updateOrderStatusInCSV(const string& filename, int orderIDToCancel, const string& newStatus) {
 	ifstream inFile(filename);
 	if (!inFile.is_open()) {

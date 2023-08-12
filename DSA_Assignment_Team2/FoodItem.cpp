@@ -52,6 +52,7 @@ string FoodItem::getRestaurantNameByID(int restaurantID, const LinkedList<Restau
 	return "N.A";
 }
 
+// Returns a hash table filled with all the food item objects
 HashTable<int, FoodItem> FoodItem::getAllFoodItems(const string& filename)
 {
 	// Read food items from the CSV file and store them in the hashtable
