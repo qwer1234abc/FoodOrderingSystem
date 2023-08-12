@@ -7,6 +7,7 @@
 #include "Admin.h"
 #include "Notification.h"
 #include "Array.h"
+#include "GlobalFunctions.h"
 using namespace std;
 
 class Customer {
@@ -47,14 +48,4 @@ public:
 	void displayOrders(Queue<Order>& customerOrdersQueue);
 	void updateOrderStatusInCSV(const string& filename, int orderIDToCancel, const string& newStatus);
 	void displayNotifications(Stack<Notification>& customerNotificationsStack);
-
-	void clearScreen() {
-		cout << "\033[2J\033[1;1H";
-	}
-
-	void waitForEnterKey() {
-		cout << "Press Enter to continue...";
-		cin.ignore(numeric_limits<streamsize>::max(), '\n');
-		cin.get();
-	}
 };

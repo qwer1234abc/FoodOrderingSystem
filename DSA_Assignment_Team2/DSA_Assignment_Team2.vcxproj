@@ -132,6 +132,7 @@
     <ClCompile Include="Customer.cpp" />
     <ClCompile Include="DSA_Assignment_Team2.cpp" />
     <ClCompile Include="FoodItem.cpp" />
+    <ClCompile Include="GlobalFunctions.cpp" />
     <ClCompile Include="HashTable.cpp" />
     <ClCompile Include="LinkedList.cpp" />
     <ClCompile Include="Notification.cpp" />
@@ -146,6 +147,7 @@
     <ClInclude Include="Array.h" />
     <ClInclude Include="Customer.h" />
     <ClInclude Include="FoodItem.h" />
+    <ClInclude Include="GlobalFunctions.h" />
     <ClInclude Include="HashTable.h" />
     <ClInclude Include="LinkedList.h" />
     <ClInclude Include="Notification.h" />

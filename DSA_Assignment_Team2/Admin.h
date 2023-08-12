@@ -34,15 +34,5 @@ public:
 	void viewCustomerInformationForOrder(Queue<Order>& restaurantOrdersQueue, Queue<Order>& allOrders, int restaurantID);
 	void insertNotificationInCSV(const string& filename, Notification& newNotification);
 	void viewFoodItemsRevenue(Queue<Order>& restaurantOrdersQueue);
-
-	void clearScreen() {
-		cout << "\033[2J\033[1;1H";
-	}
-
-	void waitForEnterKey() {
-		cout << "Press Enter to continue...";
-		cin.ignore(numeric_limits<streamsize>::max(), '\n');
-		cin.get();
-	}
 };
 

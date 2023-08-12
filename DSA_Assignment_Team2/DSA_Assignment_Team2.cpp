@@ -7,16 +7,17 @@
 
 using namespace std;
 
-void displayMainMenu();
-
-void clearScreen() {
-	cout << "\033[2J\033[1;1H";
-}
-
-void waitForEnterKey() {
-	cout << "Press Enter to continue...";
-	cin.ignore(); // Ignore any leftover newline characters in the input buffer
-	cin.get();    // Wait for the user to press Enter before continuing
+void displayMainMenu() {
+	clearScreen();
+	cout << "==================================" << endl;
+	cout << "        WELCOME TO OUR APP        " << endl;
+	cout << "==================================" << endl;
+	cout << "1. Customer Login" << endl;
+	cout << "2. Customer Register" << endl;
+	cout << "3. Admin Login" << endl;
+	cout << "4. Exit" << endl;
+	cout << "==================================" << endl;
+	cout << "Enter your choice: ";
 }
 
 int main()
@@ -56,17 +57,4 @@ int main()
 		waitForEnterKey();
 
 	} while (selectedOptionStr != "4");
-}
-
-void displayMainMenu() {
-	clearScreen();
-	cout << "==================================" << endl;
-	cout << "        WELCOME TO OUR APP        " << endl;
-	cout << "==================================" << endl;
-	cout << "1. Customer Login" << endl;
-	cout << "2. Customer Register" << endl;
-	cout << "3. Admin Login" << endl;
-	cout << "4. Exit" << endl;
-	cout << "==================================" << endl;
-	cout << "Enter your choice: ";
 }
