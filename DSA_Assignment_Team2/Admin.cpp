@@ -349,7 +349,7 @@ void Admin::updateOrderStatus(Queue<Order>& restaurantOrdersQueue, Stack<Notific
 				}
 			}
 			else {
-				cout << "Invalid status. Please enter 1 for Preparing, 2 for Prepared or 3 to exit.\n" << endl;
+				cout << "Invalid status. Please enter 1 for Preparing, 2 for Prepared or 0 to exit.\n" << endl;
 			}
 		}
 		
