@@ -130,6 +130,7 @@ Queue<Order> Order::filterCustomerOrders(Queue<Order>& allOrders, int targetCust
 	return filteredQueue;
 }
 
+// Return a queue that gets unpreapred orders for a customer
 Queue<Order> Order::filterUnPreparedCustomerOrders(Queue<Order>& customerOrders) {
 	Queue<Order> filteredQueue;
 	Queue<Order> tempQueue; // Temporary queue to store orders
